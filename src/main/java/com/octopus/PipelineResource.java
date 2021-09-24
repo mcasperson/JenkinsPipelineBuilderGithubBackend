@@ -16,13 +16,13 @@ import javax.ws.rs.core.MediaType;
 public class PipelineResource {
 
     @Inject
-    private HttpClient httpClient;
+    HttpClient httpClient;
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String hello(@QueryParam("repo") final String repo) {
         if (StringUtils.isBlank(repo)) throw new IllegalArgumentException("repo can not be blank");
 
-        return new JavaBuilder().generate(new GithubRepoAccessor(repo, httpClient));
+        return new JavaBuilder(new GithubRepoAccessor(repo, httpClient)).generate();
     }
 }

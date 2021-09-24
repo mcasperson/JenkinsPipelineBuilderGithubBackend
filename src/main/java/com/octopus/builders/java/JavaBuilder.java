@@ -10,15 +10,22 @@ import com.octopus.repoaccessors.RepoAccessor;
 import lombok.NonNull;
 
 public class JavaBuilder implements PipelineBuilder {
+
+    private final RepoAccessor accessor;
+
+    public JavaBuilder (@NonNull final RepoAccessor accessor) {
+        this.accessor = accessor;
+    }
+
     @Override
-    public Boolean canBuild(@NonNull final RepoAccessor accessor) {
+    public Boolean canBuild() {
         return accessor.getFile("pom.xml").isSuccess() ||
                 accessor.getFile("build.gradle").isSuccess() ||
                 accessor.getFile("build.gradle.kts").isSuccess();
     }
 
     @Override
-    public String generate(@NonNull final RepoAccessor accessor) {
+    public String generate() {
         return FunctionTrailingLambda.builder()
                 .name("pipeline")
                 .children(new ImmutableList.Builder<Element>()
