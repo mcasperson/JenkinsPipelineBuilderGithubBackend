@@ -1,17 +1,10 @@
 package com.octopus.repoaccessors;
 
+import com.octopus.http.HttpClient;
 import io.vavr.control.Try;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
-
-import java.io.IOException;
 
 public class GithubRepoAccessor implements RepoAccessor {
     @Getter
@@ -20,38 +13,16 @@ public class GithubRepoAccessor implements RepoAccessor {
 
     @Getter
     @Setter
-    private String accessToken;
+    private HttpClient httpClient;
 
-    public GithubRepoAccessor(@NonNull final String repo) {
+    public GithubRepoAccessor(@NonNull final String repo, @NonNull final HttpClient httpClient) {
         this.repo = repo;
-    }
-
-    public GithubRepoAccessor(@NonNull final String repo, final String accessToken) {
-        this.repo = repo;
-        this.accessToken = accessToken;
+        this.httpClient = httpClient;
     }
 
     @Override
-    public String getFile(@NonNull final String path) {
-        if (StringUtils.isBlank(accessToken)) {
-            return getPublic(path);
-        }
-
-        return "";
-    }
-
-    private String getPublic(@NonNull final String path) {
-        try (final CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            final HttpGet request = new HttpGet(ensureEndsWithSlash(getHttpPathFromRepo()) + path);
-            try (final CloseableHttpResponse response = httpClient.execute(request)) {
-                return Try.of(() -> EntityUtils.toString(response.getEntity()))
-                        .getOrElse("");
-            }
-        } catch (final IOException e) {
-            e.printStackTrace();
-        }
-
-        return "";
+    public Try<String> getFile(@NonNull final String path) {
+        return httpClient.get(ensureEndsWithSlash(getHttpPathFromRepo()) + path);
     }
 
     private String getHttpPathFromRepo() {

@@ -1,5 +1,7 @@
 package com.octopus.repoaccessors;
 
+import io.vavr.control.Try;
+
 /**
  * An abstraction for accessing files in a repo.
  */
@@ -9,5 +11,5 @@ public interface RepoAccessor {
      * @param path The repo file pathg
      * @return The file contents
      */
-    String getFile(String path);
+    Try<String> getFile(String path);
 }
