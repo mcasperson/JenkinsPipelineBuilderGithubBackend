@@ -1,14 +1,16 @@
 package com.octopus.dsl;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
+
+import java.util.List;
 
 @Getter
 @SuperBuilder
 public class Element {
     protected Element parent;
     protected String name;
+    private List<Element> children;
 
     protected int getDepth() {
         Element currentParent = parent;
@@ -27,5 +29,9 @@ public class Element {
             builder.append("  ");
         }
         return builder.toString();
+    }
+
+    protected List<Element> getSafeChildren() {
+        return children == null ? List.of() : children;
     }
 }

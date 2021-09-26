@@ -1,11 +1,9 @@
 package com.octopus.builders.java;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.octopus.builders.PipelineBuilder;
-import com.octopus.dsl.Element;
-import com.octopus.dsl.Function1Arg;
-import com.octopus.dsl.Function1ArgTrailingLambda;
-import com.octopus.dsl.FunctionTrailingLambda;
+import com.octopus.dsl.*;
 import com.octopus.repoaccessors.RepoAccessor;
 import lombok.NonNull;
 
@@ -41,10 +39,7 @@ public class JavaBuilder implements PipelineBuilder {
                         .add(FunctionTrailingLambda.builder()
                                 .name("stages")
                                 .children(new ImmutableList.Builder<Element>()
-                                        .add(Function1ArgTrailingLambda.builder()
-                                                .name("stage")
-                                                .arg("Build")
-                                                .build())
+                                        .add(createBuildStep())
                                         .add(Function1ArgTrailingLambda.builder()
                                                 .name("stage")
                                                 .arg("Test")
@@ -70,6 +65,20 @@ public class JavaBuilder implements PipelineBuilder {
                 .name("stage")
                 .arg("Build")
                 .children(new ImmutableList.Builder<Element>()
+                        .add(FunctionManyArgs.builder()
+                                .name("sh")
+                                .args(new ImmutableList.Builder<Argument>()
+                                        .add(new Argument("script", "mvn --batch-mode versions:set -DnewVersion=1.0.${BUILD_NUMBER}", ArgType.STRING))
+                                        .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
+                                        .build())
+                                .build())
+                        .add(FunctionManyArgs.builder()
+                                .name("sh")
+                                .args(new ImmutableList.Builder<Argument>()
+                                        .add(new Argument("script", "mvn --batch-mode package -DskipTests", ArgType.STRING))
+                                        .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
+                                        .build())
+                                .build())
                         .build())
                 .build();
     }
