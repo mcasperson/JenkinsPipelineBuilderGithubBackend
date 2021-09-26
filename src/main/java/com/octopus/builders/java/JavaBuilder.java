@@ -64,4 +64,13 @@ public class JavaBuilder implements PipelineBuilder {
                 .build()
                 .toString();
     }
+
+    private Element createBuildStep() {
+        return Function1ArgTrailingLambda.builder()
+                .name("stage")
+                .arg("Build")
+                .children(new ImmutableList.Builder<Element>()
+                        .build())
+                .build();
+    }
 }
