@@ -51,7 +51,7 @@ public class JavaMavenBuilder implements PipelineBuilder {
                 .toString();
     }
 
-    private Boolean usesWrapper(@NonNull final RepoAccessor accessor) {
+    private boolean usesWrapper(@NonNull final RepoAccessor accessor) {
         return GIT_BUILDER.fileExists(accessor, "mvnw");
     }
 

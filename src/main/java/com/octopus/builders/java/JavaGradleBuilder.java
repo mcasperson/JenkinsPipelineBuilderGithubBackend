@@ -7,15 +7,17 @@ import com.octopus.dsl.*;
 import com.octopus.repoaccessors.RepoAccessor;
 import lombok.NonNull;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class JavaGradleBuilder implements PipelineBuilder {
     private static final GitBuilder GIT_BUILDER = new GitBuilder();
+    private static final String[] GRADLE_BUILD_FILES = {"build.gradle", "build.gradle.kts"};
     private boolean usesWrapper = false;
 
     @Override
     public Boolean canBuild(@NonNull final RepoAccessor accessor) {
-        if (GIT_BUILDER.fileExists(accessor, "build.gradle") || GIT_BUILDER.fileExists(accessor, "build.gradle.kts")) {
+        if (Arrays.stream(GRADLE_BUILD_FILES).anyMatch(f -> GIT_BUILDER.fileExists(accessor, f))) {
             usesWrapper = usesWrapper(accessor);
             return true;
         }
