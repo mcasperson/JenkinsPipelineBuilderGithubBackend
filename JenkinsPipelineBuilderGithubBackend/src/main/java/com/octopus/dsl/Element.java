@@ -22,11 +22,7 @@ public class Element {
 
     protected String getIndent() {
         final int depth = getDepth();
-        final StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < depth; ++i) {
-            builder.append("  ");
-        }
-        return builder.toString();
+        return "  ".repeat(Math.max(0, depth));
     }
 
 

@@ -14,5 +14,5 @@ public interface RepoAccessor {
     Try<String> getFile(String path);
     boolean testFile(String path);
     String getRepoPath();
-    public String getDefaultBranch();
+    String getDefaultBranch();
 }
