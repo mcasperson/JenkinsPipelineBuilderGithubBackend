@@ -29,11 +29,7 @@ public class JavaMavenBuilder implements PipelineBuilder {
                 .children(new ImmutableList.Builder<Element>()
                         .add(FunctionTrailingLambda.builder()
                                 .name("tools")
-                                .children(new ImmutableList.Builder<Element>()
-                                        .add(Function1Arg.builder().name("maven").value("Maven").build())
-                                        .add(Function1Arg.builder().name("jdk").value("Java").build())
-                                        .build()
-                                )
+                                .children(createTools())
                                 .build())
                         .add(Function1Arg.builder().name("agent").value("any").build())
                         .add(FunctionTrailingLambda.builder()
@@ -59,6 +55,17 @@ public class JavaMavenBuilder implements PipelineBuilder {
 
     private String mavenExecutable() {
         return usesWrapper ? "./mvnw" : "mvn";
+    }
+
+    private List<Element> createTools() {
+        final ImmutableList.Builder<Element> list = new ImmutableList.Builder<Element>()
+                .add(Function1Arg.builder().name("jdk").value("Java").build());
+
+        if (!usesWrapper) {
+            list.add(Function1Arg.builder().name("maven").value("Maven").build());
+        }
+
+        return list.build();
     }
 
     private Element createDependenciesStep() {
