@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.octopus.http.HttpClient;
 import com.octopus.repoaccessors.RepoAccessor;
 import io.vavr.control.Try;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Builder
 public class GithubRepoAccessor implements RepoAccessor {
     private static final String GITHUB_REGEX = "https://github.com/(?<username>.*?)/(?<repo>.*?)(/|$)";
     private static final Pattern GITHUB_PATTERN = Pattern.compile(GITHUB_REGEX);
@@ -24,11 +26,6 @@ public class GithubRepoAccessor implements RepoAccessor {
     @Getter
     @Setter
     private HttpClient httpClient;
-
-    public GithubRepoAccessor(@NonNull final String repo, @NonNull final HttpClient httpClient) {
-        this.repo = repo;
-        this.httpClient = httpClient;
-    }
 
     @Override
     public Try<String> getFile(@NonNull final String path) {
