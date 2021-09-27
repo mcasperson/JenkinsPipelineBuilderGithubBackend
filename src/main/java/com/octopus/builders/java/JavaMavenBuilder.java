@@ -1,7 +1,6 @@
 package com.octopus.builders.java;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.octopus.builders.PipelineBuilder;
 import com.octopus.dsl.*;
 import com.octopus.repoaccessors.RepoAccessor;
@@ -9,23 +8,22 @@ import lombok.NonNull;
 
 import java.util.List;
 
-public class JavaBuilder implements PipelineBuilder {
+public class JavaMavenBuilder implements PipelineBuilder {
 
-    private final RepoAccessor accessor;
+    private boolean usesWrapper = false;
 
-    public JavaBuilder(@NonNull final RepoAccessor accessor) {
-        this.accessor = accessor;
+    @Override
+    public Boolean canBuild(@NonNull final RepoAccessor accessor) {
+        if (accessor.getFile("pom.xml").isSuccess()) {
+            usesWrapper = usesWrapper(accessor);
+            return true;
+        }
+
+        return false;
     }
 
     @Override
-    public Boolean canBuild() {
-        return accessor.getFile("pom.xml").isSuccess() ||
-                accessor.getFile("build.gradle").isSuccess() ||
-                accessor.getFile("build.gradle.kts").isSuccess();
-    }
-
-    @Override
-    public String generate() {
+    public String generate(@NonNull final RepoAccessor accessor) {
         return FunctionTrailingLambda.builder()
                 .name("pipeline")
                 .children(new ImmutableList.Builder<Element>()
@@ -41,7 +39,7 @@ public class JavaBuilder implements PipelineBuilder {
                         .add(FunctionTrailingLambda.builder()
                                 .name("stages")
                                 .children(new ImmutableList.Builder<Element>()
-                                        .add(createCheckoutStep())
+                                        .add(createCheckoutStep(accessor))
                                         .add(createDependenciesStep())
                                         .add(createBuildStep())
                                         .add(createTestStep())
@@ -55,6 +53,14 @@ public class JavaBuilder implements PipelineBuilder {
                 .toString();
     }
 
+    private Boolean usesWrapper(@NonNull final RepoAccessor accessor) {
+        return accessor.getFile("mvnw").isSuccess();
+    }
+
+    private String mavenExecutable() {
+        return usesWrapper ? "./mvnw" : "mvn";
+    }
+
     private Element createDependenciesStep() {
         return Function1ArgTrailingLambda.builder()
                 .name("stage")
@@ -66,13 +72,13 @@ public class JavaBuilder implements PipelineBuilder {
                         .add(FunctionManyArgs.builder()
                                 .name("sh")
                                 .args(new ImmutableList.Builder<Argument>()
-                                        .add(new Argument("script", "mvn --batch-mode dependency:resolve-plugins dependency:go-offline", ArgType.STRING))
+                                        .add(new Argument("script", mavenExecutable() + " --batch-mode dependency:resolve-plugins dependency:go-offline", ArgType.STRING))
                                         .build())
                                 .build())
                         .add(FunctionManyArgs.builder()
                                 .name("sh")
                                 .args(new ImmutableList.Builder<Argument>()
-                                        .add(new Argument("script", "mvn --batch-mode dependency:tree > dependencies.txt", ArgType.STRING))
+                                        .add(new Argument("script", mavenExecutable() + " --batch-mode dependency:tree > dependencies.txt", ArgType.STRING))
                                         .build())
                                 .build())
                         .add(FunctionManyArgs.builder()
@@ -85,7 +91,7 @@ public class JavaBuilder implements PipelineBuilder {
                         .add(FunctionManyArgs.builder()
                                 .name("sh")
                                 .args(new ImmutableList.Builder<Argument>()
-                                        .add(new Argument("script", "mvn --batch-mode versions:display-dependency-updates > dependencieupdates.txt", ArgType.STRING))
+                                        .add(new Argument("script", mavenExecutable() + " --batch-mode versions:display-dependency-updates > dependencieupdates.txt", ArgType.STRING))
                                         .build())
                                 .build())
                         .add(FunctionManyArgs.builder()
@@ -99,7 +105,7 @@ public class JavaBuilder implements PipelineBuilder {
                 .build();
     }
 
-    private Element createCheckoutStep() {
+    private Element createCheckoutStep(@NonNull final RepoAccessor accessor) {
         return Function1ArgTrailingLambda.builder()
                 .name("stage")
                 .arg("Checkout")
@@ -124,14 +130,14 @@ public class JavaBuilder implements PipelineBuilder {
                         .add(FunctionManyArgs.builder()
                                 .name("sh")
                                 .args(new ImmutableList.Builder<Argument>()
-                                        .add(new Argument("script", "mvn --batch-mode versions:set -DnewVersion=1.0.${BUILD_NUMBER}", ArgType.STRING))
+                                        .add(new Argument("script", mavenExecutable() + " --batch-mode versions:set -DnewVersion=1.0.${BUILD_NUMBER}", ArgType.STRING))
                                         .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
                                         .build())
                                 .build())
                         .add(FunctionManyArgs.builder()
                                 .name("sh")
                                 .args(new ImmutableList.Builder<Argument>()
-                                        .add(new Argument("script", "mvn --batch-mode compile", ArgType.STRING))
+                                        .add(new Argument("script", mavenExecutable() + " --batch-mode compile", ArgType.STRING))
                                         .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
                                         .build())
                                 .build())
@@ -147,7 +153,7 @@ public class JavaBuilder implements PipelineBuilder {
                         .add(FunctionManyArgs.builder()
                                 .name("sh")
                                 .args(new ImmutableList.Builder<Argument>()
-                                        .add(new Argument("script", "mvn --batch-mode test", ArgType.STRING))
+                                        .add(new Argument("script", mavenExecutable() + " --batch-mode test", ArgType.STRING))
                                         .build())
                                 .build())
                         .add(FunctionManyArgs.builder()
@@ -168,7 +174,7 @@ public class JavaBuilder implements PipelineBuilder {
                         .add(FunctionManyArgs.builder()
                                 .name("sh")
                                 .args(new ImmutableList.Builder<Argument>()
-                                        .add(new Argument("script", "mvn --batch-mode package -DskipTests", ArgType.STRING))
+                                        .add(new Argument("script", mavenExecutable() + " --batch-mode package -DskipTests", ArgType.STRING))
                                         .build())
                                 .build())
                         .build()))
