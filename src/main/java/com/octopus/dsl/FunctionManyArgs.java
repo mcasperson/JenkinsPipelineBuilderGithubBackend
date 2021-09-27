@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @SuperBuilder
-public class FunctionManyArgs extends Element {
+public class FunctionManyArgs extends ElementWithChildren {
     private List<Argument> args;
 
     public String toString() {

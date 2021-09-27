@@ -5,7 +5,7 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
-public class Function1Arg extends Element {
+public class Function1Arg extends ElementWithChildren {
     private String value;
 
     public String toString() {

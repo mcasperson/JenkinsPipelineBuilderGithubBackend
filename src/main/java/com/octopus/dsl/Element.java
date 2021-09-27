@@ -9,8 +9,6 @@ import java.util.List;
 @SuperBuilder
 public class Element {
     protected Element parent;
-    protected String name;
-    private List<Element> children;
 
     protected int getDepth() {
         Element currentParent = parent;
@@ -31,7 +29,5 @@ public class Element {
         return builder.toString();
     }
 
-    protected List<Element> getSafeChildren() {
-        return children == null ? List.of() : children;
-    }
+
 }

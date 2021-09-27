@@ -2,6 +2,7 @@ package com.octopus.dsl;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 @Data
 @AllArgsConstructor
@@ -12,8 +13,10 @@ public class Argument {
 
     public String toString() {
         final StringBuilder builder = new StringBuilder();
-        builder.append(name);
-        builder.append(": ");
+        if (!StringUtils.isBlank(name)) {
+            builder.append(name);
+            builder.append(": ");
+        }
         if (type == ArgType.STRING) {
             builder.append("'");
         }

@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @SuperBuilder
-public class FunctionTrailingLambda extends Element {
+public class FunctionTrailingLambda extends ElementWithChildren {
     public String toString() {
         final List<Element> safeChildren = getSafeChildren();
         safeChildren.forEach(c -> c.parent = this);
