@@ -1,6 +1,7 @@
 package com.octopus;
 
 import com.octopus.builders.PipelineBuilder;
+import com.octopus.builders.java.JavaGradleBuilder;
 import com.octopus.http.HttpClient;
 import com.octopus.builders.java.JavaMavenBuilder;
 import com.octopus.repoaccessors.GithubRepoAccessor;
@@ -19,7 +20,7 @@ import java.util.Arrays;
 @Path("/pipeline")
 public class PipelineResource {
 
-    private static final PipelineBuilder[] BUILDERS = {new JavaMavenBuilder()};
+    private static final PipelineBuilder[] BUILDERS = {new JavaMavenBuilder(), new JavaGradleBuilder()};
 
     @Inject
     HttpClient httpClient;

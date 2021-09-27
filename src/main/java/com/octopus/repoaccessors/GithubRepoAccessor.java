@@ -26,6 +26,11 @@ public class GithubRepoAccessor implements RepoAccessor {
     }
 
     @Override
+    public boolean testFile(@NonNull final String path) {
+        return httpClient.head(ensureEndsWithSlash(getHttpPathFromRepo()) + path);
+    }
+
+    @Override
     public String getRepoPath() {
         if (!repo.endsWith(".git")) {
             return repo + ".git";

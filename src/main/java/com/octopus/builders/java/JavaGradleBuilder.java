@@ -9,14 +9,13 @@ import lombok.NonNull;
 
 import java.util.List;
 
-public class JavaMavenBuilder implements PipelineBuilder {
-
+public class JavaGradleBuilder implements PipelineBuilder {
     private static final GitBuilder GIT_BUILDER = new GitBuilder();
     private boolean usesWrapper = false;
 
     @Override
     public Boolean canBuild(@NonNull final RepoAccessor accessor) {
-        if (GIT_BUILDER.fileExists(accessor, "pom.xml")) {
+        if (GIT_BUILDER.fileExists(accessor, "build.gradle") || GIT_BUILDER.fileExists(accessor, "build.gradle.kts")) {
             usesWrapper = usesWrapper(accessor);
             return true;
         }
@@ -41,8 +40,7 @@ public class JavaMavenBuilder implements PipelineBuilder {
                                         .add(createDependenciesStep())
                                         .add(createBuildStep())
                                         .add(createTestStep())
-                                        .add(createPackageStep())
-                                        .add(GIT_BUILDER.createDeployStep("target"))
+                                        .add(GIT_BUILDER.createDeployStep("build"))
                                         .build())
                                 .build())
                         .build()
@@ -52,11 +50,11 @@ public class JavaMavenBuilder implements PipelineBuilder {
     }
 
     private Boolean usesWrapper(@NonNull final RepoAccessor accessor) {
-        return GIT_BUILDER.fileExists(accessor, "mvnw");
+        return GIT_BUILDER.fileExists(accessor, "gradlew");
     }
 
-    private String mavenExecutable() {
-        return usesWrapper ? "./mvnw" : "mvn";
+    private String gradleExecutable() {
+        return usesWrapper ? "./gradlew" : "gradle";
     }
 
     private List<Element> createTools() {
@@ -64,7 +62,7 @@ public class JavaMavenBuilder implements PipelineBuilder {
                 .add(Function1Arg.builder().name("jdk").value("Java").build());
 
         if (!usesWrapper) {
-            list.add(Function1Arg.builder().name("maven").value("Maven").build());
+            list.add(Function1Arg.builder().name("gradle").value("Gradle").build());
         }
 
         return list.build();
@@ -75,38 +73,16 @@ public class JavaMavenBuilder implements PipelineBuilder {
                 .name("stage")
                 .arg("List Dependencies")
                 .children(GIT_BUILDER.createStepsElement(new ImmutableList.Builder<Element>()
-                        .add(Comment.builder()
-                                .content("Download the dependencies and plugins before we attempt to do any further actions")
-                                .build())
                         .add(FunctionManyArgs.builder()
                                 .name("sh")
                                 .args(new ImmutableList.Builder<Argument>()
-                                        .add(new Argument("script", mavenExecutable() + " --batch-mode dependency:resolve-plugins dependency:go-offline", ArgType.STRING))
-                                        .build())
-                                .build())
-                        .add(FunctionManyArgs.builder()
-                                .name("sh")
-                                .args(new ImmutableList.Builder<Argument>()
-                                        .add(new Argument("script", mavenExecutable() + " --batch-mode dependency:tree > dependencies.txt", ArgType.STRING))
+                                        .add(new Argument("script", gradleExecutable() + " dependencies --console=plain > dependencies.txt", ArgType.STRING))
                                         .build())
                                 .build())
                         .add(FunctionManyArgs.builder()
                                 .name("archiveArtifacts")
                                 .args(new ImmutableList.Builder<Argument>()
                                         .add(new Argument("artifacts", "dependencies.txt", ArgType.STRING))
-                                        .add(new Argument("fingerprint", "true", ArgType.BOOLEAN))
-                                        .build())
-                                .build())
-                        .add(FunctionManyArgs.builder()
-                                .name("sh")
-                                .args(new ImmutableList.Builder<Argument>()
-                                        .add(new Argument("script", mavenExecutable() + " --batch-mode versions:display-dependency-updates > dependencieupdates.txt", ArgType.STRING))
-                                        .build())
-                                .build())
-                        .add(FunctionManyArgs.builder()
-                                .name("archiveArtifacts")
-                                .args(new ImmutableList.Builder<Argument>()
-                                        .add(new Argument("artifacts", "dependencieupdates.txt", ArgType.STRING))
                                         .add(new Argument("fingerprint", "true", ArgType.BOOLEAN))
                                         .build())
                                 .build())
@@ -122,14 +98,7 @@ public class JavaMavenBuilder implements PipelineBuilder {
                         .add(FunctionManyArgs.builder()
                                 .name("sh")
                                 .args(new ImmutableList.Builder<Argument>()
-                                        .add(new Argument("script", mavenExecutable() + " --batch-mode versions:set -DnewVersion=1.0.${BUILD_NUMBER}", ArgType.STRING))
-                                        .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
-                                        .build())
-                                .build())
-                        .add(FunctionManyArgs.builder()
-                                .name("sh")
-                                .args(new ImmutableList.Builder<Argument>()
-                                        .add(new Argument("script", mavenExecutable() + " --batch-mode compile", ArgType.STRING))
+                                        .add(new Argument("script", gradleExecutable() + " assemble --console=plain", ArgType.STRING))
                                         .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
                                         .build())
                                 .build())
@@ -145,28 +114,13 @@ public class JavaMavenBuilder implements PipelineBuilder {
                         .add(FunctionManyArgs.builder()
                                 .name("sh")
                                 .args(new ImmutableList.Builder<Argument>()
-                                        .add(new Argument("script", mavenExecutable() + " --batch-mode test", ArgType.STRING))
+                                        .add(new Argument("script", gradleExecutable() + " check --console=plain", ArgType.STRING))
                                         .build())
                                 .build())
                         .add(FunctionManyArgs.builder()
                                 .name("junit")
                                 .args(new ImmutableList.Builder<Argument>()
-                                        .add(new Argument("", "target/surefire-reports/*.xml", ArgType.STRING))
-                                        .build())
-                                .build())
-                        .build()))
-                .build();
-    }
-
-    private Element createPackageStep() {
-        return Function1ArgTrailingLambda.builder()
-                .name("stage")
-                .arg("Package")
-                .children(GIT_BUILDER.createStepsElement(new ImmutableList.Builder<Element>()
-                        .add(FunctionManyArgs.builder()
-                                .name("sh")
-                                .args(new ImmutableList.Builder<Argument>()
-                                        .add(new Argument("script", mavenExecutable() + " --batch-mode package -DskipTests", ArgType.STRING))
+                                        .add(new Argument("", "build/reports/**/*.xml", ArgType.STRING))
                                         .build())
                                 .build())
                         .build()))

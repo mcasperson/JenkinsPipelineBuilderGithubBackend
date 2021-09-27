@@ -12,5 +12,6 @@ public interface RepoAccessor {
      * @return The file contents
      */
     Try<String> getFile(String path);
+    boolean testFile(String path);
     String getRepoPath();
 }
