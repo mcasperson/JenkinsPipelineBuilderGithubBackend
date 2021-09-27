@@ -46,6 +46,10 @@ public class GitBuilder {
                         .add(Comment.builder()
                                 .content("This requires the Pipeline Utility Steps Plugin: https://wiki.jenkins.io/display/JENKINS/Pipeline+Utility+Steps+Plugin")
                                 .build())
+                        .add(Comment.builder()
+                                .content("This scans through the build tool output directory and find the largest file, which we assume is the artifact that was intended to be deployed.\n" +
+                                        "The path to this file is saved in and environment variable called JAVA_ARTIFACT, which can be consumed by subsequent custom deployment steps.")
+                                .build())
                         .add(FunctionTrailingLambda.builder()
                                 .name("script")
                                 .children(new ImmutableList.Builder<Element>()
@@ -58,7 +62,7 @@ public class GitBuilder {
                                                         "    findFiles(glob: '" + buildDir + "/**.' + extension).each{files << it}\n" +
                                                         "}\n"+
                                                         "echo 'Found ' + files.size() + ' potential artifacts'\n" +
-                                                        "// Assume the largest JAR or WAR is the artifact we intended to build\n" +
+                                                        "// Assume the largest JAR or WAR is the artifact we intend to deploy\n" +
                                                         "def largestFile = null\n" +
                                                         "for (i = 0; i < files.size(); ++i) {\n" +
                                                         "\tif (largestFile == null || files[i].length > largestFile.length) { \n"+
