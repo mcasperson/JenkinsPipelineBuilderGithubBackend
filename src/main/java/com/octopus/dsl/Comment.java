@@ -9,6 +9,6 @@ public class Comment extends Element {
     private String content;
 
     public String toString() {
-        return getIndent() + "# " + content;
+        return getIndent() + "// " + content;
     }
 }

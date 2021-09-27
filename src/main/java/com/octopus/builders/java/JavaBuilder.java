@@ -153,7 +153,7 @@ public class JavaBuilder implements PipelineBuilder {
                         .add(FunctionManyArgs.builder()
                                 .name("junit")
                                 .args(new ImmutableList.Builder<Argument>()
-                                        .add(new Argument("", "build/reports/**/*.xml", ArgType.STRING))
+                                        .add(new Argument("", "target/surefire-reports/*.xml", ArgType.STRING))
                                         .build())
                                 .build())
                         .build()))
@@ -180,18 +180,22 @@ public class JavaBuilder implements PipelineBuilder {
                 .name("stage")
                 .arg("Deploy")
                 .children(createStepsElement(new ImmutableList.Builder<Element>()
+                        .add(Comment.builder()
+                                .content("This requires the Pipeline Utility Steps Plugin: https://wiki.jenkins.io/display/JENKINS/Pipeline+Utility+Steps+Plugin")
+                                .build())
                         .add(FunctionTrailingLambda.builder()
                                 .name("script")
                                 .children(new ImmutableList.Builder<Element>()
                                         .add(StringContent.builder()
-                                                .content("new File(\"${workspace}/target\").eachFileRecurse (FileType.FILES)\n" +
-                                                        "    {file ->\n" +
-                                                        "        if (file.getName().endsWith('.jar') || file.getName().endsWith('.war')) {\n" +
-                                                        "            env.JAVA_ARTIFACT = file.getAbsolutePath()\n" +
-                                                        "            echo 'Found artifact at' + file.getAbsolutePath()\n" +
-                                                        "            echo 'This path is available from the JAVA_ARTIFACT environment variable.'\n" +
-                                                        "        }\n" +
-                                                        "    }")
+                                                .content("// Assume the largest JAR or WAR is the artifact we intended to build\n" +
+                                                        "def files = (findFiles(glob: 'target/*.jar') + findFiles(glob: 'target/*.war')).sort{x, y ->\n" +
+                                                        "\treturn x.length > y.length ? -1 : 1\n" +
+                                                        "}\n" +
+                                                        "if (files.size() != 0) {\n" +
+                                                        "\tenv.JAVA_ARTIFACT = files[0].path\n" +
+                                                        "\techo 'Found artifact at ' + files[0].path\n" +
+                                                        "\techo 'This path is available from the JAVA_ARTIFACT environment variable.'\n" +
+                                                        "}")
                                                 .build())
                                         .build())
                                 .build())
