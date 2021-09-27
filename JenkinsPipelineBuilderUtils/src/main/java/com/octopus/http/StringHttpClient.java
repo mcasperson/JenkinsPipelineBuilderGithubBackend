@@ -9,9 +9,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
-import javax.inject.Singleton;
-
-@Singleton
 public class StringHttpClient implements HttpClient {
     public Try<String> get(@NonNull final String url) {
         return getClient()
