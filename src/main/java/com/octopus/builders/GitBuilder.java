@@ -5,15 +5,11 @@ import com.octopus.dsl.*;
 import com.octopus.repoaccessors.RepoAccessor;
 import lombok.NonNull;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class GitBuilder {
-    private static final String[] DEFAULT_BRANCHES = {"master", "main"};
-
     public boolean fileExists(@NonNull final RepoAccessor accessor, @NonNull final String file) {
-        return Arrays.stream(DEFAULT_BRANCHES)
-                .anyMatch(b -> accessor.testFile("blob/" + b + "/" + file));
+        return accessor.testFile("blob/" + accessor.getDefaultBranch() + "/" + file);
     }
 
     public Element createCheckoutStep(@NonNull final RepoAccessor accessor) {
@@ -25,7 +21,6 @@ public class GitBuilder {
                                 .name("checkout")
                                 .args(new ImmutableList.Builder<Argument>()
                                         .add(new Argument("$class", "GitSCM", ArgType.STRING))
-                                        .add(new Argument("branches", "[[name: '*/master']]", ArgType.ARRAY))
                                         .add(new Argument("userRemoteConfigs", "[[url: '" + accessor.getRepoPath() + "']]", ArgType.ARRAY))
                                         .build())
                                 .build())

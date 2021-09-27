@@ -123,7 +123,7 @@ public class JavaGradleBuilder implements PipelineBuilder {
                         .add(FunctionManyArgs.builder()
                                 .name("junit")
                                 .args(new ImmutableList.Builder<Argument>()
-                                        .add(new Argument("", "build/reports/**/*.xml", ArgType.STRING))
+                                        .add(new Argument("", "build/test-results/**/*.xml", ArgType.STRING))
                                         .build())
                                 .build())
                         .build()))

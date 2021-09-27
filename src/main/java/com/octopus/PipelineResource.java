@@ -4,9 +4,8 @@ import com.octopus.builders.PipelineBuilder;
 import com.octopus.builders.java.JavaGradleBuilder;
 import com.octopus.http.HttpClient;
 import com.octopus.builders.java.JavaMavenBuilder;
-import com.octopus.repoaccessors.GithubRepoAccessor;
+import com.octopus.repoaccessors.github.GithubRepoAccessor;
 import com.octopus.repoaccessors.RepoAccessor;
-import lombok.experimental.Accessors;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.inject.Inject;
