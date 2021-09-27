@@ -50,14 +50,15 @@ public class GitBuilder {
                                 .name("script")
                                 .children(new ImmutableList.Builder<Element>()
                                         .add(StringContent.builder()
-                                                .content("// Assume the largest JAR or WAR is the artifact we intended to build\n" +
-                                                        "def jars = findFiles(glob: '" + buildDir + "/**.jar')\n" +
-                                                        "def wars = findFiles(glob: '" + buildDir + "/**.war')\n" +
-                                                        "echo 'found ' + jars.size() + ' jar files'\n" +
-                                                        "echo 'found ' + wars.size() + ' war files'\n" +
+                                                .content(
+                                                        "// Find the matching artifacts\n" +
+                                                        "def extensions = ['jar', 'war']\n" +
                                                         "def files = []\n" +
-                                                        "jars.each{files << it}\n" +
-                                                        "wars.each{files << it}\n" +
+                                                        "for(extension in extensions){\n" +
+                                                        "    findFiles(glob: '" + buildDir + "/**.' + extension).each{files << it}\n" +
+                                                        "}\n"+
+                                                        "echo 'Found ' + files.size() + ' potential artifacts'\n" +
+                                                        "// Assume the largest JAR or WAR is the artifact we intended to build\n" +
                                                         "def largestFile = null\n" +
                                                         "for (i = 0; i < files.size(); ++i) {\n" +
                                                         "\tif (largestFile == null || files[i].length > largestFile.length) { \n"+
