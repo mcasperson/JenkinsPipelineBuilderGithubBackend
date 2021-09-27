@@ -7,6 +7,8 @@ import com.octopus.dsl.*;
 import com.octopus.repoaccessors.RepoAccessor;
 import lombok.NonNull;
 
+import java.util.List;
+
 public class JavaBuilder implements PipelineBuilder {
 
     private final RepoAccessor accessor;
@@ -56,39 +58,34 @@ public class JavaBuilder implements PipelineBuilder {
         return Function1ArgTrailingLambda.builder()
                 .name("stage")
                 .arg("List Dependencies")
-                .children(new ImmutableList.Builder<Element>()
-                        .add(FunctionTrailingLambda.builder()
-                                .name("steps")
-                                .children(new ImmutableList.Builder<Element>()
-                                        .add(FunctionManyArgs.builder()
-                                                .name("sh")
-                                                .args(new ImmutableList.Builder<Argument>()
-                                                        .add(new Argument("script", "mvn --batch-mode dependency:tree > dependencies.txt", ArgType.STRING))
-                                                        .build())
-                                                .build())
-                                        .add(FunctionManyArgs.builder()
-                                                .name("archiveArtifacts")
-                                                .args(new ImmutableList.Builder<Argument>()
-                                                        .add(new Argument("artifacts", "dependencies.txt", ArgType.STRING))
-                                                        .add(new Argument("fingerprint", "true", ArgType.BOOLEAN))
-                                                        .build())
-                                                .build())
-                                        .add(FunctionManyArgs.builder()
-                                                .name("sh")
-                                                .args(new ImmutableList.Builder<Argument>()
-                                                        .add(new Argument("script", "mvn --batch-mode versions:display-dependency-updates > dependencieupdates.txt", ArgType.STRING))
-                                                        .build())
-                                                .build())
-                                        .add(FunctionManyArgs.builder()
-                                                .name("archiveArtifacts")
-                                                .args(new ImmutableList.Builder<Argument>()
-                                                        .add(new Argument("artifacts", "dependencieupdates.txt", ArgType.STRING))
-                                                        .add(new Argument("fingerprint", "true", ArgType.BOOLEAN))
-                                                        .build())
-                                                .build())
+                .children(createStepsElement(new ImmutableList.Builder<Element>()
+                        .add(FunctionManyArgs.builder()
+                                .name("sh")
+                                .args(new ImmutableList.Builder<Argument>()
+                                        .add(new Argument("script", "mvn --batch-mode dependency:tree > dependencies.txt", ArgType.STRING))
                                         .build())
                                 .build())
-                        .build())
+                        .add(FunctionManyArgs.builder()
+                                .name("archiveArtifacts")
+                                .args(new ImmutableList.Builder<Argument>()
+                                        .add(new Argument("artifacts", "dependencies.txt", ArgType.STRING))
+                                        .add(new Argument("fingerprint", "true", ArgType.BOOLEAN))
+                                        .build())
+                                .build())
+                        .add(FunctionManyArgs.builder()
+                                .name("sh")
+                                .args(new ImmutableList.Builder<Argument>()
+                                        .add(new Argument("script", "mvn --batch-mode versions:display-dependency-updates > dependencieupdates.txt", ArgType.STRING))
+                                        .build())
+                                .build())
+                        .add(FunctionManyArgs.builder()
+                                .name("archiveArtifacts")
+                                .args(new ImmutableList.Builder<Argument>()
+                                        .add(new Argument("artifacts", "dependencieupdates.txt", ArgType.STRING))
+                                        .add(new Argument("fingerprint", "true", ArgType.BOOLEAN))
+                                        .build())
+                                .build())
+                        .build()))
                 .build();
     }
 
@@ -96,27 +93,22 @@ public class JavaBuilder implements PipelineBuilder {
         return Function1ArgTrailingLambda.builder()
                 .name("stage")
                 .arg("Build")
-                .children(new ImmutableList.Builder<Element>()
-                        .add(FunctionTrailingLambda.builder()
-                                .name("steps")
-                                .children(new ImmutableList.Builder<Element>()
-                                        .add(FunctionManyArgs.builder()
-                                                .name("sh")
-                                                .args(new ImmutableList.Builder<Argument>()
-                                                        .add(new Argument("script", "mvn --batch-mode versions:set -DnewVersion=1.0.${BUILD_NUMBER}", ArgType.STRING))
-                                                        .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
-                                                        .build())
-                                                .build())
-                                        .add(FunctionManyArgs.builder()
-                                                .name("sh")
-                                                .args(new ImmutableList.Builder<Argument>()
-                                                        .add(new Argument("script", "mvn --batch-mode compile", ArgType.STRING))
-                                                        .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
-                                                        .build())
-                                                .build())
+                .children(createStepsElement(new ImmutableList.Builder<Element>()
+                        .add(FunctionManyArgs.builder()
+                                .name("sh")
+                                .args(new ImmutableList.Builder<Argument>()
+                                        .add(new Argument("script", "mvn --batch-mode versions:set -DnewVersion=1.0.${BUILD_NUMBER}", ArgType.STRING))
+                                        .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
                                         .build())
                                 .build())
-                        .build())
+                        .add(FunctionManyArgs.builder()
+                                .name("sh")
+                                .args(new ImmutableList.Builder<Argument>()
+                                        .add(new Argument("script", "mvn --batch-mode compile", ArgType.STRING))
+                                        .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
+                                        .build())
+                                .build())
+                        .build()))
                 .build();
     }
 
@@ -124,25 +116,20 @@ public class JavaBuilder implements PipelineBuilder {
         return Function1ArgTrailingLambda.builder()
                 .name("stage")
                 .arg("Test")
-                .children(new ImmutableList.Builder<Element>()
-                        .add(FunctionTrailingLambda.builder()
-                                .name("steps")
-                                .children(new ImmutableList.Builder<Element>()
-                                        .add(FunctionManyArgs.builder()
-                                                .name("sh")
-                                                .args(new ImmutableList.Builder<Argument>()
-                                                        .add(new Argument("script", "mvn --batch-mode test", ArgType.STRING))
-                                                        .build())
-                                                .build())
-                                        .add(FunctionManyArgs.builder()
-                                                .name("junit")
-                                                .args(new ImmutableList.Builder<Argument>()
-                                                        .add(new Argument("", "build/reports/**/*.xml", ArgType.STRING))
-                                                        .build())
-                                                .build())
+                .children(createStepsElement(new ImmutableList.Builder<Element>()
+                        .add(FunctionManyArgs.builder()
+                                .name("sh")
+                                .args(new ImmutableList.Builder<Argument>()
+                                        .add(new Argument("script", "mvn --batch-mode test", ArgType.STRING))
                                         .build())
                                 .build())
-                        .build())
+                        .add(FunctionManyArgs.builder()
+                                .name("junit")
+                                .args(new ImmutableList.Builder<Argument>()
+                                        .add(new Argument("", "build/reports/**/*.xml", ArgType.STRING))
+                                        .build())
+                                .build())
+                        .build()))
                 .build();
     }
 
@@ -150,19 +137,14 @@ public class JavaBuilder implements PipelineBuilder {
         return Function1ArgTrailingLambda.builder()
                 .name("stage")
                 .arg("Package")
-                .children(new ImmutableList.Builder<Element>()
-                        .add(FunctionTrailingLambda.builder()
-                                .name("steps")
-                                .children(new ImmutableList.Builder<Element>()
-                                        .add(FunctionManyArgs.builder()
-                                                .name("sh")
-                                                .args(new ImmutableList.Builder<Argument>()
-                                                        .add(new Argument("script", "mvn --batch-mode package -DskipTests", ArgType.STRING))
-                                                        .build())
-                                                .build())
+                .children(createStepsElement(new ImmutableList.Builder<Element>()
+                        .add(FunctionManyArgs.builder()
+                                .name("sh")
+                                .args(new ImmutableList.Builder<Argument>()
+                                        .add(new Argument("script", "mvn --batch-mode package -DskipTests", ArgType.STRING))
                                         .build())
                                 .build())
-                        .build())
+                        .build()))
                 .build();
     }
 
@@ -170,28 +152,34 @@ public class JavaBuilder implements PipelineBuilder {
         return Function1ArgTrailingLambda.builder()
                 .name("stage")
                 .arg("Deploy")
-                .children(new ImmutableList.Builder<Element>()
+                .children(createStepsElement(new ImmutableList.Builder<Element>()
                         .add(FunctionTrailingLambda.builder()
-                                .name("steps")
+                                .name("script")
                                 .children(new ImmutableList.Builder<Element>()
-                                        .add(FunctionTrailingLambda.builder()
-                                                .name("script")
-                                                .children(new ImmutableList.Builder<Element>()
-                                                        .add(StringContent.builder()
-                                                                .content("new File(\"${workspace}/target\").eachFileRecurse (FileType.FILES)\n" +
-                                                                        "    {file ->\n" +
-                                                                        "        if (file.getName().endsWith('.jar') || file.getName().endsWith('.war')) {\n" +
-                                                                        "            env.JAVA_ARTIFACT = file.getAbsolutePath()\n" +
-                                                                        "            echo 'Found artifact at' + file.getAbsolutePath()\n" +
-                                                                        "            echo 'This path is available from the JAVA_ARTIFACT environment variable.'\n" +
-                                                                        "        }\n" +
-                                                                        "    }")
-                                                                .build())
-                                                        .build())
+                                        .add(StringContent.builder()
+                                                .content("new File(\"${workspace}/target\").eachFileRecurse (FileType.FILES)\n" +
+                                                        "    {file ->\n" +
+                                                        "        if (file.getName().endsWith('.jar') || file.getName().endsWith('.war')) {\n" +
+                                                        "            env.JAVA_ARTIFACT = file.getAbsolutePath()\n" +
+                                                        "            echo 'Found artifact at' + file.getAbsolutePath()\n" +
+                                                        "            echo 'This path is available from the JAVA_ARTIFACT environment variable.'\n" +
+                                                        "        }\n" +
+                                                        "    }")
                                                 .build())
                                         .build())
                                 .build())
-                        .build())
+                        .build()))
                 .build();
+    }
+
+    private List<Element> createStepsElement(List<Element> children) {
+        return new ImmutableList.Builder<Element>().add(
+                        Function1ArgTrailingLambda.builder()
+                                .name("stage")
+                                .arg("Deploy")
+                                .children(children)
+                                .build())
+                .build();
+
     }
 }
