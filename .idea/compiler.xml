@@ -9,6 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="jenkinspipelinebuildergithubbackend" />
         <module name="JenkinsPipelineBuilderUtils" />
+        <module name="JenkinsPipelineBuilderJava" />
       </profile>
     </annotationProcessing>
   </component>

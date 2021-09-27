@@ -11,7 +11,8 @@
 	<modules>
 		<module>JenkinsPipelineBuilderGithubBackend</module>
         <module>JenkinsPipelineBuilderUtils</module>
-    </modules>
+		<module>JenkinsPipelineBuilderJava</module>
+	</modules>
 
 	<dependencies>
 		<dependency>

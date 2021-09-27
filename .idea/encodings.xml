@@ -3,6 +3,8 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/JenkinsPipelineBuilderGithubBackend/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/JenkinsPipelineBuilderGithubBackend/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/JenkinsPipelineBuilderJava/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/JenkinsPipelineBuilderJava/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/JenkinsPipelineBuilderUtils/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/JenkinsPipelineBuilderUtils/src/main/resources" charset="UTF-8" />
   </component>
