@@ -80,9 +80,4 @@ jobs:
         run: zip jenkinspipelinebuildergithubbackend-runner.0.1.0.${{ github.run_number }}.zip JenkinsPipelineBuilderGithubBackend/target/jenkinspipelinebuildergithubbackend-runner
 
       - name: Push Package
-        run: >
-          octo push
-            --package jenkinspipelinebuildergithubbackend-runner.0.1.0.${{ github.run_number }}.zip
-            --server=${{ secrets.OCTOPUS_SERVER }}
-            --apiKey=${{ secrets.OCTOPUS_APIKEY }}
-            --space "Content Team"
+        run: octo push --package jenkinspipelinebuildergithubbackend-runner.0.1.0.${{ github.run_number }}.zip --server=${{ secrets.OCTOPUS_SERVER }} --apiKey=${{ secrets.OCTOPUS_APIKEY }} --space "Content Team"
