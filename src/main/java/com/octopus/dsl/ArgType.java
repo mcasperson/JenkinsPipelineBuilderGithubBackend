@@ -3,5 +3,7 @@ package com.octopus.dsl;
 public enum ArgType {
     STRING,
     BOOLEAN,
-    NUMBER
+    NUMBER,
+    TYPE,
+    ARRAY
 }

@@ -41,6 +41,7 @@ public class JavaBuilder implements PipelineBuilder {
                         .add(FunctionTrailingLambda.builder()
                                 .name("stages")
                                 .children(new ImmutableList.Builder<Element>()
+                                        .add(createCheckoutStep())
                                         .add(createDependenciesStep())
                                         .add(createBuildStep())
                                         .add(createTestStep())
@@ -83,6 +84,23 @@ public class JavaBuilder implements PipelineBuilder {
                                 .args(new ImmutableList.Builder<Argument>()
                                         .add(new Argument("artifacts", "dependencieupdates.txt", ArgType.STRING))
                                         .add(new Argument("fingerprint", "true", ArgType.BOOLEAN))
+                                        .build())
+                                .build())
+                        .build()))
+                .build();
+    }
+
+    private Element createCheckoutStep() {
+        return Function1ArgTrailingLambda.builder()
+                .name("stage")
+                .arg("Checkout")
+                .children(createStepsElement(new ImmutableList.Builder<Element>()
+                        .add(FunctionManyArgs.builder()
+                                .name("checkout")
+                                .args(new ImmutableList.Builder<Argument>()
+                                        .add(new Argument("$class", "GitSCM", ArgType.STRING))
+                                        .add(new Argument("branches", "[[name: '*/master']]", ArgType.ARRAY))
+                                        .add(new Argument("userRemoteConfigs", "[[url: '" + accessor.getRepoPath() + "']]", ArgType.ARRAY))
                                         .build())
                                 .build())
                         .build()))
@@ -174,9 +192,8 @@ public class JavaBuilder implements PipelineBuilder {
 
     private List<Element> createStepsElement(List<Element> children) {
         return new ImmutableList.Builder<Element>().add(
-                        Function1ArgTrailingLambda.builder()
-                                .name("stage")
-                                .arg("Deploy")
+                        FunctionTrailingLambda.builder()
+                                .name("steps")
                                 .children(children)
                                 .build())
                 .build();
