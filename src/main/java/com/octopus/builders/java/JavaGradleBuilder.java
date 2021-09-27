@@ -13,6 +13,7 @@ import java.util.List;
 public class JavaGradleBuilder implements PipelineBuilder {
     private static final GitBuilder GIT_BUILDER = new GitBuilder();
     private static final String[] GRADLE_BUILD_FILES = {"build.gradle", "build.gradle.kts"};
+    private static final String GRADLE_OUTPUT_DIR = "build/libs";
     private boolean usesWrapper = false;
 
     @Override
@@ -42,7 +43,7 @@ public class JavaGradleBuilder implements PipelineBuilder {
                                         .add(createDependenciesStep())
                                         .add(createBuildStep())
                                         .add(createTestStep())
-                                        .add(GIT_BUILDER.createDeployStep("build"))
+                                        .add(GIT_BUILDER.createDeployStep(GRADLE_OUTPUT_DIR))
                                         .build())
                                 .build())
                         .build()
@@ -103,7 +104,7 @@ public class JavaGradleBuilder implements PipelineBuilder {
                         .add(FunctionManyArgs.builder()
                                 .name("sh")
                                 .args(new ImmutableList.Builder<Argument>()
-                                        .add(new Argument("script", gradleExecutable() + " assemble --console=plain", ArgType.STRING))
+                                        .add(new Argument("script", gradleExecutable() + " clean assemble --console=plain", ArgType.STRING))
                                         .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
                                         .build())
                                 .build())

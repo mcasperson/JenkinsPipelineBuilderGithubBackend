@@ -51,14 +51,25 @@ public class GitBuilder {
                                 .children(new ImmutableList.Builder<Element>()
                                         .add(StringContent.builder()
                                                 .content("// Assume the largest JAR or WAR is the artifact we intended to build\n" +
-                                                        "def files = (findFiles(glob: '" + buildDir + "/*.jar') + findFiles(glob: '" + buildDir + "/**.war')).sort{x, y ->\n" +
-                                                        "\treturn x.length > y.length ? -1 : 1\n" +
+                                                        "def jars = findFiles(glob: '" + buildDir + "/**.jar')\n" +
+                                                        "def wars = findFiles(glob: '" + buildDir + "/**.war')\n" +
+                                                        "echo 'found ' + jars.size() + ' jar files'\n" +
+                                                        "echo 'found ' + wars.size() + ' war files'\n" +
+                                                        "def files = []\n" +
+                                                        "jars.each{files << it}\n" +
+                                                        "wars.each{files << it}\n" +
+                                                        "def largestFile = null\n" +
+                                                        "for (i = 0; i < files.size(); ++i) {\n" +
+                                                        "\tif (largestFile == null || files[i].length > largestFile.length) { \n"+
+                                                        "\t\tlargestFile = files[i]\n" +
+                                                        "\t}\n" +
                                                         "}\n" +
-                                                        "if (files.size() != 0) {\n" +
-                                                        "\tenv.JAVA_ARTIFACT = files[0].path\n" +
-                                                        "\techo 'Found artifact at ' + files[0].path\n" +
+                                                        "if (largestFile != null) {\n" +
+                                                        "\tenv.JAVA_ARTIFACT = largestFile.path\n" +
+                                                        "\techo 'Found artifact at ' + largestFile.path\n" +
                                                         "\techo 'This path is available from the JAVA_ARTIFACT environment variable.'\n" +
-                                                        "}")
+                                                        "}\n"
+                                                        )
                                                 .build())
                                         .build())
                                 .build())
