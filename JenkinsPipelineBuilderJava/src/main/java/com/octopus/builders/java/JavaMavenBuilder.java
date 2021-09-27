@@ -29,6 +29,7 @@ public class JavaMavenBuilder implements PipelineBuilder {
         return FunctionTrailingLambda.builder()
                 .name("pipeline")
                 .children(new ImmutableList.Builder<Element>()
+                        .addAll(GIT_BUILDER.createTopComments())
                         .add(FunctionTrailingLambda.builder()
                                 .name("tools")
                                 .children(createTools())

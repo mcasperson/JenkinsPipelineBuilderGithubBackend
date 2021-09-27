@@ -12,6 +12,14 @@ public class GitBuilder {
         return accessor.testFile("blob/" + accessor.getDefaultBranch() + "/" + file);
     }
 
+    public List<Element> createTopComments() {
+        return new ImmutableList.Builder<Element>()
+            .add(Comment.builder()
+                .content("This pipeline requires the Pipeline Utility Steps Plugin: https://wiki.jenkins.io/display/JENKINS/Pipeline+Utility+Steps+Plugin")
+                .build())
+            .build();
+    }
+
     public Element createCheckoutStep(@NonNull final RepoAccessor accessor) {
         return Function1ArgTrailingLambda.builder()
                 .name("stage")
@@ -43,9 +51,6 @@ public class GitBuilder {
                 .name("stage")
                 .arg("Deploy")
                 .children(createStepsElement(new ImmutableList.Builder<Element>()
-                        .add(Comment.builder()
-                                .content("This requires the Pipeline Utility Steps Plugin: https://wiki.jenkins.io/display/JENKINS/Pipeline+Utility+Steps+Plugin")
-                                .build())
                         .add(Comment.builder()
                                 .content("This scans through the build tool output directory and find the largest file, which we assume is the artifact that was intended to be deployed.\n" +
                                         "The path to this file is saved in and environment variable called JAVA_ARTIFACT, which can be consumed by subsequent custom deployment steps.")
