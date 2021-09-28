@@ -21,7 +21,6 @@ public class PipelineLambda implements RequestHandler<Map<String,Object>, ProxyR
     Instance<PipelineBuilder> builders;
 
     @Override
-    @Named("default")
     public ProxyResponse handleRequest(final Map<String,Object> input, final Context context) {
         final String repo = Optional
             .ofNullable(input.getOrDefault("queryStringParameters", null))
