@@ -83,7 +83,13 @@ jobs:
 #        run: octo push --package jenkins-pipeline-builder-github-backend-runner.0.1.0.${{ github.run_number }}.zip --server=${{ secrets.OCTOPUS_SERVER }} --apiKey=${{ secrets.OCTOPUS_APIKEY }} --space "Content Team"
 
       - name: Rename zip
-        run: mv jenkins-pipeline-builder-github-backend/target/function.zip jenkins-pipeline-builder-github-backend-lambda.0.1.0.${{ github.run_number }}.zip
+        run: >
+          mv jenkins-pipeline-builder-github-backend/target/function.zip
+          jenkins-pipeline-builder-github-backend-lambda.0.1.0.${{ github.run_number }}.zip
 
       - name: Push Package
-        run: octo push --package jenkins-pipeline-builder-github-backend-lambda.0.1.0.${{ github.run_number }}.zip --server=${{ secrets.OCTOPUS_SERVER }} --apiKey=${{ secrets.OCTOPUS_APIKEY }} --space "Content Team"
+        run: >
+          octo push --package jenkins-pipeline-builder-github-backend-lambda.0.1.0.${{ github.run_number }}.zip
+          --server=${{ secrets.OCTOPUS_SERVER }}
+          --apiKey=${{ secrets.OCTOPUS_APIKEY }}
+          --space "Content Team"
