@@ -1,4 +1,4 @@
-package com.octopus;
+package com.octopus.producer;
 
 import com.octopus.builders.PipelineBuilder;
 import com.octopus.builders.java.JavaGradleBuilder;

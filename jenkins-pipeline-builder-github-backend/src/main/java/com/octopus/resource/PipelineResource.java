@@ -1,4 +1,4 @@
-package com.octopus;
+package com.octopus.resource;
 
 import com.octopus.builders.PipelineBuilder;
 import com.octopus.repoaccessors.RepoAccessor;
@@ -32,7 +32,6 @@ public class PipelineResource {
     if (StringUtils.isBlank(repo)) {
       throw new IllegalArgumentException("repo can not be blank");
     }
-
     accessor.setRepo(repo);
 
     return builders.stream()
@@ -40,5 +39,6 @@ public class PipelineResource {
         .findFirst()
         .map(b -> b.generate(accessor))
         .orElse("No suitable builders were found.");
+
   }
 }
