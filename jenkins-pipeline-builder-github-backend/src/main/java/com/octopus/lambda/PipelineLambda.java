@@ -6,10 +6,12 @@ import com.octopus.builders.PipelineBuilder;
 import com.octopus.repoaccessors.RepoAccessor;
 import java.util.Map;
 import java.util.Optional;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 
+@ApplicationScoped
 public class PipelineLambda implements RequestHandler<Map<String,Object>, ProxyResponse> {
     @Inject
     RepoAccessor accessor;
