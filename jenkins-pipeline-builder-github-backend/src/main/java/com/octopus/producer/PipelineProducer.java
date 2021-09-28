@@ -9,6 +9,7 @@ import com.octopus.repoaccessors.RepoAccessor;
 import com.octopus.repoaccessors.github.GithubRepoAccessor;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
 
 @ApplicationScoped
@@ -30,9 +31,8 @@ public class PipelineProducer {
    *
    * @return An implementation of RepoAccessor.
    */
-  @RequestScoped
   @Produces
-  public RepoAccessor getRepoAccessor(HttpClient httpClient) {
+  public RepoAccessor getRepoAccessor(final HttpClient httpClient) {
     return GithubRepoAccessor.builder()
         .httpClient(httpClient)
         .build();

@@ -22,7 +22,7 @@ public class PipelineLambda implements RequestHandler<Map<String,Object>, ProxyR
 
     @Override
     @Named("default")
-    public ProxyResponse handleRequest(final Map<String,Object> input, Context context) {
+    public ProxyResponse handleRequest(final Map<String,Object> input, final Context context) {
         final String repo = Optional
             .ofNullable(input.getOrDefault("queryStringParameters", null))
             .map(Map.class::cast)
