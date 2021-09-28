@@ -9,6 +9,9 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
+/**
+ * An implementation of HttpClient that returns the string content of any accessed file.
+ */
 public class StringHttpClient implements HttpClient {
 
   /**

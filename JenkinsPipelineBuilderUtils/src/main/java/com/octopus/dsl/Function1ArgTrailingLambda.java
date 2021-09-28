@@ -5,6 +5,9 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
+/**
+ * Represents a function with one argument and a trailing lambda.
+ */
 @Getter
 @SuperBuilder
 public class Function1ArgTrailingLambda extends FunctionTrailingLambda {

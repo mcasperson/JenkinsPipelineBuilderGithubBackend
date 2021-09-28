@@ -5,6 +5,9 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
+/**
+ * Represents a function with many arguments.
+ */
 @Getter
 @SuperBuilder
 public class FunctionManyArgs extends ElementWithChildren {

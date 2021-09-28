@@ -18,6 +18,15 @@
         </plugin>
         <plugin>
           <artifactId>maven-checkstyle-plugin</artifactId>
+          <groupId>org.apache.maven.plugins</groupId>
+          <version>3.1.2</version>
+          <dependencies>
+            <dependency>
+              <groupId>com.puppycrawl.tools</groupId>
+              <artifactId>checkstyle</artifactId>
+              <version>9.0</version>
+            </dependency>
+          </dependencies>
           <configuration>
             <configLocation>google_checks.xml</configLocation>
             <failOnViolation>true</failOnViolation>
@@ -29,8 +38,6 @@
             <linkXRef>false</linkXRef>
             <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
           </configuration>
-          <groupId>org.apache.maven.plugins</groupId>
-          <version>2.17</version>
         </plugin>
       </plugins>
     </pluginManagement>
