@@ -11,6 +11,11 @@ public class Function1ArgTrailingLambda extends FunctionTrailingLambda {
 
   private String arg;
 
+  /**
+   * Builds a function with an argument and trailing lambda containing the children.
+   *
+   * @return The groovy function.
+   */
   public String toString() {
     final List<Element> safeChildren = getSafeChildren();
     safeChildren.forEach(c -> c.parent = this);

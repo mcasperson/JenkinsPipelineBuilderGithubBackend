@@ -13,6 +13,9 @@ import com.octopus.repoaccessors.RepoAccessor;
 import java.util.List;
 import lombok.NonNull;
 
+/**
+ * A utility class containing useful methods common to Java pipelines.
+ */
 public class GitBuilder {
 
   public boolean fileExists(@NonNull final RepoAccessor accessor, @NonNull final String file) {

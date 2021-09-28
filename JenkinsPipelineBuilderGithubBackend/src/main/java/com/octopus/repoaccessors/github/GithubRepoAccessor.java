@@ -59,6 +59,11 @@ public class GithubRepoAccessor implements RepoAccessor {
     return path;
   }
 
+  /**
+   * Returns the default branch for a GitHub repo.
+   *
+   * @return The repository default branch.
+   */
   public String getDefaultBranch() {
     return getDetails()
         // Get the repository details: https://docs.github.com/en/rest/reference/repos#get-a-repository

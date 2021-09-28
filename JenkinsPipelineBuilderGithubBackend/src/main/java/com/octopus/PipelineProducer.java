@@ -14,12 +14,22 @@ import javax.enterprise.inject.Produces;
 @ApplicationScoped
 public class PipelineProducer {
 
+  /**
+   * Produces the HTTP client.
+   *
+   * @return An implementation of HttpClient.
+   */
   @ApplicationScoped
   @Produces
   public HttpClient getHttpClient() {
     return new StringHttpClient();
   }
 
+  /**
+   * Produces the repository accessor.
+   *
+   * @return An implementation of RepoAccessor.
+   */
   @RequestScoped
   @Produces
   public RepoAccessor getRepoAccessor(HttpClient httpClient) {
@@ -28,12 +38,22 @@ public class PipelineProducer {
         .build();
   }
 
+  /**
+   * Produces the Maven pipeline builder.
+   *
+   * @return An implementation of PipelineBuilder.
+   */
   @ApplicationScoped
   @Produces
   public PipelineBuilder getMavenBuilder() {
     return new JavaMavenBuilder();
   }
 
+  /**
+   * Produces the Gradle pipeline builder.
+   *
+   * @return An implementation of PipelineBuilder.
+   */
   @ApplicationScoped
   @Produces
   public PipelineBuilder getGradleBuilder() {

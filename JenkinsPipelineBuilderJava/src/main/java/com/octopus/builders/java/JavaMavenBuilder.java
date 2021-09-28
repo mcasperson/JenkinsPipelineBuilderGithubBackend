@@ -15,6 +15,9 @@ import com.octopus.repoaccessors.RepoAccessor;
 import java.util.List;
 import lombok.NonNull;
 
+/**
+ * A pipeline builder for Maven projects.
+ */
 public class JavaMavenBuilder implements PipelineBuilder {
 
   private static final GitBuilder GIT_BUILDER = new GitBuilder();

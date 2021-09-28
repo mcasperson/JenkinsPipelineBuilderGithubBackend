@@ -24,7 +24,7 @@
             <encoding>UTF-8</encoding>
             <consoleOutput>true</consoleOutput>
             <failsOnError>true</failsOnError>
-            <violationSeverity>error</violationSeverity>
+            <violationSeverity>warning</violationSeverity>
             <linkXRef>false</linkXRef>
             <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
           </configuration>

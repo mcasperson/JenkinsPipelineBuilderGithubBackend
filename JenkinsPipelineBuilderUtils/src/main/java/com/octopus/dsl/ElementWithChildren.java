@@ -4,6 +4,9 @@ import java.util.List;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
+/**
+ * Represents a DSL element with shildren
+ */
 @Getter
 @SuperBuilder
 public class ElementWithChildren extends Element {

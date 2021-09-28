@@ -20,6 +20,12 @@ public class PipelineResource {
   @Inject
   Instance<PipelineBuilder> builders;
 
+  /**
+   * Generates a Jenkins pipeline from the given git repository.
+   *
+   * @param repo The repository URL
+   * @return The Jenkins pipeline.
+   */
   @GET
   @Produces(MediaType.TEXT_PLAIN)
   public String hello(@QueryParam("repo") final String repo) {

@@ -16,6 +16,9 @@ import java.util.Arrays;
 import java.util.List;
 import lombok.NonNull;
 
+/**
+ * A pipeline builder for Gradle projects.
+ */
 public class JavaGradleBuilder implements PipelineBuilder {
 
   private static final GitBuilder GIT_BUILDER = new GitBuilder();

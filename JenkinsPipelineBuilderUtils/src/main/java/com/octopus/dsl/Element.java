@@ -3,6 +3,9 @@ package com.octopus.dsl;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
+/**
+ * The base class for all the DSL elements.
+ */
 @Getter
 @SuperBuilder
 public class Element {

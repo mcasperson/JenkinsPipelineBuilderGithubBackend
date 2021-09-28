@@ -11,6 +11,11 @@ public class FunctionManyArgs extends ElementWithChildren {
 
   private List<Argument> args;
 
+  /**
+   * Builds a function with many arguments.
+   *
+   * @return The groovy function.
+   */
   public String toString() {
     final List<Element> safeChildren = getSafeChildren();
     safeChildren.forEach(c -> c.parent = this);
