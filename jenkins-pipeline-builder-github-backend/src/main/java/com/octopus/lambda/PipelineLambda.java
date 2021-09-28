@@ -9,9 +9,10 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.commons.lang3.StringUtils;
 
-@ApplicationScoped
 public class PipelineLambda implements RequestHandler<Map<String,Object>, ProxyResponse> {
     @Inject
     RepoAccessor accessor;
@@ -20,6 +21,7 @@ public class PipelineLambda implements RequestHandler<Map<String,Object>, ProxyR
     Instance<PipelineBuilder> builders;
 
     @Override
+    @Named("default")
     public ProxyResponse handleRequest(final Map<String,Object> input, Context context) {
         final String repo = Optional
             .ofNullable(input.getOrDefault("queryStringParameters", null))
