@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * Represents a DSL element with shildren
+ * Represents a DSL element with children.
  */
 @Getter
 @SuperBuilder
