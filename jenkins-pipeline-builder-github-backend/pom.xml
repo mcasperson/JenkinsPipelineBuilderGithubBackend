@@ -45,12 +45,12 @@
 
   <dependencies>
     <dependency>
-      <artifactId>JenkinsPipelineBuilderUtils</artifactId>
+      <artifactId>jenkins-pipeline-builder-utils</artifactId>
       <groupId>com.octopus</groupId>
       <version>1.0</version>
     </dependency>
     <dependency>
-      <artifactId>JenkinsPipelineBuilderJava</artifactId>
+      <artifactId>jenkins-pipeline-builder-java</artifactId>
       <groupId>com.octopus</groupId>
       <version>1.0</version>
     </dependency>
