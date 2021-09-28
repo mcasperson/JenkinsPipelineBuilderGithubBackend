@@ -46,7 +46,7 @@ jobs:
         run: mvn --batch-mode checkstyle:checkstyle
 
       - name: Update version
-        run: cd JenkinsPipelineBuilderGithubBackend; mvn versions:set -DnewVersion=0.1.0.${{ github.run_number }}
+        run: cd jenkins-pipeline-builder-github-backend; mvn versions:set -DnewVersion=0.1.0.${{ github.run_number }}
 
       - name: List dependencies
         run: mvn --batch-mode dependency:tree --no-transfer-progress
