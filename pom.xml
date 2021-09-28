@@ -24,9 +24,9 @@
             <encoding>UTF-8</encoding>
             <consoleOutput>true</consoleOutput>
             <failsOnError>true</failsOnError>
-            <failOnViolation>true</failOnViolation>
             <violationSeverity>error</violationSeverity>
             <linkXRef>false</linkXRef>
+            <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
           </configuration>
           <groupId>org.apache.maven.plugins</groupId>
           <version>2.17</version>

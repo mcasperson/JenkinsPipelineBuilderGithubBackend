@@ -23,9 +23,9 @@ public class PipelineResource {
   @GET
   @Produces(MediaType.TEXT_PLAIN)
   public String hello(@QueryParam("repo") final String repo) {
-      if (StringUtils.isBlank(repo)) {
-          throw new IllegalArgumentException("repo can not be blank");
-      }
+    if (StringUtils.isBlank(repo)) {
+      throw new IllegalArgumentException("repo can not be blank");
+    }
 
     accessor.setRepo(repo);
 

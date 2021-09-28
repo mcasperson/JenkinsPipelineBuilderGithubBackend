@@ -15,8 +15,8 @@ public class Function1ArgTrailingLambda extends FunctionTrailingLambda {
     final List<Element> safeChildren = getSafeChildren();
     safeChildren.forEach(c -> c.parent = this);
 
-    return getIndent() + name + "('" + arg + "') {\n" +
-        safeChildren.stream().map(Object::toString).collect(Collectors.joining("\n")) +
-        "\n" + getIndent() + "}";
+    return getIndent() + name + "('" + arg + "') {\n"
+        + safeChildren.stream().map(Object::toString).collect(Collectors.joining("\n"))
+        + "\n" + getIndent() + "}";
   }
 }
