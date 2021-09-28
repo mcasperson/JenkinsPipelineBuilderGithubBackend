@@ -72,12 +72,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: JenkinsPipelineBuilderGithubBackend/target/jenkinspipelinebuildergithubbackend-runner
-          asset_name: jenkinspipelinebuildergithubbackend-runner
+          asset_path: JenkinsPipelineBuilderGithubBackend/target/jenkins-pipeline-builder-github-backend-runner
+          asset_name: jenkins-pipeline-builder-github-backend-runner
           asset_content_type: application/octet-stream
 
       - name: Create zip
-        run: zip jenkinspipelinebuildergithubbackend-runner.0.1.0.${{ github.run_number }}.zip JenkinsPipelineBuilderGithubBackend/target/jenkinspipelinebuildergithubbackend-runner
+        run: zip jenkins-pipeline-builder-github-backend-runner.0.1.0.${{ github.run_number }}.zip JenkinsPipelineBuilderGithubBackend/target/jenkins-pipeline-builder-github-backend-runner
 
       - name: Push Package
-        run: octo push --package jenkinspipelinebuildergithubbackend-runner.0.1.0.${{ github.run_number }}.zip --server=${{ secrets.OCTOPUS_SERVER }} --apiKey=${{ secrets.OCTOPUS_APIKEY }} --space "Content Team"
+        run: octo push --package jenkins-pipeline-builder-github-backend-runner.0.1.0.${{ github.run_number }}.zip --server=${{ secrets.OCTOPUS_SERVER }} --apiKey=${{ secrets.OCTOPUS_APIKEY }} --space "Content Team"

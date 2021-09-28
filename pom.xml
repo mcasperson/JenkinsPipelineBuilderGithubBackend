@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <artifactId>jenkinspipelinebuilderbackend</artifactId>
+  <artifactId>jenkins-pipeline-builder-backend</artifactId>
   <build>
     <pluginManagement>
       <plugins>
@@ -78,12 +78,12 @@
   <groupId>com.octopus</groupId>
   <modelVersion>4.0.0</modelVersion>
   <modules>
-    <module>JenkinsPipelineBuilderGithubBackend</module>
-    <module>JenkinsPipelineBuilderUtils</module>
-    <module>JenkinsPipelineBuilderJava</module>
+    <module>jenkins-pipeline-builder-github-backend</module>
+    <module>jenkins-pipeline-builder-utils</module>
+    <module>jenkins-pipeline-builder-java</module>
   </modules>
 
-  <name>jenkinspipelinebuilderbackend</name>
+  <name>jenkins-pipeline-builder-backend</name>
 
   <packaging>pom</packaging>
 
