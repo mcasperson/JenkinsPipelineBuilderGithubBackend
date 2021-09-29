@@ -76,11 +76,11 @@ jobs:
           asset_name: jenkins-pipeline-builder-github-backend-runner
           asset_content_type: application/octet-stream
 
-#      - name: Create zip
-#        run: zip jenkins-pipeline-builder-github-backend-runner.0.1.0.${{ github.run_number }}.zip jenkins-pipeline-builder-github-backend/target/jenkins-pipeline-builder-github-backend-runner
-#
-#      - name: Push Package
-#        run: octo push --package jenkins-pipeline-builder-github-backend-runner.0.1.0.${{ github.run_number }}.zip --server=${{ secrets.OCTOPUS_SERVER }} --apiKey=${{ secrets.OCTOPUS_APIKEY }} --space "Content Team"
+      #      - name: Create zip
+      #        run: zip jenkins-pipeline-builder-github-backend-runner.0.1.0.${{ github.run_number }}.zip jenkins-pipeline-builder-github-backend/target/jenkins-pipeline-builder-github-backend-runner
+      #
+      #      - name: Push Package
+      #        run: octo push --package jenkins-pipeline-builder-github-backend-runner.0.1.0.${{ github.run_number }}.zip --server=${{ secrets.OCTOPUS_SERVER }} --apiKey=${{ secrets.OCTOPUS_APIKEY }} --space "Content Team"
 
       - name: Rename zip
         run: >

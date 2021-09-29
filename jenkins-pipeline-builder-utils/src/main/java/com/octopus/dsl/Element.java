@@ -10,22 +10,22 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class Element {
 
-  protected Element parent;
+    protected Element parent;
 
-  protected int getDepth() {
-    Element currentParent = parent;
-    int depth = 0;
-    while (currentParent != null) {
-      ++depth;
-      currentParent = currentParent.parent;
+    protected int getDepth() {
+        Element currentParent = parent;
+        int depth = 0;
+        while (currentParent != null) {
+            ++depth;
+            currentParent = currentParent.parent;
+        }
+        return depth;
     }
-    return depth;
-  }
 
-  protected String getIndent() {
-    final int depth = getDepth();
-    return "  ".repeat(Math.max(0, depth));
-  }
+    protected String getIndent() {
+        final int depth = getDepth();
+        return "  ".repeat(Math.max(0, depth));
+    }
 
 
 }

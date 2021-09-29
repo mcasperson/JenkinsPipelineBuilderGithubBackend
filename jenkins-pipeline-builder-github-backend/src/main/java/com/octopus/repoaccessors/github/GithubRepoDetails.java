@@ -7,6 +7,6 @@ import lombok.Data;
 @AllArgsConstructor
 public class GithubRepoDetails {
 
-  private String username;
-  private String repository;
+    private String username;
+    private String repository;
 }

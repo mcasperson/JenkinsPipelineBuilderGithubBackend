@@ -3,149 +3,143 @@ package com.octopus.builders.java;
 import com.google.common.collect.ImmutableList;
 import com.octopus.builders.GitBuilder;
 import com.octopus.builders.PipelineBuilder;
-import com.octopus.dsl.ArgType;
-import com.octopus.dsl.Argument;
-import com.octopus.dsl.Comment;
-import com.octopus.dsl.Element;
-import com.octopus.dsl.Function1Arg;
-import com.octopus.dsl.Function1ArgTrailingLambda;
-import com.octopus.dsl.FunctionManyArgs;
-import com.octopus.dsl.FunctionTrailingLambda;
+import com.octopus.dsl.*;
 import com.octopus.repoaccessors.RepoAccessor;
+import lombok.NonNull;
+
 import java.util.Arrays;
 import java.util.List;
-import lombok.NonNull;
 
 /**
  * A pipeline builder for Gradle projects.
  */
 public class JavaGradleBuilder implements PipelineBuilder {
 
-  private static final GitBuilder GIT_BUILDER = new GitBuilder();
-  private static final String[] GRADLE_BUILD_FILES = {"build.gradle", "build.gradle.kts"};
-  private static final String GRADLE_OUTPUT_DIR = "build/libs";
-  private boolean usesWrapper = false;
+    private static final GitBuilder GIT_BUILDER = new GitBuilder();
+    private static final String[] GRADLE_BUILD_FILES = {"build.gradle", "build.gradle.kts"};
+    private static final String GRADLE_OUTPUT_DIR = "build/libs";
+    private boolean usesWrapper = false;
 
-  @Override
-  public Boolean canBuild(@NonNull final RepoAccessor accessor) {
-    if (Arrays.stream(GRADLE_BUILD_FILES).anyMatch(f -> GIT_BUILDER.fileExists(accessor, f))) {
-      usesWrapper = usesWrapper(accessor);
-      return true;
+    @Override
+    public Boolean canBuild(@NonNull final RepoAccessor accessor) {
+        if (Arrays.stream(GRADLE_BUILD_FILES).anyMatch(f -> GIT_BUILDER.fileExists(accessor, f))) {
+            usesWrapper = usesWrapper(accessor);
+            return true;
+        }
+
+        return false;
     }
 
-    return false;
-  }
-
-  @Override
-  public String generate(@NonNull final RepoAccessor accessor) {
-    return FunctionTrailingLambda.builder()
-        .name("pipeline")
-        .children(new ImmutableList.Builder<Element>()
-            .addAll(GIT_BUILDER.createTopComments())
-            .add(FunctionTrailingLambda.builder()
-                .name("tools")
-                .children(createTools())
-                .build())
-            .add(Function1Arg.builder().name("agent").value("any").build())
-            .add(FunctionTrailingLambda.builder()
-                .name("stages")
+    @Override
+    public String generate(@NonNull final RepoAccessor accessor) {
+        return FunctionTrailingLambda.builder()
+                .name("pipeline")
                 .children(new ImmutableList.Builder<Element>()
-                    .add(GIT_BUILDER.createCheckoutStep(accessor))
-                    .add(createDependenciesStep())
-                    .add(createBuildStep())
-                    .add(createTestStep())
-                    .add(GIT_BUILDER.createDeployStep(GRADLE_OUTPUT_DIR))
-                    .build())
-                .build())
-            .build()
-        )
-        .build()
-        .toString();
-  }
-
-  private Boolean usesWrapper(@NonNull final RepoAccessor accessor) {
-    return GIT_BUILDER.fileExists(accessor, "gradlew");
-  }
-
-  private String gradleExecutable() {
-    return usesWrapper ? "./gradlew" : "gradle";
-  }
-
-  private List<Element> createTools() {
-    final ImmutableList.Builder<Element> list = new ImmutableList.Builder<Element>()
-        .add(Function1Arg.builder().name("jdk").value("Java").build());
-
-    if (!usesWrapper) {
-      list.add(Function1Arg.builder().name("gradle").value("Gradle").build());
+                        .addAll(GIT_BUILDER.createTopComments())
+                        .add(FunctionTrailingLambda.builder()
+                                .name("tools")
+                                .children(createTools())
+                                .build())
+                        .add(Function1Arg.builder().name("agent").value("any").build())
+                        .add(FunctionTrailingLambda.builder()
+                                .name("stages")
+                                .children(new ImmutableList.Builder<Element>()
+                                        .add(GIT_BUILDER.createCheckoutStep(accessor))
+                                        .add(createDependenciesStep())
+                                        .add(createBuildStep())
+                                        .add(createTestStep())
+                                        .add(GIT_BUILDER.createDeployStep(GRADLE_OUTPUT_DIR))
+                                        .build())
+                                .build())
+                        .build()
+                )
+                .build()
+                .toString();
     }
 
-    return list.build();
-  }
+    private Boolean usesWrapper(@NonNull final RepoAccessor accessor) {
+        return GIT_BUILDER.fileExists(accessor, "gradlew");
+    }
 
-  private Element createDependenciesStep() {
-    return Function1ArgTrailingLambda.builder()
-        .name("stage")
-        .arg("List Dependencies")
-        .children(GIT_BUILDER.createStepsElement(new ImmutableList.Builder<Element>()
-            .add(Comment.builder()
-                .content(
-                    "Save the dependencies that went into this build into an artifact. This allows you to review any builds for vulnerabilities later on.")
-                .build())
-            .add(FunctionManyArgs.builder()
-                .name("sh")
-                .args(new ImmutableList.Builder<Argument>()
-                    .add(new Argument("script",
-                        gradleExecutable() + " dependencies --console=plain > dependencies.txt",
-                        ArgType.STRING))
-                    .build())
-                .build())
-            .add(FunctionManyArgs.builder()
-                .name("archiveArtifacts")
-                .args(new ImmutableList.Builder<Argument>()
-                    .add(new Argument("artifacts", "dependencies.txt", ArgType.STRING))
-                    .add(new Argument("fingerprint", "true", ArgType.BOOLEAN))
-                    .build())
-                .build())
-            .build()))
-        .build();
-  }
+    private String gradleExecutable() {
+        return usesWrapper ? "./gradlew" : "gradle";
+    }
 
-  private Element createBuildStep() {
-    return Function1ArgTrailingLambda.builder()
-        .name("stage")
-        .arg("Build")
-        .children(GIT_BUILDER.createStepsElement(new ImmutableList.Builder<Element>()
-            .add(FunctionManyArgs.builder()
-                .name("sh")
-                .args(new ImmutableList.Builder<Argument>()
-                    .add(new Argument("script",
-                        gradleExecutable() + " clean assemble --console=plain", ArgType.STRING))
-                    .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
-                    .build())
-                .build())
-            .build()))
-        .build();
-  }
+    private List<Element> createTools() {
+        final ImmutableList.Builder<Element> list = new ImmutableList.Builder<Element>()
+                .add(Function1Arg.builder().name("jdk").value("Java").build());
 
-  private Element createTestStep() {
-    return Function1ArgTrailingLambda.builder()
-        .name("stage")
-        .arg("Test")
-        .children(GIT_BUILDER.createStepsElement(new ImmutableList.Builder<Element>()
-            .add(FunctionManyArgs.builder()
-                .name("sh")
-                .args(new ImmutableList.Builder<Argument>()
-                    .add(new Argument("script", gradleExecutable() + " check --console=plain",
-                        ArgType.STRING))
-                    .build())
-                .build())
-            .add(FunctionManyArgs.builder()
-                .name("junit")
-                .args(new ImmutableList.Builder<Argument>()
-                    .add(new Argument("", "build/test-results/**/*.xml", ArgType.STRING))
-                    .build())
-                .build())
-            .build()))
-        .build();
-  }
+        if (!usesWrapper) {
+            list.add(Function1Arg.builder().name("gradle").value("Gradle").build());
+        }
+
+        return list.build();
+    }
+
+    private Element createDependenciesStep() {
+        return Function1ArgTrailingLambda.builder()
+                .name("stage")
+                .arg("List Dependencies")
+                .children(GIT_BUILDER.createStepsElement(new ImmutableList.Builder<Element>()
+                        .add(Comment.builder()
+                                .content(
+                                        "Save the dependencies that went into this build into an artifact. This allows you to review any builds for vulnerabilities later on.")
+                                .build())
+                        .add(FunctionManyArgs.builder()
+                                .name("sh")
+                                .args(new ImmutableList.Builder<Argument>()
+                                        .add(new Argument("script",
+                                                gradleExecutable() + " dependencies --console=plain > dependencies.txt",
+                                                ArgType.STRING))
+                                        .build())
+                                .build())
+                        .add(FunctionManyArgs.builder()
+                                .name("archiveArtifacts")
+                                .args(new ImmutableList.Builder<Argument>()
+                                        .add(new Argument("artifacts", "dependencies.txt", ArgType.STRING))
+                                        .add(new Argument("fingerprint", "true", ArgType.BOOLEAN))
+                                        .build())
+                                .build())
+                        .build()))
+                .build();
+    }
+
+    private Element createBuildStep() {
+        return Function1ArgTrailingLambda.builder()
+                .name("stage")
+                .arg("Build")
+                .children(GIT_BUILDER.createStepsElement(new ImmutableList.Builder<Element>()
+                        .add(FunctionManyArgs.builder()
+                                .name("sh")
+                                .args(new ImmutableList.Builder<Argument>()
+                                        .add(new Argument("script",
+                                                gradleExecutable() + " clean assemble --console=plain", ArgType.STRING))
+                                        .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
+                                        .build())
+                                .build())
+                        .build()))
+                .build();
+    }
+
+    private Element createTestStep() {
+        return Function1ArgTrailingLambda.builder()
+                .name("stage")
+                .arg("Test")
+                .children(GIT_BUILDER.createStepsElement(new ImmutableList.Builder<Element>()
+                        .add(FunctionManyArgs.builder()
+                                .name("sh")
+                                .args(new ImmutableList.Builder<Argument>()
+                                        .add(new Argument("script", gradleExecutable() + " check --console=plain",
+                                                ArgType.STRING))
+                                        .build())
+                                .build())
+                        .add(FunctionManyArgs.builder()
+                                .name("junit")
+                                .args(new ImmutableList.Builder<Argument>()
+                                        .add(new Argument("", "build/test-results/**/*.xml", ArgType.STRING))
+                                        .build())
+                                .build())
+                        .build()))
+                .build();
+    }
 }

@@ -8,7 +8,7 @@ import io.vavr.control.Try;
  */
 public interface HttpClient {
 
-  Try<String> get(String url);
+    Try<String> get(String url);
 
-  boolean head(String url);
+    boolean head(String url);
 }
