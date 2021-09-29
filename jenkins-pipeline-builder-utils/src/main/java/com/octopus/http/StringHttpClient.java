@@ -71,10 +71,15 @@ public class StringHttpClient implements HttpClient {
 
   private CloseableHttpResponse checkSuccess(@NonNull final CloseableHttpResponse response)
       throws Exception {
+    LOG.log(Config.LEVEL, "StringHttpClient.checkSuccess(CloseableHttpResponse)");
+
     final int code = response.getStatusLine().getStatusCode();
     if (code >= 200 && code <= 399) {
+      LOG.log(Config.LEVEL, "Response code " + code + " indicated success");
       return response;
     }
+
+    LOG.log(Config.LEVEL, "Response code " + code + " did not indicate success");
     throw new Exception("Response did not indicate success");
   }
 }
