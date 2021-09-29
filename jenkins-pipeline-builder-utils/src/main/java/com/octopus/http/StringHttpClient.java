@@ -9,10 +9,16 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * An implementation of HttpClient that returns the string content of any accessed file.
  */
 public class StringHttpClient implements HttpClient {
+
+  private static final Logger LOG = Logger.getLogger(StringHttpClient.class.toString());
+  private static final Level LEVEL = Level.INFO;
 
   /**
    * Performs a HTTP GET request.
@@ -21,6 +27,9 @@ public class StringHttpClient implements HttpClient {
    * @return A Try monad that either contains the String of the requested resource, or an exception
    */
   public Try<String> get(@NonNull final String url) {
+    LOG.log(LEVEL, "StringHttpClient.get(String)");
+    LOG.log(LEVEL, "url: " + url);
+
     return getClient()
         .of(httpClient -> getResponse(httpClient, url)
             .of(response -> EntityUtils.toString(checkSuccess(response).getEntity()))
@@ -34,6 +43,9 @@ public class StringHttpClient implements HttpClient {
    * @return true if the request succeeded, and false otherwise.
    */
   public boolean head(@NonNull final String url) {
+    LOG.log(LEVEL, "StringHttpClient.head(String)");
+    LOG.log(LEVEL, "head: " + url);
+
     return getClient()
         .of(httpClient -> headResponse(httpClient, url).of(this::checkSuccess).get())
         .isSuccess();

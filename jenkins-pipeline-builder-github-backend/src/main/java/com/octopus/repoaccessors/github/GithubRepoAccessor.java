@@ -1,11 +1,14 @@
 package com.octopus.repoaccessors.github;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.octopus.builders.GitBuilder;
 import com.octopus.http.HttpClient;
 import com.octopus.repoaccessors.RepoAccessor;
 import io.vavr.control.Try;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.Builder;
@@ -16,6 +19,7 @@ import lombok.Setter;
 @Builder
 public class GithubRepoAccessor implements RepoAccessor {
 
+  private static final Logger LOG = Logger.getLogger(GithubRepoAccessor.class.toString());
   private static final String GITHUB_REGEX = "https://github.com/(?<username>.*?)/(?<repo>.*?)(/|$)";
   private static final Pattern GITHUB_PATTERN = Pattern.compile(GITHUB_REGEX);
 

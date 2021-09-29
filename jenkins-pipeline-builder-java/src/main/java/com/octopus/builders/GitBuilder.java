@@ -11,12 +11,16 @@ import com.octopus.dsl.FunctionTrailingLambda;
 import com.octopus.dsl.StringContent;
 import com.octopus.repoaccessors.RepoAccessor;
 import java.util.List;
+import java.util.logging.Logger;
+
 import lombok.NonNull;
 
 /**
  * A utility class containing useful methods common to Java pipelines.
  */
 public class GitBuilder {
+
+  private static final Logger LOG = Logger.getLogger(GitBuilder.class.toString());
 
   public boolean fileExists(@NonNull final RepoAccessor accessor, @NonNull final String file) {
     return accessor.testFile("blob/" + accessor.getDefaultBranch() + "/" + file);
