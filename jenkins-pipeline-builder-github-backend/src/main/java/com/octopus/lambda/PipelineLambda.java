@@ -8,68 +8,69 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.octopus.Config;
 import com.octopus.builders.PipelineBuilder;
 import com.octopus.repoaccessors.RepoAccessor;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Logger;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * The AWS Lambda server.
  */
 public class PipelineLambda implements RequestHandler<Map<String, Object>, ProxyResponse> {
-    private static final Logger LOG = Logger.getLogger(PipelineLambda.class.toString());
 
-    @Inject
-    RepoAccessor accessor;
+  private static final Logger LOG = Logger.getLogger(PipelineLambda.class.toString());
 
-    @Inject
-    Instance<PipelineBuilder> builders;
+  @Inject
+  RepoAccessor accessor;
 
-    /**
-     * The Lambda entry point.
-     *
-     * @param input   The JSON object passed in. This is expected to be formatted using proxy integration.
-     * @param context The Lambda context.
-     * @return The Lambda proxy integration response.
-     */
-    @Override
-    public ProxyResponse handleRequest(final Map<String, Object> input, final Context context) {
-        LOG.log(Config.LEVEL, "PipelineLambda.handleRequest(Map<String,Object>, Context)");
-        LOG.log(Config.LEVEL, "input: " + getObjectAsJSON(input));
-        LOG.log(Config.LEVEL, "context: " + getObjectAsJSON(context));
+  @Inject
+  Instance<PipelineBuilder> builders;
 
-        final String repo = Optional
-                .ofNullable(input.getOrDefault("queryStringParameters", null))
-                .map(Map.class::cast)
-                .map(m -> m.getOrDefault("repo", null))
-                .map(Object::toString)
-                .orElse("");
+  /**
+   * The Lambda entry point.
+   *
+   * @param input   The JSON object passed in. This is expected to be formatted using proxy
+   *                integration.
+   * @param context The Lambda context.
+   * @return The Lambda proxy integration response.
+   */
+  @Override
+  public ProxyResponse handleRequest(final Map<String, Object> input, final Context context) {
+    LOG.log(Config.LEVEL, "PipelineLambda.handleRequest(Map<String,Object>, Context)");
+    LOG.log(Config.LEVEL, "input: " + convertObjectToJson(input));
+    LOG.log(Config.LEVEL, "context: " + convertObjectToJson(context));
 
-        if (StringUtils.isBlank(repo)) {
-            throw new IllegalArgumentException("repo can not be blank");
-        }
+    final String repo = Optional
+        .ofNullable(input.getOrDefault("queryStringParameters", null))
+        .map(Map.class::cast)
+        .map(m -> m.getOrDefault("repo", null))
+        .map(Object::toString)
+        .orElse("");
 
-        accessor.setRepo(repo);
-
-        final String pipeline = builders.stream()
-                .filter(b -> b.canBuild(accessor))
-                .findFirst()
-                .map(b -> b.generate(accessor))
-                .orElse("No suitable builders were found.");
-
-        return new ProxyResponse("200", pipeline);
+    if (StringUtils.isBlank(repo)) {
+      throw new IllegalArgumentException("repo can not be blank");
     }
 
-    private String getObjectAsJSON(final Object attributes) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        try {
-            return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(attributes);
-        } catch (final JsonProcessingException e) {
-            return "";
-        }
+    accessor.setRepo(repo);
+
+    final String pipeline = builders.stream()
+        .filter(b -> b.canBuild(accessor))
+        .findFirst()
+        .map(b -> b.generate(accessor))
+        .orElse("No suitable builders were found.");
+
+    return new ProxyResponse("200", pipeline);
+  }
+
+  private String convertObjectToJson(final Object attributes) {
+    ObjectMapper objectMapper = new ObjectMapper();
+    objectMapper.registerModule(new JavaTimeModule());
+    try {
+      return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(attributes);
+    } catch (final JsonProcessingException e) {
+      return "";
     }
+  }
 }

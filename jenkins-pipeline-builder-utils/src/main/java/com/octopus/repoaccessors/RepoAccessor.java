@@ -7,19 +7,19 @@ import io.vavr.control.Try;
  */
 public interface RepoAccessor {
 
-    void setRepo(String repo);
+  void setRepo(String repo);
 
-    /**
-     * Returns the contents of a file from the given path.
-     *
-     * @param path The repo file path
-     * @return The file contents
-     */
-    Try<String> getFile(String path);
+  /**
+   * Returns the contents of a file from the given path.
+   *
+   * @param path The repo file path
+   * @return The file contents
+   */
+  Try<String> getFile(String path);
 
-    boolean testFile(String path);
+  boolean testFile(String path);
 
-    String getRepoPath();
+  String getRepoPath();
 
-    String getDefaultBranch();
+  String getDefaultBranch();
 }

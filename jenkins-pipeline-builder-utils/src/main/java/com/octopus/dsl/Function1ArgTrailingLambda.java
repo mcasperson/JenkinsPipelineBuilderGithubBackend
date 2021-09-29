@@ -1,10 +1,9 @@
 package com.octopus.dsl;
 
-import lombok.Getter;
-import lombok.experimental.SuperBuilder;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 
 /**
  * Represents a function with one argument and a trailing lambda.
@@ -13,19 +12,19 @@ import java.util.stream.Collectors;
 @SuperBuilder
 public class Function1ArgTrailingLambda extends FunctionTrailingLambda {
 
-    private String arg;
+  private String arg;
 
-    /**
-     * Builds a function with an argument and trailing lambda containing the children.
-     *
-     * @return The groovy function.
-     */
-    public String toString() {
-        final List<Element> safeChildren = getSafeChildren();
-        safeChildren.forEach(c -> c.parent = this);
+  /**
+   * Builds a function with an argument and trailing lambda containing the children.
+   *
+   * @return The groovy function.
+   */
+  public String toString() {
+    final List<Element> safeChildren = getSafeChildren();
+    safeChildren.forEach(c -> c.parent = this);
 
-        return getIndent() + name + "('" + arg + "') {\n"
-                + safeChildren.stream().map(Object::toString).collect(Collectors.joining("\n"))
-                + "\n" + getIndent() + "}";
-    }
+    return getIndent() + name + "('" + arg + "') {\n"
+        + safeChildren.stream().map(Object::toString).collect(Collectors.joining("\n"))
+        + "\n" + getIndent() + "}";
+  }
 }
