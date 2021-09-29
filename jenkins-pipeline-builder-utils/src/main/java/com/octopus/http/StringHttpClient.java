@@ -32,7 +32,7 @@ public class StringHttpClient implements HttpClient {
         .of(httpClient -> getResponse(httpClient, url)
             .of(response -> EntityUtils.toString(checkSuccess(response).getEntity()))
             .get())
-        .onSuccess(c -> LOG.log(Config.LEVEL, "Request was successful."))
+        .onSuccess(c -> LOG.log(Config.LEVEL, c))
         .onFailure(e -> LOG.log(Config.LEVEL, e.toString()));
   }
 

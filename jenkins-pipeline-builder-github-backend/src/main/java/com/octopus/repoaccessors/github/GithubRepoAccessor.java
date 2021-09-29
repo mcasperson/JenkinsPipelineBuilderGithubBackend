@@ -1,6 +1,7 @@
 package com.octopus.repoaccessors.github;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.octopus.Config;
 import com.octopus.http.HttpClient;
 import com.octopus.repoaccessors.RepoAccessor;
 import io.vavr.control.Try;
@@ -87,9 +88,18 @@ public class GithubRepoAccessor implements RepoAccessor {
   }
 
   private Optional<GithubRepoDetails> getDetails() {
+    LOG.log(Config.LEVEL, "GithubRepoAccessor.getDetails()");
+
     final Matcher matcher = GITHUB_PATTERN.matcher(repo);
     if (matcher.matches()) {
-      return Optional.of(new GithubRepoDetails(matcher.group("username"), matcher.group("repo")));
+      final GithubRepoDetails retValue = new GithubRepoDetails(
+          matcher.group("username"),
+          matcher.group("repo"));
+
+      LOG.log(Config.LEVEL, "Found username:" + retValue.getUsername());
+      LOG.log(Config.LEVEL, "Found repo:" + retValue.getRepository());
+
+      return Optional.of(retValue);
     }
     return Optional.empty();
   }
