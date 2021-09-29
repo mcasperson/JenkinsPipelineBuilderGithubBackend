@@ -36,8 +36,8 @@ public class PipelineResource {
   @GET
   @Produces(MediaType.TEXT_PLAIN)
   public String pipeline(@QueryParam("repo") final String repo) {
-    LOG.log(Config.LEVEL, "PipelineResource.pipeline(String)");
-    LOG.log(Config.LEVEL, "repo: " + repo);
+    LOG.log(Config.DEBUG, "PipelineResource.pipeline(String)");
+    LOG.log(Config.DEBUG, "repo: " + repo);
 
     if (StringUtils.isBlank(repo)) {
       throw new IllegalArgumentException("repo can not be blank");

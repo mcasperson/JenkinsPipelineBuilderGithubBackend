@@ -88,7 +88,7 @@ public class GithubRepoAccessor implements RepoAccessor {
   }
 
   private Optional<GithubRepoDetails> getDetails() {
-    LOG.log(Config.LEVEL, "GithubRepoAccessor.getDetails()");
+    LOG.log(Config.DEBUG, "GithubRepoAccessor.getDetails()");
 
     final Matcher matcher = GITHUB_PATTERN.matcher(repo);
     if (matcher.matches()) {
@@ -96,8 +96,8 @@ public class GithubRepoAccessor implements RepoAccessor {
           matcher.group("username"),
           matcher.group("repo"));
 
-      LOG.log(Config.LEVEL, "Found username: " + retValue.getUsername());
-      LOG.log(Config.LEVEL, "Found repo: " + retValue.getRepository());
+      LOG.log(Config.DEBUG, "Found username: " + retValue.getUsername());
+      LOG.log(Config.DEBUG, "Found repo: " + retValue.getRepository());
 
       return Optional.of(retValue);
     }

@@ -5,11 +5,9 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.octopus.Config;
 import com.octopus.builders.PipelineBuilder;
-import com.octopus.dsl.Element;
 import com.octopus.repoaccessors.RepoAccessor;
 import java.util.Map;
 import java.util.Optional;
@@ -41,9 +39,9 @@ public class PipelineLambda implements RequestHandler<Map<String, Object>, Proxy
    */
   @Override
   public ProxyResponse handleRequest(final Map<String, Object> input, final Context context) {
-    LOG.log(Config.LEVEL, "PipelineLambda.handleRequest(Map<String,Object>, Context)");
-    LOG.log(Config.LEVEL, "input: " + convertObjectToJson(input));
-    LOG.log(Config.LEVEL, "context: " + convertObjectToJson(context));
+    LOG.log(Config.DEBUG, "PipelineLambda.handleRequest(Map<String,Object>, Context)");
+    LOG.log(Config.DEBUG, "input: " + convertObjectToJson(input));
+    LOG.log(Config.DEBUG, "context: " + convertObjectToJson(context));
 
     final String repo = Optional
         .ofNullable(input.getOrDefault("queryStringParameters", null))

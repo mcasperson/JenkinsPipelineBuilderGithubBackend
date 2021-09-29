@@ -10,6 +10,6 @@ public final class Config {
   /**
    * The logging level for classes in this module.
    */
-  public static Level LEVEL = Level.INFO;
+  public static Level DEBUG = Level.DEBUG;
 }
 

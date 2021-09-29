@@ -25,15 +25,15 @@ public class StringHttpClient implements HttpClient {
    * @return A Try monad that either contains the String of the requested resource, or an exception.
    */
   public Try<String> get(@NonNull final String url) {
-    LOG.log(Config.LEVEL, "StringHttpClient.get(String)");
-    LOG.log(Config.LEVEL, "url: " + url);
+    LOG.log(Config.DEBUG, "StringHttpClient.get(String)");
+    LOG.log(Config.DEBUG, "url: " + url);
 
     return getClient()
         .of(httpClient -> getResponse(httpClient, url)
             .of(response -> EntityUtils.toString(checkSuccess(response).getEntity()))
             .get())
-        .onSuccess(c -> LOG.log(Config.LEVEL, "HTTP GET response body: " + c))
-        .onFailure(e -> LOG.log(Config.LEVEL, "Exception message: " + e.toString()));
+        .onSuccess(c -> LOG.log(Config.DEBUG, "HTTP GET response body: " + c))
+        .onFailure(e -> LOG.log(Config.DEBUG, "Exception message: " + e.toString()));
   }
 
   /**
@@ -43,13 +43,13 @@ public class StringHttpClient implements HttpClient {
    * @return true if the request succeeded, and false otherwise.
    */
   public boolean head(@NonNull final String url) {
-    LOG.log(Config.LEVEL, "StringHttpClient.head(String)");
-    LOG.log(Config.LEVEL, "head: " + url);
+    LOG.log(Config.DEBUG, "StringHttpClient.head(String)");
+    LOG.log(Config.DEBUG, "head: " + url);
 
     return getClient()
         .of(httpClient -> headResponse(httpClient, url).of(this::checkSuccess).get())
-        .onSuccess(c -> LOG.log(Config.LEVEL, "HTTP HEAD request was successful."))
-        .onFailure(e -> LOG.log(Config.LEVEL, "Exception message: " + e.toString()))
+        .onSuccess(c -> LOG.log(Config.DEBUG, "HTTP HEAD request was successful."))
+        .onFailure(e -> LOG.log(Config.DEBUG, "Exception message: " + e.toString()))
         .isSuccess();
   }
 
@@ -71,15 +71,15 @@ public class StringHttpClient implements HttpClient {
 
   private CloseableHttpResponse checkSuccess(@NonNull final CloseableHttpResponse response)
       throws Exception {
-    LOG.log(Config.LEVEL, "StringHttpClient.checkSuccess(CloseableHttpResponse)");
+    LOG.log(Config.DEBUG, "StringHttpClient.checkSuccess(CloseableHttpResponse)");
 
     final int code = response.getStatusLine().getStatusCode();
     if (code >= 200 && code <= 399) {
-      LOG.log(Config.LEVEL, "Response code " + code + " indicated success");
+      LOG.log(Config.DEBUG, "Response code " + code + " indicated success");
       return response;
     }
 
-    LOG.log(Config.LEVEL, "Response code " + code + " did not indicate success");
+    LOG.log(Config.DEBUG, "Response code " + code + " did not indicate success");
     throw new Exception("Response did not indicate success");
   }
 }
