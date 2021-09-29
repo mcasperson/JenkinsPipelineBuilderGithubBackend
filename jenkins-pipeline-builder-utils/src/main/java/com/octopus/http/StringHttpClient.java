@@ -22,7 +22,7 @@ public class StringHttpClient implements HttpClient {
    * Performs a HTTP GET request.
    *
    * @param url The URL to access.
-   * @return A Try monad that either contains the String of the requested resource, or an exception
+   * @return A Try monad that either contains the String of the requested resource, or an exception.
    */
   public Try<String> get(@NonNull final String url) {
     LOG.log(Config.LEVEL, "StringHttpClient.get(String)");

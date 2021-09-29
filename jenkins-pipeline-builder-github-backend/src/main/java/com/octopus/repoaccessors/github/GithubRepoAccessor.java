@@ -96,8 +96,8 @@ public class GithubRepoAccessor implements RepoAccessor {
           matcher.group("username"),
           matcher.group("repo"));
 
-      LOG.log(Config.LEVEL, "Found username:" + retValue.getUsername());
-      LOG.log(Config.LEVEL, "Found repo:" + retValue.getRepository());
+      LOG.log(Config.LEVEL, "Found username: " + retValue.getUsername());
+      LOG.log(Config.LEVEL, "Found repo: " + retValue.getRepository());
 
       return Optional.of(retValue);
     }
