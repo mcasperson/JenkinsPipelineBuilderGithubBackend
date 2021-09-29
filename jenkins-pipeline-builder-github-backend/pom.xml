@@ -68,11 +68,6 @@
       <groupId>io.quarkus</groupId>
     </dependency>
     <dependency>
-      <artifactId>commons-logging</artifactId>
-      <groupId>commons-logging</groupId>
-      <version>1.2</version>
-    </dependency>
-    <dependency>
       <artifactId>quarkus-junit5</artifactId>
       <groupId>io.quarkus</groupId>
       <scope>test</scope>
