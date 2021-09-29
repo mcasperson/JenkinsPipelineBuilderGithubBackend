@@ -1,5 +1,6 @@
 package com.octopus.http;
 
+import com.octopus.Config;
 import io.vavr.control.Try;
 import lombok.NonNull;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -20,26 +21,21 @@ public class StringHttpClient implements HttpClient {
   private static final Logger LOG = Logger.getLogger(StringHttpClient.class.toString());
 
   /**
-   * A handy constant to change the logging this class produces. Should be FINE for production.
-   */
-  private static final Level LEVEL = Level.INFO;
-
-  /**
    * Performs a HTTP GET request.
    *
    * @param url The URL to access.
    * @return A Try monad that either contains the String of the requested resource, or an exception
    */
   public Try<String> get(@NonNull final String url) {
-    LOG.log(LEVEL, "StringHttpClient.get(String)");
-    LOG.log(LEVEL, "url: " + url);
+    LOG.log(Config.LEVEL, "StringHttpClient.get(String)");
+    LOG.log(Config.LEVEL, "url: " + url);
 
     return getClient()
         .of(httpClient -> getResponse(httpClient, url)
             .of(response -> EntityUtils.toString(checkSuccess(response).getEntity()))
             .get())
-            .onSuccess(c -> LOG.log(LEVEL, "Request was successful."))
-            .onFailure(e -> LOG.log(LEVEL, e.toString()));
+            .onSuccess(c -> LOG.log(Config.LEVEL, "Request was successful."))
+            .onFailure(e -> LOG.log(Config.LEVEL, e.toString()));
   }
 
   /**
@@ -49,13 +45,13 @@ public class StringHttpClient implements HttpClient {
    * @return true if the request succeeded, and false otherwise.
    */
   public boolean head(@NonNull final String url) {
-    LOG.log(LEVEL, "StringHttpClient.head(String)");
-    LOG.log(LEVEL, "head: " + url);
+    LOG.log(Config.LEVEL, "StringHttpClient.head(String)");
+    LOG.log(Config.LEVEL, "head: " + url);
 
     return getClient()
         .of(httpClient -> headResponse(httpClient, url).of(this::checkSuccess).get())
-        .onSuccess(c -> LOG.log(LEVEL, "Request was successful."))
-        .onFailure(e -> LOG.log(LEVEL, e.toString()))
+        .onSuccess(c -> LOG.log(Config.LEVEL, "Request was successful."))
+        .onFailure(e -> LOG.log(Config.LEVEL, e.toString()))
         .isSuccess();
   }
 

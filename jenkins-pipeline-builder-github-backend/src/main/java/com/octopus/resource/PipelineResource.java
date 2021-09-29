@@ -1,5 +1,6 @@
 package com.octopus.resource;
 
+import com.octopus.Config;
 import com.octopus.builders.PipelineBuilder;
 import com.octopus.lambda.PipelineLambda;
 import com.octopus.repoaccessors.RepoAccessor;
@@ -22,11 +23,6 @@ import java.util.logging.Logger;
 public class PipelineResource {
   private static final Logger LOG = Logger.getLogger(PipelineResource.class.toString());
 
-  /**
-   * A handy constant to change the logging this class produces. Should be FINE for production.
-   */
-  private static final Level LEVEL = Level.INFO;
-
   @Inject
   RepoAccessor accessor;
 
@@ -42,8 +38,8 @@ public class PipelineResource {
   @GET
   @Produces(MediaType.TEXT_PLAIN)
   public String pipeline(@QueryParam("repo") final String repo) {
-    LOG.log(LEVEL, "PipelineResource.pipeline(String)");
-    LOG.log(LEVEL, "repo: " + repo);
+    LOG.log(Config.LEVEL, "PipelineResource.pipeline(String)");
+    LOG.log(Config.LEVEL, "repo: " + repo);
 
     if (StringUtils.isBlank(repo)) {
       throw new IllegalArgumentException("repo can not be blank");
