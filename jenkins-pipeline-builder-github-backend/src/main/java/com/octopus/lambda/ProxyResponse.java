@@ -23,7 +23,10 @@ public class ProxyResponse {
       final String statusCode,
       final String body,
       final Map<String, String> headers) {
-    this.headers = headers == null ? new HashMap<>() : headers;
+    this.headers = new HashMap<>();
+    if (headers != null) {
+      this.headers.putAll(headers);
+    }
     this.body = body;
     this.statusCode = statusCode;
     addCorsHeaders();

@@ -5,8 +5,11 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.octopus.Config;
 import com.octopus.builders.PipelineBuilder;
+import com.octopus.dsl.Element;
 import com.octopus.repoaccessors.RepoAccessor;
 import java.util.Map;
 import java.util.Optional;
@@ -61,7 +64,12 @@ public class PipelineLambda implements RequestHandler<Map<String, Object>, Proxy
         .map(b -> b.generate(accessor))
         .orElse("No suitable builders were found.");
 
-    return new ProxyResponse("200", pipeline);
+    return new ProxyResponse(
+        "200",
+        pipeline,
+        new ImmutableMap.Builder<String, String>()
+            .put("Content-Type", "text/plain")
+            .build());
   }
 
   private String convertObjectToJson(final Object attributes) {
