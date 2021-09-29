@@ -2,10 +2,16 @@ package com.octopus.lambda;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.octopus.builders.PipelineBuilder;
+import com.octopus.http.StringHttpClient;
 import com.octopus.repoaccessors.RepoAccessor;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -17,6 +23,13 @@ import org.apache.commons.lang3.StringUtils;
  * The AWS Lambda server.
  */
 public class PipelineLambda implements RequestHandler<Map<String,Object>, ProxyResponse> {
+    private static final Logger LOG = Logger.getLogger(PipelineLambda.class.toString());
+
+    /**
+     * A handy constant to change the logging this class produces. Should be FINE for production.
+     */
+    private static final Level LEVEL = Level.INFO;
+
     @Inject
     RepoAccessor accessor;
 
@@ -31,6 +44,10 @@ public class PipelineLambda implements RequestHandler<Map<String,Object>, ProxyR
      */
     @Override
     public ProxyResponse handleRequest(final Map<String,Object> input, final Context context) {
+        LOG.log(LEVEL, "PipelineLambda.handleRequest(Map<String,Object>, Context)");
+        LOG.log(LEVEL, "input: " + getObjectAsJSON(input));
+        LOG.log(LEVEL, "context: " + getObjectAsJSON(context));
+
         final String repo = Optional
             .ofNullable(input.getOrDefault("queryStringParameters", null))
             .map(Map.class::cast)
@@ -51,5 +68,15 @@ public class PipelineLambda implements RequestHandler<Map<String,Object>, ProxyR
             .orElse("No suitable builders were found.");
 
         return new ProxyResponse("200", pipeline);
+    }
+
+    private String getObjectAsJSON(final Object attributes) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        try {
+            return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(attributes);
+        } catch (final JsonProcessingException e) {
+            return "";
+        }
     }
 }

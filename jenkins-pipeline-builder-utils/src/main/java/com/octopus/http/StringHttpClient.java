@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 public class StringHttpClient implements HttpClient {
 
   private static final Logger LOG = Logger.getLogger(StringHttpClient.class.toString());
+
   /**
    * A handy constant to change the logging this class produces. Should be FINE for production.
    */
