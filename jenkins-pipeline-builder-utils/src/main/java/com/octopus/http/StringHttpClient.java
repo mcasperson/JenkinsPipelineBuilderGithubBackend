@@ -18,6 +18,9 @@ import java.util.logging.Logger;
 public class StringHttpClient implements HttpClient {
 
   private static final Logger LOG = Logger.getLogger(StringHttpClient.class.toString());
+  /**
+   * A handy constant to change the logging this class produces. Should be FINE for production.
+   */
   private static final Level LEVEL = Level.INFO;
 
   /**
@@ -33,7 +36,9 @@ public class StringHttpClient implements HttpClient {
     return getClient()
         .of(httpClient -> getResponse(httpClient, url)
             .of(response -> EntityUtils.toString(checkSuccess(response).getEntity()))
-            .get());
+            .get())
+            .onSuccess(c -> LOG.log(LEVEL, "Request was successful."))
+            .onFailure(e -> LOG.log(LEVEL, e.toString()));
   }
 
   /**
@@ -48,6 +53,8 @@ public class StringHttpClient implements HttpClient {
 
     return getClient()
         .of(httpClient -> headResponse(httpClient, url).of(this::checkSuccess).get())
+        .onSuccess(c -> LOG.log(LEVEL, "Request was successful."))
+        .onFailure(e -> LOG.log(LEVEL, e.toString()))
         .isSuccess();
   }
 
