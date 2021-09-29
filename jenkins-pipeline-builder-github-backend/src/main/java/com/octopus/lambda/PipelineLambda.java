@@ -13,6 +13,9 @@ import javax.inject.Named;
 
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * The AWS Lambda server.
+ */
 public class PipelineLambda implements RequestHandler<Map<String,Object>, ProxyResponse> {
     @Inject
     RepoAccessor accessor;
@@ -20,6 +23,12 @@ public class PipelineLambda implements RequestHandler<Map<String,Object>, ProxyR
     @Inject
     Instance<PipelineBuilder> builders;
 
+    /**
+     * The Lambda entry point.
+     * @param input The JSON object passed in. This is expected to be formatted using proxy integration.
+     * @param context The Lambda context.
+     * @return The Lambda proxy integration response.
+     */
     @Override
     public ProxyResponse handleRequest(final Map<String,Object> input, final Context context) {
         final String repo = Optional
@@ -27,7 +36,7 @@ public class PipelineLambda implements RequestHandler<Map<String,Object>, ProxyR
             .map(Map.class::cast)
             .map(m -> m.getOrDefault("repo", null))
             .map(Object::toString)
-            .orElseGet(null);
+            .orElse("");
 
         if (StringUtils.isBlank(repo)) {
             throw new IllegalArgumentException("repo can not be blank");

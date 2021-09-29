@@ -3,6 +3,9 @@ package com.octopus.lambda;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Represents the AWS Lambda proxy response.
+ */
 public class ProxyResponse {
   public final String statusCode;
   public final String body;

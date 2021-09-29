@@ -12,6 +12,10 @@ import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
 
+/**
+ * Generates CDI beans to be used in the pipeline generation. Be aware the not all scopes are used
+ * by all end points. For example, @RequestScoped doesn't work with Lambdas.
+ */
 @ApplicationScoped
 public class PipelineProducer {
 

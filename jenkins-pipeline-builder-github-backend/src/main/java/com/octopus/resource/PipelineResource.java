@@ -11,6 +11,9 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * The REST server.
+ */
 @Path("/pipeline")
 public class PipelineResource {
 
