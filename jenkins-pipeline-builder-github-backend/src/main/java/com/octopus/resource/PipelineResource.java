@@ -3,7 +3,6 @@ package com.octopus.resource;
 import com.octopus.Config;
 import com.octopus.builders.PipelineBuilder;
 import com.octopus.repoaccessors.RepoAccessor;
-import java.util.logging.Logger;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -12,6 +11,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.apache.commons.lang3.StringUtils;
+import org.jboss.logging.Logger;
 
 /**
  * The REST server.

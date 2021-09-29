@@ -10,10 +10,10 @@ import com.octopus.builders.PipelineBuilder;
 import com.octopus.repoaccessors.RepoAccessor;
 import java.util.Map;
 import java.util.Optional;
-import java.util.logging.Logger;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
+import org.jboss.logging.Logger;
 
 /**
  * The AWS Lambda server.

@@ -1,6 +1,6 @@
 package com.octopus;
 
-import java.util.logging.Level;
+import org.jboss.logging.Logger.Level;
 
 /**
  * Common configuration settings.

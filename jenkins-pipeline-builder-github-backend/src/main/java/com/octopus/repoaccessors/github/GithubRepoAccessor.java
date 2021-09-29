@@ -7,13 +7,13 @@ import com.octopus.repoaccessors.RepoAccessor;
 import io.vavr.control.Try;
 import java.util.Map;
 import java.util.Optional;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import org.jboss.logging.Logger;
 
 /**
  * An accessor that is configured to work with GitHub.

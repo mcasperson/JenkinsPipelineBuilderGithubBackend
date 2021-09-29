@@ -2,7 +2,7 @@ package com.octopus.http;
 
 import com.octopus.Config;
 import io.vavr.control.Try;
-import java.util.logging.Logger;
+import org.jboss.logging.Logger;
 import lombok.NonNull;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
