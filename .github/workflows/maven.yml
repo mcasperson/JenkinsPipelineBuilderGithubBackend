@@ -90,6 +90,15 @@ jobs:
       - name: Push Package
         run: >
           octo push --package jenkins-pipeline-builder-github-backend-lambda.0.1.0.${{ github.run_number }}.zip
-          --server=${{ secrets.OCTOPUS_SERVER }}
-          --apiKey=${{ secrets.OCTOPUS_APIKEY }}
+          --server ${{ secrets.OCTOPUS_SERVER }}
+          --apiKey ${{ secrets.OCTOPUS_APIKEY }}
+          --space "Content Team"
+
+      - name: Trigger deployment
+        run: >
+          octo create-release
+          --project "Jenkins Pipeline Generator"
+          --deployTo "Development"
+          --server ${{ secrets.OCTOPUS_SERVER }}
+          --apiKey ${{ secrets.OCTOPUS_APIKEY }}
           --space "Content Team"
