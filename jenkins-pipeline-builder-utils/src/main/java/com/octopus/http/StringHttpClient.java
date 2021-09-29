@@ -32,8 +32,8 @@ public class StringHttpClient implements HttpClient {
         .of(httpClient -> getResponse(httpClient, url)
             .of(response -> EntityUtils.toString(checkSuccess(response).getEntity()))
             .get())
-        .onSuccess(c -> LOG.log(Config.LEVEL, c))
-        .onFailure(e -> LOG.log(Config.LEVEL, e.toString()));
+        .onSuccess(c -> LOG.log(Config.LEVEL, "HTTP GET response body: " + c))
+        .onFailure(e -> LOG.log(Config.LEVEL, "Exception message: " + e.toString()));
   }
 
   /**
@@ -48,8 +48,8 @@ public class StringHttpClient implements HttpClient {
 
     return getClient()
         .of(httpClient -> headResponse(httpClient, url).of(this::checkSuccess).get())
-        .onSuccess(c -> LOG.log(Config.LEVEL, "Request was successful."))
-        .onFailure(e -> LOG.log(Config.LEVEL, e.toString()))
+        .onSuccess(c -> LOG.log(Config.LEVEL, "HTTP HEAD request was successful."))
+        .onFailure(e -> LOG.log(Config.LEVEL, "Exception message: " + e.toString()))
         .isSuccess();
   }
 
