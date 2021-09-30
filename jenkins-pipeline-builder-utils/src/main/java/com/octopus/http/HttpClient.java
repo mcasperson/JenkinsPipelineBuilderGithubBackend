@@ -10,5 +10,9 @@ public interface HttpClient {
 
   Try<String> get(String url);
 
+  Try<String> get(String url, String username, String password);
+
   boolean head(String url);
+
+  boolean head(String url, String username, String password);
 }

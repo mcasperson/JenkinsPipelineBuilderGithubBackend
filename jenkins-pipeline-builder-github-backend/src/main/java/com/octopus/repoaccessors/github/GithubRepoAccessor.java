@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.octopus.Config;
 import com.octopus.http.HttpClient;
 import com.octopus.repoaccessors.RepoAccessor;
+import io.netty.util.internal.StringUtil;
 import io.vavr.control.Try;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,8 @@ public class GithubRepoAccessor implements RepoAccessor {
   private static final Logger LOG = Logger.getLogger(GithubRepoAccessor.class.toString());
   private static final String GITHUB_REGEX = "https://github.com/(?<username>.*?)/(?<repo>.*?)(/|$)";
   private static final Pattern GITHUB_PATTERN = Pattern.compile(GITHUB_REGEX);
+  private static final String GITHUB_CLIENT_ID_ENV_VAR = "GITHUB_CLIENT_ID";
+  private static final String GITHUB_CLIENT_SECRET_ENV_VAR = "GITHUB_CLIENT_SECRET";
 
   @Getter
   @Setter
@@ -34,14 +37,22 @@ public class GithubRepoAccessor implements RepoAccessor {
   @Setter
   private HttpClient httpClient;
 
+  @Getter
+  @Setter
+  private String username = "";
+
+  @Getter
+  @Setter
+  private String password = "";
+
   @Override
   public Try<String> getFile(@NonNull final String path) {
-    return httpClient.get(ensureEndsWithSlash(getHttpPathFromRepo()) + path);
+    return httpClient.get(ensureEndsWithSlash(getHttpPathFromRepo()) + path, username, password);
   }
 
   @Override
   public boolean testFile(@NonNull final String path) {
-    return httpClient.head(ensureEndsWithSlash(getHttpPathFromRepo()) + path);
+    return httpClient.head(ensureEndsWithSlash(getHttpPathFromRepo()) + path, username, password);
   }
 
   @Override
@@ -84,7 +95,8 @@ public class GithubRepoAccessor implements RepoAccessor {
         .map(r -> r.get("default_branch"))
         // convert to a string
         .map(d -> List.of(d.toString()))
-        // If there was a failure, assume the default branch is main or master
+        // If there was a failure, assume the default branch is main or master.
+        // We may also fall back to this if Github adds any rate limiting
         .orElse(List.of("main", "master"));
   }
 

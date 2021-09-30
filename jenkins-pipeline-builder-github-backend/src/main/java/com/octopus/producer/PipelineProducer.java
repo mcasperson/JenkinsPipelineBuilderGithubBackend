@@ -7,8 +7,10 @@ import com.octopus.http.HttpClient;
 import com.octopus.http.StringHttpClient;
 import com.octopus.repoaccessors.RepoAccessor;
 import com.octopus.repoaccessors.github.GithubRepoAccessor;
+import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 /**
  * Generates CDI beans to be used in the pipeline generation. Be aware the not all scopes are used
@@ -16,6 +18,12 @@ import javax.enterprise.inject.Produces;
  */
 @ApplicationScoped
 public class PipelineProducer {
+
+  @ConfigProperty(name = "application.github-client-id", defaultValue = "")
+  Optional<String> clientId;
+
+  @ConfigProperty(name = "application.github-client-secret", defaultValue = "")
+  Optional<String> clientSecret;
 
   /**
    * Produces the HTTP client.
@@ -37,6 +45,8 @@ public class PipelineProducer {
   public RepoAccessor getRepoAccessor(final HttpClient httpClient) {
     return GithubRepoAccessor.builder()
         .httpClient(httpClient)
+        .username(clientId.orElse(""))
+        .password(clientSecret.orElse(""))
         .build();
   }
 

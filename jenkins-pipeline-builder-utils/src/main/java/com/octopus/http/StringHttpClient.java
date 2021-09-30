@@ -2,6 +2,15 @@ package com.octopus.http;
 
 import com.octopus.Config;
 import io.vavr.control.Try;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.Header;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.message.BasicHeader;
 import org.jboss.logging.Logger;
 import lombok.NonNull;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -29,10 +38,29 @@ public class StringHttpClient implements HttpClient {
     LOG.log(Config.DEBUG, "url: " + url);
 
     return getClient()
-        .of(httpClient -> getResponse(httpClient, url)
+        .of(httpClient -> getResponse(httpClient, url, List.of())
             .of(response -> EntityUtils.toString(checkSuccess(response).getEntity()))
             .get())
         .onSuccess(c -> LOG.log(Config.DEBUG, "HTTP GET response body: " + c))
+        .onFailure(e -> LOG.log(Config.DEBUG, "Exception message: " + e.toString()));
+  }
+
+  @Override
+  public Try<String> get(
+      @NonNull final String url,
+      final String username,
+      final String password) {
+    LOG.log(Config.DEBUG, "StringHttpClient.get(String, String, String)");
+    LOG.log(Config.DEBUG, "head: " + url);
+    LOG.log(Config.DEBUG, "username: " + username);
+
+    return getClient()
+        .of(httpClient -> getResponse(
+              httpClient, url,
+              buildHeaders(username, password))
+            .of(response -> EntityUtils.toString(checkSuccess(response).getEntity()))
+            .get())
+        .onSuccess(c -> LOG.log(Config.DEBUG, "HTTP HEAD request was successful."))
         .onFailure(e -> LOG.log(Config.DEBUG, "Exception message: " + e.toString()));
   }
 
@@ -47,10 +75,46 @@ public class StringHttpClient implements HttpClient {
     LOG.log(Config.DEBUG, "head: " + url);
 
     return getClient()
-        .of(httpClient -> headResponse(httpClient, url).of(this::checkSuccess).get())
+        .of(httpClient -> headResponse(httpClient, url, List.of()).of(this::checkSuccess).get())
         .onSuccess(c -> LOG.log(Config.DEBUG, "HTTP HEAD request was successful."))
         .onFailure(e -> LOG.log(Config.DEBUG, "Exception message: " + e.toString()))
         .isSuccess();
+  }
+
+  @Override
+  public boolean head(
+      @NonNull final String url,
+      final String username,
+      final String password) {
+    LOG.log(Config.DEBUG, "StringHttpClient.head(String, String, String)");
+    LOG.log(Config.DEBUG, "head: " + url);
+    LOG.log(Config.DEBUG, "username: " + username);
+
+    return getClient()
+        .of(httpClient -> headResponse(
+              httpClient, url,
+              buildHeaders(username, password))
+            .of(this::checkSuccess).get())
+        .onSuccess(c -> LOG.log(Config.DEBUG, "HTTP HEAD request was successful."))
+        .onFailure(e -> LOG.log(Config.DEBUG, "Exception message: " + e.toString()))
+        .isSuccess();
+  }
+
+  private List<Header> buildHeaders(@NonNull final String username, @NonNull final String password) {
+    return Stream.of(buildAuthHeader(username, password))
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .collect(Collectors.toList());
+  }
+
+  private Optional<BasicHeader> buildAuthHeader(@NonNull final String username, @NonNull final String password) {
+    if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
+      return Optional.empty();
+    }
+
+    return Optional.of(new BasicHeader(
+          "AUTHORIZATION",
+          "Basic " + Base64.encodeBase64((username + ":" + password).getBytes())));
   }
 
   private Try.WithResources1<CloseableHttpClient> getClient() {
@@ -59,14 +123,32 @@ public class StringHttpClient implements HttpClient {
 
   private Try.WithResources1<CloseableHttpResponse> getResponse(
       @NonNull final CloseableHttpClient httpClient,
-      @NonNull final String path) {
-    return Try.withResources(() -> httpClient.execute(new HttpGet(path)));
+      @NonNull final String path,
+      @NonNull final List<Header> headers) {
+    return Try.withResources(() -> httpClient.execute(getRequest(path, headers)));
   }
 
   private Try.WithResources1<CloseableHttpResponse> headResponse(
       @NonNull final CloseableHttpClient httpClient,
-      @NonNull final String path) {
-    return Try.withResources(() -> httpClient.execute(new HttpHead(path)));
+      @NonNull final String path,
+      @NonNull final List<Header> headers) {
+    return Try.withResources(() -> httpClient.execute(headRequest(path, headers)));
+  }
+
+  private HttpRequestBase headRequest(
+      @NonNull final String path,
+      @NonNull final List<Header> headers) {
+    final HttpRequestBase request = new HttpHead(path);
+    headers.forEach(request::addHeader);
+    return request;
+  }
+
+  private HttpRequestBase getRequest(
+      @NonNull final String path,
+      @NonNull final List<Header> headers) {
+    final HttpRequestBase request = new HttpHead(path);
+    headers.forEach(request::addHeader);
+    return request;
   }
 
   private CloseableHttpResponse checkSuccess(@NonNull final CloseableHttpResponse response)
