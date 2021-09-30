@@ -5,6 +5,7 @@ import com.octopus.Config;
 import com.octopus.http.HttpClient;
 import com.octopus.repoaccessors.RepoAccessor;
 import io.vavr.control.Try;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -70,7 +71,7 @@ public class GithubRepoAccessor implements RepoAccessor {
    *
    * @return The repository default branch.
    */
-  public String getDefaultBranch() {
+  public List<String> getDefaultBranches() {
     return getDetails()
         // Get the repository details: https://docs.github.com/en/rest/reference/repos#get-a-repository
         .map(d -> httpClient.get(
@@ -82,9 +83,9 @@ public class GithubRepoAccessor implements RepoAccessor {
         // get the default branch key
         .map(r -> r.get("default_branch"))
         // convert to a string
-        .map(Object::toString)
-        // If there was a failure, assume the default branch is main
-        .orElse("main");
+        .map(d -> List.of(d.toString()))
+        // If there was a failure, assume the default branch is main or master
+        .orElse(List.of("main", "master"));
   }
 
   private Optional<GithubRepoDetails> getDetails() {

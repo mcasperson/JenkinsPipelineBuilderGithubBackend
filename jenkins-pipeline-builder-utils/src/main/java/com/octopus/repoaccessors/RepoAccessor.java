@@ -1,6 +1,7 @@
 package com.octopus.repoaccessors;
 
 import io.vavr.control.Try;
+import java.util.List;
 
 /**
  * An abstraction for accessing files in a repo.
@@ -21,5 +22,5 @@ public interface RepoAccessor {
 
   String getRepoPath();
 
-  String getDefaultBranch();
+  List<String> getDefaultBranches();
 }

@@ -22,7 +22,9 @@ public class GitBuilder {
   private static final Logger LOG = Logger.getLogger(GitBuilder.class.toString());
 
   public boolean fileExists(@NonNull final RepoAccessor accessor, @NonNull final String file) {
-    return accessor.testFile("blob/" + accessor.getDefaultBranch() + "/" + file);
+    return accessor.getDefaultBranches()
+        .stream()
+        .anyMatch(b -> accessor.testFile("blob/" + b + "/" + file));
   }
 
   /**
