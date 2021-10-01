@@ -1,8 +1,7 @@
-package dsl;
+package com.octopus.dsl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import com.octopus.dsl.Element;
-import com.octopus.dsl.StringContent;
+
 import org.junit.jupiter.api.Test;
 
 public class StringContentTest {

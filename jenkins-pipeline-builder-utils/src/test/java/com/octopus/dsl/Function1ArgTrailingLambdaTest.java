@@ -1,13 +1,8 @@
-package dsl;
+package com.octopus.dsl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.google.common.collect.ImmutableList;
-import com.octopus.dsl.Argument;
-import com.octopus.dsl.Comment;
-import com.octopus.dsl.Element;
-import com.octopus.dsl.Function1Arg;
-import com.octopus.dsl.Function1ArgTrailingLambda;
 import org.junit.jupiter.api.Test;
 
 public class Function1ArgTrailingLambdaTest {

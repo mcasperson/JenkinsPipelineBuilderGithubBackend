@@ -39,7 +39,8 @@ public class StringHttpClient implements HttpClient {
 
     return getClient()
         .of(httpClient -> getResponse(httpClient, url, List.of())
-            .of(response -> EntityUtils.toString(checkSuccess(response).getEntity()))
+            .of(response -> checkSuccess(response).getEntity())
+            .mapTry(entity -> entity == null ? "" : EntityUtils.toString(entity))
             .get())
         .onSuccess(c -> LOG.log(DEBUG, "HTTP GET response body: " + c))
         .onFailure(e -> LOG.log(DEBUG, "Exception message: " + e.toString()));
