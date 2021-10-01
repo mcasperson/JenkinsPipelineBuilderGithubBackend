@@ -14,12 +14,14 @@ import java.util.Map;
 import java.util.Optional;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.inject.Named;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.logging.Logger;
 
 /**
  * The AWS Lambda server.
  */
+@Named("generate")
 public class PipelineLambda implements RequestHandler<Map<String, Object>, ProxyResponse> {
 
   private static final Logger LOG = Logger.getLogger(PipelineLambda.class.toString());
@@ -44,13 +46,19 @@ public class PipelineLambda implements RequestHandler<Map<String, Object>, Proxy
     LOG.log(DEBUG, "input: " + convertObjectToJson(input));
     LOG.log(DEBUG, "context: " + convertObjectToJson(context));
 
-    final String repo = Optional
-        .ofNullable(input.getOrDefault("queryStringParameters", null))
-        .map(Map.class::cast)
-        .map(m -> m.getOrDefault("repo", null))
-        .map(Object::toString)
-        .orElse("");
+    if (getQueryString(input, "action").equals("health")) {
+      return new ProxyResponse(
+          "201",
+          "OK",
+          new ImmutableMap.Builder<String, String>()
+              .put("Content-Type", "text/plain")
+              .build());
+    }
 
+    return generatePipeline(getQueryString(input, "repo"));
+  }
+
+  private ProxyResponse generatePipeline(final String repo) {
     if (StringUtils.isBlank(repo)) {
       throw new IllegalArgumentException("repo can not be blank");
     }
@@ -69,6 +77,15 @@ public class PipelineLambda implements RequestHandler<Map<String, Object>, Proxy
         new ImmutableMap.Builder<String, String>()
             .put("Content-Type", "text/plain")
             .build());
+  }
+
+  private String getQueryString(final Map<String, Object> input, final String query) {
+    return Optional
+        .ofNullable(input.getOrDefault("queryStringParameters", null))
+        .map(Map.class::cast)
+        .map(m -> m.getOrDefault(query, null))
+        .map(Object::toString)
+        .orElse("");
   }
 
   private String convertObjectToJson(final Object attributes) {
