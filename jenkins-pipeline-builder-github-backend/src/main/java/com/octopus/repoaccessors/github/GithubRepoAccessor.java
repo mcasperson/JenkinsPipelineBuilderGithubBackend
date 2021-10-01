@@ -1,10 +1,10 @@
 package com.octopus.repoaccessors.github;
 
+import static org.jboss.logging.Logger.Level.DEBUG;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.octopus.Config;
 import com.octopus.http.HttpClient;
 import com.octopus.repoaccessors.RepoAccessor;
-import io.netty.util.internal.StringUtil;
 import io.vavr.control.Try;
 import java.util.List;
 import java.util.Map;
@@ -39,11 +39,11 @@ public class GithubRepoAccessor implements RepoAccessor {
 
   @Getter
   @Setter
-  private String username = "";
+  private String username;
 
   @Getter
   @Setter
-  private String password = "";
+  private String password;
 
   @Override
   public Try<String> getFile(@NonNull final String path) {
@@ -101,7 +101,7 @@ public class GithubRepoAccessor implements RepoAccessor {
   }
 
   private Optional<GithubRepoDetails> getDetails() {
-    LOG.log(Config.DEBUG, "GithubRepoAccessor.getDetails()");
+    LOG.log(DEBUG, "GithubRepoAccessor.getDetails()");
 
     final Matcher matcher = GITHUB_PATTERN.matcher(repo);
     if (matcher.matches()) {
@@ -109,8 +109,8 @@ public class GithubRepoAccessor implements RepoAccessor {
           matcher.group("username"),
           matcher.group("repo"));
 
-      LOG.log(Config.DEBUG, "Found username: " + retValue.getUsername());
-      LOG.log(Config.DEBUG, "Found repo: " + retValue.getRepository());
+      LOG.log(DEBUG, "Found username: " + retValue.getUsername());
+      LOG.log(DEBUG, "Found repo: " + retValue.getRepository());
 
       return Optional.of(retValue);
     }

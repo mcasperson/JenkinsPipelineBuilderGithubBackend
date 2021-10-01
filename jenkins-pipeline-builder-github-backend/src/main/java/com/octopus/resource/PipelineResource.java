@@ -1,6 +1,7 @@
 package com.octopus.resource;
 
-import com.octopus.Config;
+import static org.jboss.logging.Logger.Level.DEBUG;
+
 import com.octopus.builders.PipelineBuilder;
 import com.octopus.repoaccessors.RepoAccessor;
 import javax.enterprise.inject.Instance;
@@ -36,8 +37,8 @@ public class PipelineResource {
   @GET
   @Produces(MediaType.TEXT_PLAIN)
   public String pipeline(@QueryParam("repo") final String repo) {
-    LOG.log(Config.DEBUG, "PipelineResource.pipeline(String)");
-    LOG.log(Config.DEBUG, "repo: " + repo);
+    LOG.log(DEBUG, "PipelineResource.pipeline(String)");
+    LOG.log(DEBUG, "repo: " + repo);
 
     if (StringUtils.isBlank(repo)) {
       throw new IllegalArgumentException("repo can not be blank");

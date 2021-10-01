@@ -1,6 +1,7 @@
 package com.octopus.http;
 
-import com.octopus.Config;
+import static org.jboss.logging.Logger.Level.DEBUG;
+
 import io.vavr.control.Try;
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +15,6 @@ import org.apache.http.message.BasicHeader;
 import org.jboss.logging.Logger;
 import lombok.NonNull;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -34,15 +34,15 @@ public class StringHttpClient implements HttpClient {
    * @return A Try monad that either contains the String of the requested resource, or an exception.
    */
   public Try<String> get(@NonNull final String url) {
-    LOG.log(Config.DEBUG, "StringHttpClient.get(String)");
-    LOG.log(Config.DEBUG, "url: " + url);
+    LOG.log(DEBUG, "StringHttpClient.get(String)");
+    LOG.log(DEBUG, "url: " + url);
 
     return getClient()
         .of(httpClient -> getResponse(httpClient, url, List.of())
             .of(response -> EntityUtils.toString(checkSuccess(response).getEntity()))
             .get())
-        .onSuccess(c -> LOG.log(Config.DEBUG, "HTTP GET response body: " + c))
-        .onFailure(e -> LOG.log(Config.DEBUG, "Exception message: " + e.toString()));
+        .onSuccess(c -> LOG.log(DEBUG, "HTTP GET response body: " + c))
+        .onFailure(e -> LOG.log(DEBUG, "Exception message: " + e.toString()));
   }
 
   @Override
@@ -50,9 +50,9 @@ public class StringHttpClient implements HttpClient {
       @NonNull final String url,
       final String username,
       final String password) {
-    LOG.log(Config.DEBUG, "StringHttpClient.get(String, String, String)");
-    LOG.log(Config.DEBUG, "head: " + url);
-    LOG.log(Config.DEBUG, "username: " + username);
+    LOG.log(DEBUG, "StringHttpClient.get(String, String, String)");
+    LOG.log(DEBUG, "head: " + url);
+    LOG.log(DEBUG, "username: " + username);
 
     return getClient()
         .of(httpClient -> getResponse(
@@ -60,8 +60,8 @@ public class StringHttpClient implements HttpClient {
               buildHeaders(username, password))
             .of(response -> EntityUtils.toString(checkSuccess(response).getEntity()))
             .get())
-        .onSuccess(c -> LOG.log(Config.DEBUG, "HTTP HEAD request was successful."))
-        .onFailure(e -> LOG.log(Config.DEBUG, "Exception message: " + e.toString()));
+        .onSuccess(c -> LOG.log(DEBUG, "HTTP HEAD request was successful."))
+        .onFailure(e -> LOG.log(DEBUG, "Exception message: " + e.toString()));
   }
 
   /**
@@ -71,13 +71,13 @@ public class StringHttpClient implements HttpClient {
    * @return true if the request succeeded, and false otherwise.
    */
   public boolean head(@NonNull final String url) {
-    LOG.log(Config.DEBUG, "StringHttpClient.head(String)");
-    LOG.log(Config.DEBUG, "head: " + url);
+    LOG.log(DEBUG, "StringHttpClient.head(String)");
+    LOG.log(DEBUG, "head: " + url);
 
     return getClient()
         .of(httpClient -> headResponse(httpClient, url, List.of()).of(this::checkSuccess).get())
-        .onSuccess(c -> LOG.log(Config.DEBUG, "HTTP HEAD request was successful."))
-        .onFailure(e -> LOG.log(Config.DEBUG, "Exception message: " + e.toString()))
+        .onSuccess(c -> LOG.log(DEBUG, "HTTP HEAD request was successful."))
+        .onFailure(e -> LOG.log(DEBUG, "Exception message: " + e.toString()))
         .isSuccess();
   }
 
@@ -86,17 +86,17 @@ public class StringHttpClient implements HttpClient {
       @NonNull final String url,
       final String username,
       final String password) {
-    LOG.log(Config.DEBUG, "StringHttpClient.head(String, String, String)");
-    LOG.log(Config.DEBUG, "head: " + url);
-    LOG.log(Config.DEBUG, "username: " + username);
+    LOG.log(DEBUG, "StringHttpClient.head(String, String, String)");
+    LOG.log(DEBUG, "head: " + url);
+    LOG.log(DEBUG, "username: " + username);
 
     return getClient()
         .of(httpClient -> headResponse(
               httpClient, url,
               buildHeaders(username, password))
             .of(this::checkSuccess).get())
-        .onSuccess(c -> LOG.log(Config.DEBUG, "HTTP HEAD request was successful."))
-        .onFailure(e -> LOG.log(Config.DEBUG, "Exception message: " + e.toString()))
+        .onSuccess(c -> LOG.log(DEBUG, "HTTP HEAD request was successful."))
+        .onFailure(e -> LOG.log(DEBUG, "Exception message: " + e.toString()))
         .isSuccess();
   }
 
@@ -153,15 +153,15 @@ public class StringHttpClient implements HttpClient {
 
   private CloseableHttpResponse checkSuccess(@NonNull final CloseableHttpResponse response)
       throws Exception {
-    LOG.log(Config.DEBUG, "StringHttpClient.checkSuccess(CloseableHttpResponse)");
+    LOG.log(DEBUG, "StringHttpClient.checkSuccess(CloseableHttpResponse)");
 
     final int code = response.getStatusLine().getStatusCode();
     if (code >= 200 && code <= 399) {
-      LOG.log(Config.DEBUG, "Response code " + code + " indicated success");
+      LOG.log(DEBUG, "Response code " + code + " indicated success");
       return response;
     }
 
-    LOG.log(Config.DEBUG, "Response code " + code + " did not indicate success");
+    LOG.log(DEBUG, "Response code " + code + " did not indicate success");
     throw new Exception("Response did not indicate success");
   }
 }
