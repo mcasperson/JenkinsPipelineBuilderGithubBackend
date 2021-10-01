@@ -1,7 +1,7 @@
 package com.octopus.builders.java;
 
 import com.google.common.collect.ImmutableList;
-import com.octopus.builders.GitBuilder;
+import com.octopus.builders.JavaGitBuilder;
 import com.octopus.builders.PipelineBuilder;
 import com.octopus.dsl.ArgType;
 import com.octopus.dsl.Argument;
@@ -20,7 +20,7 @@ import lombok.NonNull;
  */
 public class JavaMavenBuilder implements PipelineBuilder {
 
-  private static final GitBuilder GIT_BUILDER = new GitBuilder();
+  private static final JavaGitBuilder GIT_BUILDER = new JavaGitBuilder();
   private boolean usesWrapper = false;
 
   @Override

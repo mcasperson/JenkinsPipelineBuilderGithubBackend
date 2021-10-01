@@ -1,7 +1,7 @@
 package com.octopus.builders.java;
 
 import com.google.common.collect.ImmutableList;
-import com.octopus.builders.GitBuilder;
+import com.octopus.builders.JavaGitBuilder;
 import com.octopus.builders.PipelineBuilder;
 import com.octopus.dsl.ArgType;
 import com.octopus.dsl.Argument;
@@ -21,7 +21,7 @@ import lombok.NonNull;
  */
 public class JavaGradleBuilder implements PipelineBuilder {
 
-  private static final GitBuilder GIT_BUILDER = new GitBuilder();
+  private static final JavaGitBuilder GIT_BUILDER = new JavaGitBuilder();
   private static final String[] GRADLE_BUILD_FILES = {"build.gradle", "build.gradle.kts"};
   private static final String GRADLE_OUTPUT_DIR = "build/libs";
   private boolean usesWrapper = false;

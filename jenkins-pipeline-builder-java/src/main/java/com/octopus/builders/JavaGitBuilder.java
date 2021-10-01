@@ -17,9 +17,9 @@ import lombok.NonNull;
 /**
  * A utility class containing useful methods common to Java pipelines.
  */
-public class GitBuilder {
+public class JavaGitBuilder {
 
-  private static final Logger LOG = Logger.getLogger(GitBuilder.class.toString());
+  private static final Logger LOG = Logger.getLogger(JavaGitBuilder.class.toString());
 
   public boolean fileExists(@NonNull final RepoAccessor accessor, @NonNull final String file) {
     return accessor.getDefaultBranches()
