@@ -110,16 +110,26 @@ public class JavaMavenBuilderTest {
 
   private static Stream<Arguments> provideTestRepos() {
     return Stream.of(
-        Arguments.of("mavenWrapper",
-            new MavenTestRepoAccessor("https://github.com/mcasperson/SampleMavenProject-SpringBoot",
+        Arguments.of(
+            "mavenWrapper",
+            new MavenTestRepoAccessor(
+                "https://github.com/mcasperson/SampleMavenProject-SpringBoot",
                 true)),
-        Arguments.of("gradleWrapper", new GradleTestRepoAccessor(
-            "https://github.com/mcasperson/SampleGradleProject-SpringBoot", true)),
-        Arguments.of("maven",
-            new MavenTestRepoAccessor("https://github.com/mcasperson/SampleMavenProject-SpringBoot",
+        Arguments.of(
+            "gradleWrapper",
+            new GradleTestRepoAccessor(
+                "https://github.com/mcasperson/SampleGradleProject-SpringBoot",
+                true)),
+        Arguments.of(
+            "maven",
+            new MavenTestRepoAccessor(
+                "https://github.com/mcasperson/SampleMavenProject-SpringBoot",
                 false)),
-        Arguments.of("gradle", new GradleTestRepoAccessor(
-            "https://github.com/mcasperson/SampleGradleProject-SpringBoot", false))
+        Arguments.of(
+            "gradle",
+            new GradleTestRepoAccessor(
+                "https://github.com/mcasperson/SampleGradleProject-SpringBoot",
+                false))
     );
   }
 
