@@ -14,11 +14,11 @@ public class GradleTestRepoAccessor extends TestRepoAccessor {
 
   @Override
   public boolean testFile(String path) {
-    if (path.equals("build.gradle") || path.equals("build.gradle.kts")) {
+    if (path.endsWith("build.gradle") || path.endsWith("build.gradle.kts")) {
       return true;
     }
 
-    if (findWrapper && path.equals("gradlew")) {
+    if (findWrapper && path.endsWith("gradlew")) {
       return true;
     }
 

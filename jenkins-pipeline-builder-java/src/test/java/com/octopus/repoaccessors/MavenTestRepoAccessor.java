@@ -14,11 +14,11 @@ public class MavenTestRepoAccessor extends TestRepoAccessor {
 
   @Override
   public boolean testFile(String path) {
-    if (path.equals("pom.xml")) {
+    if (path.endsWith("pom.xml")) {
       return true;
     }
 
-    if (findWrapper && path.equals("mvnw")) {
+    if (findWrapper && path.endsWith("mvnw")) {
       return true;
     }
 
