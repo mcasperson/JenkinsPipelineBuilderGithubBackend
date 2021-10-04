@@ -135,6 +135,11 @@ public class JavaMavenBuilderTest {
                 "https://github.com/mcasperson/SampleMavenProject-SpringBoot",
                 true)),
         Arguments.of(
+            "mavenWrapperQuarkus",
+            new MavenTestRepoAccessor(
+                "https://github.com/mcasperson/SampleMavenProject-Quarkus",
+                true)),
+        Arguments.of(
             "gradleWrapper",
             new GradleTestRepoAccessor(
                 "https://github.com/mcasperson/SampleGradleProject-SpringBoot",
