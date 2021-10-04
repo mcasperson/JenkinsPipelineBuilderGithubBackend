@@ -50,6 +50,7 @@ public class JavaGradleBuilder implements PipelineBuilder {
             .add(FunctionTrailingLambda.builder()
                 .name("stages")
                 .children(new ImmutableList.Builder<Element>()
+                    .add(GIT_BUILDER.createEnvironmentStage())
                     .add(GIT_BUILDER.createCheckoutStep(accessor))
                     .add(createDependenciesStep())
                     .add(createBuildStep())

@@ -49,6 +49,23 @@ public class JavaGitBuilder {
   }
 
   /**
+   * Displays some details about the environment.
+   *
+   * @return The stage element with a script displaying environment variables.
+   */
+  public Element createEnvironmentStage() {
+    return Function1ArgTrailingLambda.builder()
+        .name("stage")
+        .arg("Environment")
+        .children(new ImmutableList.Builder<Element>()
+            .add(StringContent.builder()
+                .content("echo \"PATH = ${PATH}\"")
+                .build())
+            .build())
+        .build();
+  }
+
+  /**
    * Creates the steps to perform a git checkout.
    *
    * @param accessor The repo accessor defining the repo to checkout.
