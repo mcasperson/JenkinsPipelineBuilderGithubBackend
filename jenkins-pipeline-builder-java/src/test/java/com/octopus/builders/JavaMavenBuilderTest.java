@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.stream.Stream;
+import lombok.NonNull;
 import org.apache.commons.text.StringEscapeUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -77,7 +78,7 @@ public class JavaMavenBuilderTest {
 
   @ParameterizedTest
   @MethodSource("provideTestRepos")
-  public void verifyTemplate(final String name, final RepoAccessor accessor)
+  public void verifyTemplate(@NonNull final String name, @NonNull final RepoAccessor accessor)
       throws IOException {
     final String template = Arrays.stream(PIPELINE_BUILDERS)
         .filter(p -> p.canBuild(accessor))
@@ -147,7 +148,7 @@ public class JavaMavenBuilderTest {
     );
   }
 
-  private void addJobToJenkins(final String jobXml, final String jobName) {
+  private void addJobToJenkins(@NonNull final String jobXml, @NonNull final String jobName) {
     jenkins.copyFileToContainer(
         Transferable.of(jobXml.getBytes(), 0744),
         "/var/jenkins_home/jobs/" + jobName + "/config.xml");
@@ -168,7 +169,7 @@ public class JavaMavenBuilderTest {
 
   }
 
-  private String getScriptJob(final String script) throws IOException {
+  private String getScriptJob(@NonNull final String script) throws IOException {
     final String template = Resources.toString(
         Resources.getResource("jenkins/job_template.xml"),
         StandardCharsets.UTF_8);
