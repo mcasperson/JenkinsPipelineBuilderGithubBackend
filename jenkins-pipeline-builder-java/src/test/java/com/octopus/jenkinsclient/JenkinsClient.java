@@ -16,10 +16,10 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 public class JenkinsClient {
-  public Try<String> waitServerStarted(final String hostname, final Integer port) {
+  public Try<String> waitServerStarted(final JenkinsDetails jenkinsDetails) {
     for (int i = 0; i < 12; ++i) {
       final Try<String> serverStarted = getClient()
-          .of(httpClient -> postResponse(httpClient, "http://" + hostname + ":" + port + "/login")
+          .of(httpClient -> postResponse(httpClient, jenkinsDetails.toString() + "/login")
               .of(response -> EntityUtils.toString(checkSuccess(response).getEntity())))
           .get();
 
@@ -43,11 +43,11 @@ public class JenkinsClient {
     throw new Exception("Response did not indicate success");
   }
 
-  public Try<Document> waitJobBuilding(final String hostname, final Integer port, final String name) {
+  public Try<Document> waitJobBuilding(final JenkinsDetails jenkinsDetails, final String name) {
     for (int i = 0; i < 240; ++i) {
       final Try<Document> building = getClient()
           .of(httpClient -> postResponse(httpClient,
-              "http://" + hostname + ":" + port + "/job/" + name + "/1/api/xml?depth=0")
+              jenkinsDetails.toString() + "/job/" + name + "/1/api/xml?depth=0")
               .of(response -> EntityUtils.toString(response.getEntity()))
               .mapTry(this::parseXML)
               .get());
@@ -91,16 +91,16 @@ public class JenkinsClient {
     return dBuilder.parse(new ByteArrayInputStream(xml.getBytes()));
   }
 
-  public Try<String> startJob(final String hostname, final Integer port, final String name) {
+  public Try<String> startJob(final JenkinsDetails jenkinsDetails, final String name) {
     return getClient()
-        .of(httpClient -> postResponse(httpClient, "http://" + hostname + ":" + port + "/job/" + name + "/build")
+        .of(httpClient -> postResponse(httpClient, jenkinsDetails.toString() + "/job/" + name + "/build")
             .of(response -> EntityUtils.toString(response.getEntity()))
             .get());
   }
 
-  public Try<String> restartJenkins(final String hostname, final Integer port) {
+  public Try<String> restartJenkins(final JenkinsDetails jenkinsDetails) {
     return getClient()
-        .of(httpClient -> postResponse(httpClient, "http://" + hostname + ":" + port + "/reload")
+        .of(httpClient -> postResponse(httpClient, jenkinsDetails.toString() + "/reload")
             .of(response -> EntityUtils.toString(response.getEntity()))
             .get());
   }

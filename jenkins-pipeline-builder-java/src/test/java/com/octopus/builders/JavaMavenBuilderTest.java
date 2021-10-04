@@ -4,6 +4,7 @@ import com.google.common.io.Resources;
 import com.octopus.builders.java.JavaGradleBuilder;
 import com.octopus.builders.java.JavaMavenBuilder;
 import com.octopus.jenkinsclient.JenkinsClient;
+import com.octopus.jenkinsclient.JenkinsDetails;
 import com.octopus.repoaccessors.GradleTestRepoAccessor;
 import com.octopus.repoaccessors.MavenTestRepoAccessor;
 import com.octopus.repoaccessors.RepoAccessor;
@@ -53,7 +54,10 @@ public class JavaMavenBuilderTest {
                   + "workflow-aggregator:2.6 "
                   + "git:4.8.2")
               .run("apt-get update")
-              .run("apt-get install maven gradle -y")
+              .run("apt-get install maven wget -y")
+              .run("wget https://services.gradle.org/distributions/gradle-7.2-bin.zip")
+              .run("unzip gradle-7.2-bin.zip")
+              .run("mv gradle-7.2 /opt")
               .build()))
       .withCopyFileToContainer(MountableFile.forClasspathResource("jenkins/maven_tool.groovy"),
           "/usr/share/jenkins/ref/init.groovy.d/maven_tool.groovy")
@@ -77,26 +81,25 @@ public class JavaMavenBuilderTest {
     // Add the job to the docker image
     addJobToJenkins(getScriptJob(template), name);
 
+    final JenkinsDetails jenkinsDetails = new JenkinsDetails(
+        jenkins.getHost(),
+        jenkins.getFirstMappedPort());
+
     // print the Jenkins URL
-    System.out.println("http://" + jenkins.getHost() + ":" + jenkins.getFirstMappedPort());
+    System.out.println(jenkinsDetails.toString());
 
     // Now restart jenkins, initiate a build, and check the build result
     final Try<Boolean> success =
         // wait for the server to start
-        JENKINS_CLIENT.waitServerStarted(jenkins.getHost(), jenkins.getFirstMappedPort())
+        JENKINS_CLIENT.waitServerStarted(jenkinsDetails)
             // restart the server to pick up the new jobs
-            .flatMap(
-                r -> JENKINS_CLIENT.restartJenkins(jenkins.getHost(), jenkins.getFirstMappedPort()))
+            .flatMap(r -> JENKINS_CLIENT.restartJenkins(jenkinsDetails))
             // wait for the server to start again
-            .flatMap(r -> JENKINS_CLIENT.waitServerStarted(jenkins.getHost(),
-                jenkins.getFirstMappedPort()))
+            .flatMap(r -> JENKINS_CLIENT.waitServerStarted(jenkinsDetails))
             // start building the job
-            .flatMap(
-                r -> JENKINS_CLIENT.startJob(jenkins.getHost(), jenkins.getFirstMappedPort(), name))
+            .flatMap(r -> JENKINS_CLIENT.startJob(jenkinsDetails, name))
             // wait for the job to finish
-            .flatMap(
-                r -> JENKINS_CLIENT.waitJobBuilding(jenkins.getHost(), jenkins.getFirstMappedPort(),
-                    name))
+            .flatMap(r -> JENKINS_CLIENT.waitJobBuilding(jenkinsDetails, name))
             // see if the job was a success
             .map(JENKINS_CLIENT::isSuccess);
 
