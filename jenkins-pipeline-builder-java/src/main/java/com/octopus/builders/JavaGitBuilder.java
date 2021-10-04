@@ -21,6 +21,13 @@ public class JavaGitBuilder {
 
   private static final Logger LOG = Logger.getLogger(JavaGitBuilder.class.toString());
 
+  /**
+   * Tests to see if a file exists.
+   *
+   * @param accessor The repo accessor.
+   * @param file     The file to test.
+   * @return true if the file exists, and false otherwise.
+   */
   public boolean fileExists(@NonNull final RepoAccessor accessor, @NonNull final String file) {
     return accessor.getDefaultBranches()
         .stream()

@@ -10,6 +10,7 @@ import io.vavr.control.Try;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.text.StringEscapeUtils;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.testcontainers.containers.GenericContainer;
@@ -97,8 +98,8 @@ public class JavaMavenBuilderTest {
     JENKINS_CLIENT.getJobLogs(jenkins.getHost(), jenkins.getFirstMappedPort(), name)
         .onSuccess(System.out::println);
 
-    assertTrue(success.isSuccess());
-    assertTrue(success.get());
+    Assertions.assertTrue(success.isSuccess());
+    Assertions.assertTrue(success.get());
   }
 
   private void addJobToJenkins(final String jobXml, final String jobName) {
