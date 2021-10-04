@@ -93,6 +93,10 @@ public class JavaMavenBuilderTest {
             // see if the job was a success
             .map(this::isSuccess);
 
+    // dump the job logs
+    getJobLogs(jenkins.getHost(), jenkins.getFirstMappedPort(), "maven")
+        .onSuccess(System.out::println);
+
     assertTrue(success.isSuccess());
     assertTrue(success.get());
   }
@@ -125,7 +129,7 @@ public class JavaMavenBuilderTest {
   }
 
   private Try<Document> waitJobBuilding(final String hostname, final Integer port, final String name) {
-    for (int i = 0; i < 12; ++i) {
+    for (int i = 0; i < 120; ++i) {
       final Try<Document> building = getClient()
           .of(httpClient -> postResponse(httpClient,
               "http://" + hostname + ":" + port + "/job/" + name + "/1/api/xml?depth=0")
@@ -139,6 +143,14 @@ public class JavaMavenBuilderTest {
     }
 
     return Try.failure(new Exception("Failed while waiting for build to complete"));
+  }
+
+  private Try<String> getJobLogs(final String hostname, final Integer port, final String name) {
+    return getClient()
+        .of(httpClient -> postResponse(httpClient,
+            "http://" + hostname + ":" + port + "/job/" + name + "/1/consoleText")
+            .of(response -> EntityUtils.toString(response.getEntity()))
+            .get());
   }
 
   private boolean isBuilding(final Document doc) {
