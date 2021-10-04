@@ -58,6 +58,7 @@ public class JavaMavenBuilderTest {
               .run("wget https://services.gradle.org/distributions/gradle-7.2-bin.zip")
               .run("unzip gradle-7.2-bin.zip")
               .run("mv gradle-7.2 /opt")
+              .run("ln -s /opt/gradle/bin/gradle /usr/bin/gradle")
               .run("wget https://cdn.azul.com/zulu/bin/zulu17.28.13-ca-jdk17.0.0-linux_x64.tar.gz")
               .run("tar -xzf zulu17.28.13-ca-jdk17.0.0-linux_x64.tar.gz")
               .run("mv zulu17.28.13-ca-jdk17.0.0-linux_x64 /opt")
