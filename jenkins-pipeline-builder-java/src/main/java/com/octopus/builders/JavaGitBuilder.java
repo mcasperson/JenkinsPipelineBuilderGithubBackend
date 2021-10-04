@@ -57,11 +57,11 @@ public class JavaGitBuilder {
     return Function1ArgTrailingLambda.builder()
         .name("stage")
         .arg("Environment")
-        .children(new ImmutableList.Builder<Element>()
+        .children(createStepsElement(new ImmutableList.Builder<Element>()
             .add(StringContent.builder()
                 .content("echo \"PATH = ${PATH}\"")
                 .build())
-            .build())
+            .build()))
         .build();
   }
 
