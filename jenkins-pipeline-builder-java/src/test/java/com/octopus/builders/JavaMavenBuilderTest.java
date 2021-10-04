@@ -58,8 +58,6 @@ public class JavaMavenBuilderTest {
               .run("wget https://services.gradle.org/distributions/gradle-7.2-bin.zip")
               .run("unzip gradle-7.2-bin.zip")
               .run("mv gradle-7.2 /opt")
-              .run("wget https://cdn.azul.com/zulu/bin/zulu17.28.13-ca-jdk17.0.0-linux_amd64.deb")
-              .run("apt install ./zulu17.28.13-ca-jdk17.0.0-linux_amd64.deb")
               .build()))
       .withCopyFileToContainer(MountableFile.forClasspathResource("jenkins/maven_tool.groovy"),
           "/usr/share/jenkins/ref/init.groovy.d/maven_tool.groovy")
