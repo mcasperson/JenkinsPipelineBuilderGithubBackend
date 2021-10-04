@@ -129,7 +129,7 @@ public class JavaMavenBuilderTest {
   }
 
   private Try<Document> waitJobBuilding(final String hostname, final Integer port, final String name) {
-    for (int i = 0; i < 120; ++i) {
+    for (int i = 0; i < 240; ++i) {
       final Try<Document> building = getClient()
           .of(httpClient -> postResponse(httpClient,
               "http://" + hostname + ":" + port + "/job/" + name + "/1/api/xml?depth=0")
