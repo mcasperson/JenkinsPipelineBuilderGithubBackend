@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import com.google.common.io.Resources;
 import com.octopus.builders.java.JavaMavenBuilder;
+import com.octopus.jenkinsclient.JenkinsClient;
 import com.octopus.repoaccessors.RepoAccessor;
 import com.octopus.repoaccessors.TestRepoAccessor;
 import com.sun.source.tree.TryTree;
@@ -40,6 +41,7 @@ import org.xml.sax.SAXException;
 public class JavaMavenBuilderTest {
 
   private static final JavaMavenBuilder JAVA_MAVEN_BUILDER = new JavaMavenBuilder();
+  private static final JenkinsClient JENKINS_CLIENT = new JenkinsClient();
 
   /**
    * A Jenkins container that has the appropriate plugins installed, an admin user setup,
@@ -78,126 +80,30 @@ public class JavaMavenBuilderTest {
     // Add the job to the docker image
     addJobToJenkins(getScriptJob(template), "maven");
 
+    // print the Jenkins URL
+    System.out.println("http://" + jenkins.getHost() + ":" + jenkins.getFirstMappedPort());
+
     // Now restart jenkins, initiate a build, and check the build result
     final Try<Boolean> success =
           // wait for the server to start
-          waitServerStarted(jenkins.getHost(), jenkins.getFirstMappedPort())
+        JENKINS_CLIENT.waitServerStarted(jenkins.getHost(), jenkins.getFirstMappedPort())
             // restart the server to pick up the new jobs
-            .flatMap(r -> restartJenkins(jenkins.getHost(), jenkins.getFirstMappedPort()))
+            .flatMap(r -> JENKINS_CLIENT.restartJenkins(jenkins.getHost(), jenkins.getFirstMappedPort()))
             // wait for the server to start again
-            .flatMap(r -> waitServerStarted(jenkins.getHost(), jenkins.getFirstMappedPort()))
+            .flatMap(r -> JENKINS_CLIENT.waitServerStarted(jenkins.getHost(), jenkins.getFirstMappedPort()))
             // start building the job
-            .flatMap(r -> startJob(jenkins.getHost(), jenkins.getFirstMappedPort(), "maven"))
+            .flatMap(r -> JENKINS_CLIENT.startJob(jenkins.getHost(), jenkins.getFirstMappedPort(), "maven"))
             // wait for the job to finish
-            .flatMap(r -> waitJobBuilding(jenkins.getHost(), jenkins.getFirstMappedPort(), "maven"))
+            .flatMap(r -> JENKINS_CLIENT.waitJobBuilding(jenkins.getHost(), jenkins.getFirstMappedPort(), "maven"))
             // see if the job was a success
-            .map(this::isSuccess);
+            .map(JENKINS_CLIENT::isSuccess);
 
     // dump the job logs
-    getJobLogs(jenkins.getHost(), jenkins.getFirstMappedPort(), "maven")
+    JENKINS_CLIENT.getJobLogs(jenkins.getHost(), jenkins.getFirstMappedPort(), "maven")
         .onSuccess(System.out::println);
 
     assertTrue(success.isSuccess());
     assertTrue(success.get());
-  }
-
-  private Try<String> waitServerStarted(final String hostname, final Integer port) {
-    for (int i = 0; i < 12; ++i) {
-      final Try<String> serverStarted = getClient()
-          .of(httpClient -> postResponse(httpClient, "http://" + hostname + ":" + port + "/login")
-              .of(response -> EntityUtils.toString(checkSuccess(response).getEntity())))
-          .get();
-
-      if (serverStarted.isSuccess()) {
-        return serverStarted;
-      }
-      Try.run(() -> Thread.sleep(5000));
-    }
-
-    return Try.failure(new Exception("Failed to wait for server to start"));
-  }
-
-  private CloseableHttpResponse checkSuccess(@NonNull final CloseableHttpResponse response)
-      throws Exception {
-
-    final int code = response.getStatusLine().getStatusCode();
-    if (code >= 200 && code <= 399) {
-      return response;
-    }
-
-    throw new Exception("Response did not indicate success");
-  }
-
-  private Try<Document> waitJobBuilding(final String hostname, final Integer port, final String name) {
-    for (int i = 0; i < 240; ++i) {
-      final Try<Document> building = getClient()
-          .of(httpClient -> postResponse(httpClient,
-              "http://" + hostname + ":" + port + "/job/" + name + "/1/api/xml?depth=0")
-              .of(response -> EntityUtils.toString(response.getEntity()))
-              .mapTry(this::parseXML)
-              .get());
-      if (building.isSuccess() && !isBuilding(building.get())) {
-        return building;
-      }
-      Try.run(() -> Thread.sleep(5000));
-    }
-
-    return Try.failure(new Exception("Failed while waiting for build to complete"));
-  }
-
-  private Try<String> getJobLogs(final String hostname, final Integer port, final String name) {
-    return getClient()
-        .of(httpClient -> postResponse(httpClient,
-            "http://" + hostname + ":" + port + "/job/" + name + "/1/consoleText")
-            .of(response -> EntityUtils.toString(response.getEntity()))
-            .get());
-  }
-
-  private boolean isBuilding(final Document doc) {
-    return doc.getDocumentElement()
-        .getElementsByTagName("building")
-        .item(0)
-        .getTextContent()
-        .equals("true");
-  }
-
-  private boolean isSuccess(final Document doc) {
-    return doc.getDocumentElement()
-        .getElementsByTagName("result")
-        .item(0)
-        .getTextContent()
-        .equals("SUCCESS");
-  }
-
-  private Document parseXML(final String xml)
-      throws ParserConfigurationException, IOException, SAXException {
-    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-    DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-    return dBuilder.parse(new ByteArrayInputStream(xml.getBytes()));
-  }
-
-  private Try<String> startJob(final String hostname, final Integer port, final String name) {
-    return getClient()
-        .of(httpClient -> postResponse(httpClient, "http://" + hostname + ":" + port + "/job/" + name + "/build")
-            .of(response -> EntityUtils.toString(response.getEntity()))
-            .get());
-  }
-
-  private Try<String> restartJenkins(final String hostname, final Integer port) {
-    return getClient()
-        .of(httpClient -> postResponse(httpClient, "http://" + hostname + ":" + port + "/reload")
-            .of(response -> EntityUtils.toString(response.getEntity()))
-            .get());
-  }
-
-  private Try.WithResources1<CloseableHttpClient> getClient() {
-    return Try.withResources(HttpClients::createDefault);
-  }
-
-  private Try.WithResources1<CloseableHttpResponse> postResponse(
-      @NonNull final CloseableHttpClient httpClient,
-      @NonNull final String path) {
-    return Try.withResources(() -> httpClient.execute(new HttpPost(path)));
   }
 
   private void addJobToJenkins(final String jobXml, final String jobName) {
