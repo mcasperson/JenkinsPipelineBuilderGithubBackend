@@ -93,7 +93,7 @@ public class JavaMavenBuilderTest {
         jenkins.getFirstMappedPort());
 
     // print the Jenkins URL
-    System.out.println(jenkinsDetails.toString());
+    System.out.println("Jenkins URL: " + jenkinsDetails);
 
     // Now restart jenkins, initiate a build, and check the build result
     final Try<Boolean> success =
