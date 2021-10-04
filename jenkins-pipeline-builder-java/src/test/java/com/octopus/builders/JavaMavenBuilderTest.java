@@ -5,15 +5,21 @@ import static org.junit.Assert.assertTrue;
 import com.google.common.io.Resources;
 import com.octopus.builders.java.JavaMavenBuilder;
 import com.octopus.jenkinsclient.JenkinsClient;
+import com.octopus.repoaccessors.GradleTestRepoAccessor;
+import com.octopus.repoaccessors.MavenTestRepoAccessor;
+import com.octopus.repoaccessors.RepoAccessor;
 import com.octopus.repoaccessors.TestRepoAccessor;
 import io.vavr.control.Try;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.stream.Stream;
 import org.apache.commons.text.StringEscapeUtils;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.images.builder.ImageFromDockerfile;
 import org.testcontainers.images.builder.Transferable;
@@ -58,16 +64,10 @@ public class JavaMavenBuilderTest {
           "-Djenkins.install.runSetupWizard=false -Dhudson.security.csrf.GlobalCrumbIssuerConfiguration.DISABLE_CSRF_PROTECTION=true");
 
   @ParameterizedTest
-  @CsvSource({
-      "https://github.com/mcasperson/SampleMavenProject-SpringBoot,maven,true",
-      "https://github.com/mcasperson/SampleGradleProject-SpringBoot,gradle,true",
-      "https://github.com/mcasperson/SampleMavenProject-SpringBoot,maven,false",
-      "https://github.com/mcasperson/SampleGradleProject-SpringBoot,gradle,false"
-  })
-  public void verifyTemplate(final String url, final String name, final String useWrapper)
+  @MethodSource("provideTestRepos")
+  public void verifyTemplate(final String name, final RepoAccessor accessor)
       throws IOException {
-    final String template = JAVA_MAVEN_BUILDER.generate(
-        new TestRepoAccessor(url, useWrapper.equals("true")));
+    final String template = JAVA_MAVEN_BUILDER.generate(accessor);
 
     // Add the job to the docker image
     addJobToJenkins(getScriptJob(template), name);
@@ -101,6 +101,15 @@ public class JavaMavenBuilderTest {
 
     Assertions.assertTrue(success.isSuccess());
     Assertions.assertTrue(success.get());
+  }
+
+  private static Stream<Arguments> provideTestRepos() {
+    return Stream.of(
+        Arguments.of( "mavenWrapper", new MavenTestRepoAccessor("https://github.com/mcasperson/SampleMavenProject-SpringBoot", true)),
+        Arguments.of( "gradleWrapper", new GradleTestRepoAccessor("https://github.com/mcasperson/SampleGradleProject-SpringBoot", true)),
+        Arguments.of( "maven", new MavenTestRepoAccessor("https://github.com/mcasperson/SampleMavenProject-SpringBoot", false)),
+        Arguments.of( "gradle", new GradleTestRepoAccessor("https://github.com/mcasperson/SampleGradleProject-SpringBoot", false))
+    );
   }
 
   private void addJobToJenkins(final String jobXml, final String jobName) {

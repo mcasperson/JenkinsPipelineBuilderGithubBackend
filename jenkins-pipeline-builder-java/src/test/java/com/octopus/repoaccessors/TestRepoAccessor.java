@@ -6,7 +6,7 @@ import java.util.List;
 public class TestRepoAccessor implements RepoAccessor {
 
   private String repo;
-  private boolean findWrapper;
+  protected boolean findWrapper;
 
   /**
    * A mock repo accessor that pretends to find (or not find) project
@@ -36,7 +36,7 @@ public class TestRepoAccessor implements RepoAccessor {
       return true;
     }
 
-    return  !(path.endsWith("mvnw") || path.endsWith("gradlew"));
+    return !(path.endsWith("mvnw") || path.endsWith("gradlew"));
   }
 
   @Override
