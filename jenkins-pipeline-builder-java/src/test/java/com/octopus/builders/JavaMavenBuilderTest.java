@@ -77,11 +77,13 @@ public class JavaMavenBuilderTest {
 
   @ParameterizedTest
   @CsvSource({
-      "https://github.com/OctopusSamples/RandomQuotes-Java,maven",
-      "https://github.com/mcasperson/SampleGradleProject-SpringBoot,gradle"
+      "https://github.com/OctopusSamples/RandomQuotes-Java,maven,true",
+      "https://github.com/mcasperson/SampleGradleProject-SpringBoot,gradle,true",
+      "https://github.com/OctopusSamples/RandomQuotes-Java,maven,false",
+      "https://github.com/mcasperson/SampleGradleProject-SpringBoot,gradle,false"
   })
-  public void verifyTemplate(final String url, final String name) throws IOException {
-    final String template = JAVA_MAVEN_BUILDER.generate(new TestRepoAccessor(url));
+  public void verifyTemplate(final String url, final String name, final String useWrapper) throws IOException {
+    final String template = JAVA_MAVEN_BUILDER.generate(new TestRepoAccessor(url, useWrapper.equals("true")));
 
     // Add the job to the docker image
     addJobToJenkins(getScriptJob(template), name);
