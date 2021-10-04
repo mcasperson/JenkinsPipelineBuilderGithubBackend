@@ -9,6 +9,11 @@
         <outputRelativeToContentRoot value="true" />
         <module name="jenkins-pipeline-builder-utils" />
         <module name="jenkins-pipeline-builder-github-backend" />
+      </profile>
+      <profile name="Annotation profile for jenkins-pipeline-builder-backend" enabled="true">
+        <sourceOutputDir name="../target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
         <module name="jenkins-pipeline-builder-java" />
       </profile>
     </annotationProcessing>
