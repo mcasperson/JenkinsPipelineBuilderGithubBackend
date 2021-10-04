@@ -81,15 +81,6 @@
       <groupId>io.rest-assured</groupId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.junit.vintage</groupId>
-      <artifactId>junit-vintage-engine</artifactId>
-      <version>5.8.1</version>
-      <scope>test</scope>
-    </dependency>
-
-
-
   </dependencies>
   <dependencyManagement>
     <dependencies>
