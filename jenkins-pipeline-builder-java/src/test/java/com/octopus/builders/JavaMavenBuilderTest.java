@@ -28,6 +28,9 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.images.builder.ImageFromDockerfile;
 import org.testcontainers.images.builder.Transferable;
@@ -72,13 +75,16 @@ public class JavaMavenBuilderTest {
       .withExposedPorts(8080)
       .withEnv("JAVA_OPTS", "-Djenkins.install.runSetupWizard=false -Dhudson.security.csrf.GlobalCrumbIssuerConfiguration.DISABLE_CSRF_PROTECTION=true");
 
-  @Test
-  public void verifyTemplate() throws IOException {
-    final String template = JAVA_MAVEN_BUILDER.generate(
-        new TestRepoAccessor("https://github.com/OctopusSamples/RandomQuotes-Java"));
+  @ParameterizedTest
+  @CsvSource({
+      "https://github.com/OctopusSamples/RandomQuotes-Java,maven",
+      "https://github.com/mcasperson/SampleGradleProject-SpringBoot,gradle"
+  })
+  public void verifyTemplate(final String url, final String name) throws IOException {
+    final String template = JAVA_MAVEN_BUILDER.generate(new TestRepoAccessor(url));
 
     // Add the job to the docker image
-    addJobToJenkins(getScriptJob(template), "maven");
+    addJobToJenkins(getScriptJob(template), name);
 
     // print the Jenkins URL
     System.out.println("http://" + jenkins.getHost() + ":" + jenkins.getFirstMappedPort());
@@ -92,14 +98,14 @@ public class JavaMavenBuilderTest {
             // wait for the server to start again
             .flatMap(r -> JENKINS_CLIENT.waitServerStarted(jenkins.getHost(), jenkins.getFirstMappedPort()))
             // start building the job
-            .flatMap(r -> JENKINS_CLIENT.startJob(jenkins.getHost(), jenkins.getFirstMappedPort(), "maven"))
+            .flatMap(r -> JENKINS_CLIENT.startJob(jenkins.getHost(), jenkins.getFirstMappedPort(), name))
             // wait for the job to finish
-            .flatMap(r -> JENKINS_CLIENT.waitJobBuilding(jenkins.getHost(), jenkins.getFirstMappedPort(), "maven"))
+            .flatMap(r -> JENKINS_CLIENT.waitJobBuilding(jenkins.getHost(), jenkins.getFirstMappedPort(), name))
             // see if the job was a success
             .map(JENKINS_CLIENT::isSuccess);
 
     // dump the job logs
-    JENKINS_CLIENT.getJobLogs(jenkins.getHost(), jenkins.getFirstMappedPort(), "maven")
+    JENKINS_CLIENT.getJobLogs(jenkins.getHost(), jenkins.getFirstMappedPort(), name)
         .onSuccess(System.out::println);
 
     assertTrue(success.isSuccess());
