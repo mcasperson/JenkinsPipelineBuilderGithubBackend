@@ -8,7 +8,7 @@ public class MavenTestRepoAccessor extends TestRepoAccessor {
    * @param repo        The git repo
    * @param findWrapper true if this accessor is to report finding a wrapper script,
    */
-  public MavenTestRepoAccessor(String repo, boolean findWrapper) {
+  public MavenTestRepoAccessor(final String repo, final boolean findWrapper) {
     super(repo, findWrapper);
   }
 

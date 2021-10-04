@@ -8,7 +8,7 @@ public class GradleTestRepoAccessor extends TestRepoAccessor {
    * @param repo        The git repo
    * @param findWrapper true if this accessor is to report finding a wrapper script,
    */
-  public GradleTestRepoAccessor(String repo, boolean findWrapper) {
+  public GradleTestRepoAccessor(final String repo, final boolean findWrapper) {
     super(repo, findWrapper);
   }
 
