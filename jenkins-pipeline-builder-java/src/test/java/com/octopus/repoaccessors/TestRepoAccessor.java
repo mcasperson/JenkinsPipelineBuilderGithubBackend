@@ -3,7 +3,7 @@ package com.octopus.repoaccessors;
 import io.vavr.control.Try;
 import java.util.List;
 
-public class TestRepoAccessor implements RepoAccessor {
+public abstract class TestRepoAccessor implements RepoAccessor {
 
   private String repo;
   protected boolean findWrapper;
@@ -28,15 +28,6 @@ public class TestRepoAccessor implements RepoAccessor {
   @Override
   public Try<String> getFile(String path) {
     return Try.of(() -> "");
-  }
-
-  @Override
-  public boolean testFile(String path) {
-    if (findWrapper) {
-      return true;
-    }
-
-    return !(path.endsWith("mvnw") || path.endsWith("gradlew"));
   }
 
   @Override
