@@ -77,9 +77,9 @@ public class JavaMavenBuilderTest {
 
   @ParameterizedTest
   @CsvSource({
-      "https://github.com/OctopusSamples/RandomQuotes-Java,maven,true",
+      "https://github.com/mcasperson/SampleMavenProject-SpringBoot,maven,true",
       "https://github.com/mcasperson/SampleGradleProject-SpringBoot,gradle,true",
-      "https://github.com/OctopusSamples/RandomQuotes-Java,maven,false",
+      "https://github.com/mcasperson/SampleMavenProject-SpringBoot,maven,false",
       "https://github.com/mcasperson/SampleGradleProject-SpringBoot,gradle,false"
   })
   public void verifyTemplate(final String url, final String name, final String useWrapper) throws IOException {
