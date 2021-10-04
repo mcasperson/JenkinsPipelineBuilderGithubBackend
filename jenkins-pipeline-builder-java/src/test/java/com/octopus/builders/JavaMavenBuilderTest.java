@@ -10,6 +10,7 @@ import io.vavr.control.Try;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.text.StringEscapeUtils;
+import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
