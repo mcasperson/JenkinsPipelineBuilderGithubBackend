@@ -4,7 +4,7 @@
   <keepDependencies>false</keepDependencies>
   <properties/>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.94">
-    <script></script>
+    <script>#{Script}</script>
     <sandbox>true</sandbox>
   </definition>
   <triggers/>
