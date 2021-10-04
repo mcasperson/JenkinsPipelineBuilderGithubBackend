@@ -52,7 +52,7 @@ jobs:
         run: mvn --batch-mode dependency:tree --no-transfer-progress
 
       - name: Build with Maven
-        run: mvn --batch-mode package --file pom.xml -Pnative
+        run: mvn --batch-mode package --file pom.xml -Pnative -DskipTests
 
       - name: Create Release
         id: create_release
