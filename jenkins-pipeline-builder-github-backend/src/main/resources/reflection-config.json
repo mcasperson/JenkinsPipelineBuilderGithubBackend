@@ -27,6 +27,15 @@
     "allPublicClasses" : true
   },
   {
+    "name" : "org.apache.commons.logging.impl.SimpleLog",
+    "allDeclaredConstructors" : true,
+    "allPublicConstructors" : true,
+    "allDeclaredMethods" : true,
+    "allPublicMethods" : true,
+    "allDeclaredClasses" : true,
+    "allPublicClasses" : true
+  },
+  {
     "name" : "org.apache.logging.log4j.LogManager",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
@@ -36,7 +45,7 @@
     "allPublicClasses" : true
   },
   {
-    "name" : "org.apache.commons.logging.impl.SimpleLog",
+    "name" : "org.fusesource.jansi.AnsiRenderer",
     "allDeclaredConstructors" : true,
     "allPublicConstructors" : true,
     "allDeclaredMethods" : true,

@@ -23,7 +23,14 @@ public class DotnetCoreBuilder implements PipelineBuilder {
   @Override
   public Boolean canBuild(@NonNull final RepoClient accessor) {
     this.solutionFiles = accessor.getWildcardFiles("*.sln").getOrElse(List.of());
-    return !solutionFiles.isEmpty();
+    final List<String> projectFiles = accessor.getWildcardFiles("**/*.csproj").getOrElse(List.of());
+
+    /*
+     https://natemcmaster.com/blog/2017/03/09/vs2015-to-vs2017-upgrade/ provides some great insights
+     into the various project file formats.
+     */
+    final boolean isDotNetCore = projectFiles.stream().anyMatch(f -> accessor.getFile(f).getOrElse("").matches("Sdk\\s*=\\s*\"Microsoft\\.NET\\.Sdk\""));
+    return !solutionFiles.isEmpty() && isDotNetCore;
   }
 
   @Override
