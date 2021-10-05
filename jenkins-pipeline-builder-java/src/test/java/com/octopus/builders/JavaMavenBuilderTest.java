@@ -53,7 +53,9 @@ public class JavaMavenBuilderTest {
                   + "maven-plugin:3.13 "
                   + "jdk-tool:1.5 "
                   + "workflow-aggregator:2.6 "
-                  + "git:4.8.2")
+                  + "git:4.8.2 "
+                  + "msbuild:1.30 "
+                  + "nunit:0.27")
               .run("apt-get update")
               .run("apt-get install maven wget -y")
               .run("wget https://services.gradle.org/distributions/gradle-7.2-bin.zip")
@@ -64,6 +66,9 @@ public class JavaMavenBuilderTest {
               .run("wget https://cdn.azul.com/zulu/bin/zulu17.28.13-ca-jdk17.0.0-linux_x64.tar.gz")
               .run("tar -xzf zulu17.28.13-ca-jdk17.0.0-linux_x64.tar.gz")
               .run("mv zulu17.28.13-ca-jdk17.0.0-linux_x64 /opt")
+              .run("wget https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb -O packages-microsoft-prod.deb")
+              .run("dpkg -i packages-microsoft-prod.deb")
+              .run("apt-get update; apt-get install -y apt-transport-https && apt-get update && apt-get install -y dotnet-sdk-5.0")
               .build()))
       .withCopyFileToContainer(MountableFile.forClasspathResource("jenkins/maven_tool.groovy"),
           "/usr/share/jenkins/ref/init.groovy.d/maven_tool.groovy")

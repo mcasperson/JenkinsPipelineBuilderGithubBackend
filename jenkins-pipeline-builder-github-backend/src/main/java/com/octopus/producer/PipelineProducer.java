@@ -1,6 +1,7 @@
 package com.octopus.producer;
 
 import com.octopus.builders.PipelineBuilder;
+import com.octopus.builders.dotnet.DotnetCoreBuilder;
 import com.octopus.builders.java.JavaGradleBuilder;
 import com.octopus.builders.java.JavaMavenBuilder;
 import com.octopus.http.HttpClient;
@@ -70,5 +71,16 @@ public class PipelineProducer {
   @Produces
   public PipelineBuilder getGradleBuilder() {
     return new JavaGradleBuilder();
+  }
+
+  /**
+   * Produces the DotNet Core pipeline builder.
+   *
+   * @return An implementation of PipelineBuilder.
+   */
+  @ApplicationScoped
+  @Produces
+  public PipelineBuilder getDotNetCoreBuilder() {
+    return new DotnetCoreBuilder();
   }
 }
