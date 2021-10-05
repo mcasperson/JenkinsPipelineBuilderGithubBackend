@@ -1,4 +1,4 @@
-package com.octopus.builders;
+package com.octopus.builders.java;
 
 import com.google.common.collect.ImmutableList;
 import com.octopus.dsl.ArgType;

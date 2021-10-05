@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.message.BasicHeader;
 import org.jboss.logging.Logger;
@@ -39,8 +40,7 @@ public class StringHttpClient implements HttpClient {
 
     return getClient()
         .of(httpClient -> getResponse(httpClient, url, List.of())
-            .of(response -> checkSuccess(response).getEntity())
-            .mapTry(entity -> entity == null ? "" : EntityUtils.toString(entity))
+            .of(response -> EntityUtils.toString(checkSuccess(response).getEntity()))
             .get())
         .onSuccess(c -> LOG.log(DEBUG, "HTTP GET response body: " + c))
         .onFailure(e -> LOG.log(DEBUG, "Exception message: " + e.toString()));
@@ -147,7 +147,7 @@ public class StringHttpClient implements HttpClient {
   private HttpRequestBase getRequest(
       @NonNull final String path,
       @NonNull final List<Header> headers) {
-    final HttpRequestBase request = new HttpHead(path);
+    final HttpRequestBase request = new HttpGet(path);
     headers.forEach(request::addHeader);
     return request;
   }

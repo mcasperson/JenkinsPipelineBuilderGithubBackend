@@ -11,11 +11,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import org.jboss.logging.Logger;
+import org.springframework.util.AntPathMatcher;
 
 /**
  * An accessor that is configured to work with GitHub.
@@ -25,6 +27,7 @@ public class GithubRepoClient implements RepoClient {
 
   private static final Logger LOG = Logger.getLogger(GithubRepoClient.class.toString());
   private static final String GITHUB_REGEX = "https://github.com/(?<username>.*?)/(?<repo>.*?)(/|$)";
+  private static final AntPathMatcher ANT_PATH_MATCHER = new AntPathMatcher("/");
   private static final Pattern GITHUB_PATTERN = Pattern.compile(GITHUB_REGEX);
   private static final String GITHUB_CLIENT_ID_ENV_VAR = "GITHUB_CLIENT_ID";
   private static final String GITHUB_CLIENT_SECRET_ENV_VAR = "GITHUB_CLIENT_SECRET";
@@ -53,6 +56,24 @@ public class GithubRepoClient implements RepoClient {
   @Override
   public boolean testFile(@NonNull final String path) {
     return httpClient.head(ensureEndsWithSlash(getHttpPathFromRepo()) + path, username, password);
+  }
+
+  @Override
+  public Try<List<String>> getWildcardFiles(@NonNull final String path) {
+    return getDetails()
+        // Get the repository tree list
+        .flatMap(d -> httpClient.get(
+            "https://api.github.com/repos/" + d.getUsername() + "/" +  d.getRepository() + "/git/trees/master?recursive=1"))
+        // Convert the resulting JSON into a map
+        .mapTry(j -> new ObjectMapper().readValue(j, Map.class))
+        // files are contained in the tree array
+        .mapTry(d -> (List<Map<Object, Object>>)d.get("tree"))
+        // each member of the tree array is an object containing a path
+        .mapTry(t -> t
+            .stream()
+            .map(u -> u.get("path").toString())
+            .filter(p -> ANT_PATH_MATCHER.match(path, p))
+            .collect(Collectors.toList()));
   }
 
   @Override
@@ -85,22 +106,20 @@ public class GithubRepoClient implements RepoClient {
   public List<String> getDefaultBranches() {
     return getDetails()
         // Get the repository details: https://docs.github.com/en/rest/reference/repos#get-a-repository
-        .map(d -> httpClient.get(
+        .flatMap(d -> httpClient.get(
             "https://api.github.com/repos/" + d.getUsername() + "/" + d.getRepository()))
         // Convert the resulting JSON into a map
-        .map(t -> t.mapTry(j -> new ObjectMapper().readValue(j, Map.class)))
-        // If there was a failure, return null, so Optional will stop chaining
-        .map(t -> t.getOrElse(() -> null))
+        .mapTry(j -> new ObjectMapper().readValue(j, Map.class))
         // get the default branch key
         .map(r -> r.get("default_branch"))
         // convert to a string
         .map(d -> List.of(d.toString()))
         // If there was a failure, assume the default branch is main or master.
         // We may also fall back to this if Github adds any rate limiting
-        .orElse(List.of("main", "master"));
+        .getOrElse(List.of("main", "master"));
   }
 
-  private Optional<GithubRepoDetails> getDetails() {
+  private Try<GithubRepoDetails> getDetails() {
     LOG.log(DEBUG, "GithubRepoAccessor.getDetails()");
 
     final Matcher matcher = GITHUB_PATTERN.matcher(repo);
@@ -112,8 +131,8 @@ public class GithubRepoClient implements RepoClient {
       LOG.log(DEBUG, "Found username: " + retValue.getUsername());
       LOG.log(DEBUG, "Found repo: " + retValue.getRepository());
 
-      return Optional.of(retValue);
+      return Try.of(() -> retValue);
     }
-    return Optional.empty();
+    return Try.failure(new Exception("Failed to extract values from URL"));
   }
 }

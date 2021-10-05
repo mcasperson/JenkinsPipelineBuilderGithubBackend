@@ -1,7 +1,6 @@
 package com.octopus.builders.java;
 
 import com.google.common.collect.ImmutableList;
-import com.octopus.builders.JavaGitBuilder;
 import com.octopus.builders.PipelineBuilder;
 import com.octopus.dsl.ArgType;
 import com.octopus.dsl.Argument;
