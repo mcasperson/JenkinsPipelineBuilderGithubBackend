@@ -9,7 +9,7 @@ import com.octopus.dsl.Function1ArgTrailingLambda;
 import com.octopus.dsl.FunctionManyArgs;
 import com.octopus.dsl.FunctionTrailingLambda;
 import com.octopus.dsl.StringContent;
-import com.octopus.repoaccessors.RepoAccessor;
+import com.octopus.repoclients.RepoClient;
 import java.util.List;
 import java.util.logging.Logger;
 import lombok.NonNull;
@@ -28,7 +28,7 @@ public class JavaGitBuilder {
    * @param file     The file to test.
    * @return true if the file exists, and false otherwise.
    */
-  public boolean fileExists(@NonNull final RepoAccessor accessor, @NonNull final String file) {
+  public boolean fileExists(@NonNull final RepoClient accessor, @NonNull final String file) {
     return accessor.getDefaultBranches()
         .stream()
         .anyMatch(b -> accessor.testFile("blob/" + b + "/" + file));
@@ -71,7 +71,7 @@ public class JavaGitBuilder {
    * @param accessor The repo accessor defining the repo to checkout.
    * @return A list of Elements that build the checkout steps.
    */
-  public Element createCheckoutStep(@NonNull final RepoAccessor accessor) {
+  public Element createCheckoutStep(@NonNull final RepoClient accessor) {
     return Function1ArgTrailingLambda.builder()
         .name("stage")
         .arg("Checkout")

@@ -1,10 +1,10 @@
-package com.octopus.repoaccessors.github;
+package com.octopus.repoclients.github;
 
 import static org.jboss.logging.Logger.Level.DEBUG;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.octopus.http.HttpClient;
-import com.octopus.repoaccessors.RepoAccessor;
+import com.octopus.repoclients.RepoClient;
 import io.vavr.control.Try;
 import java.util.List;
 import java.util.Map;
@@ -21,9 +21,9 @@ import org.jboss.logging.Logger;
  * An accessor that is configured to work with GitHub.
  */
 @Builder
-public class GithubRepoAccessor implements RepoAccessor {
+public class GithubRepoClient implements RepoClient {
 
-  private static final Logger LOG = Logger.getLogger(GithubRepoAccessor.class.toString());
+  private static final Logger LOG = Logger.getLogger(GithubRepoClient.class.toString());
   private static final String GITHUB_REGEX = "https://github.com/(?<username>.*?)/(?<repo>.*?)(/|$)";
   private static final Pattern GITHUB_PATTERN = Pattern.compile(GITHUB_REGEX);
   private static final String GITHUB_CLIENT_ID_ENV_VAR = "GITHUB_CLIENT_ID";

@@ -1,6 +1,6 @@
 package com.octopus.builders;
 
-import com.octopus.repoaccessors.RepoAccessor;
+import com.octopus.repoclients.RepoClient;
 
 /**
  * This interface defines a pipeline builder. Each builder is responsible for detecting files in a
@@ -13,12 +13,12 @@ public interface PipelineBuilder {
    *
    * @return true if this builder can build a pipeline, and false otherwise
    */
-  Boolean canBuild(RepoAccessor accessor);
+  Boolean canBuild(RepoClient accessor);
 
   /**
    * Builds the pipeline from a given repo.
    *
    * @return The Jenkins pipeline generated from the repo
    */
-  String generate(RepoAccessor accessor);
+  String generate(RepoClient accessor);
 }

@@ -1,9 +1,9 @@
-package com.octopus.repoaccessors;
+package com.octopus.repoclients;
 
 import io.vavr.control.Try;
 import java.util.List;
 
-public abstract class TestRepoAccessor implements RepoAccessor {
+public abstract class TestRepoClient implements RepoClient {
 
   private String repo;
   protected boolean findWrapper;
@@ -15,7 +15,7 @@ public abstract class TestRepoAccessor implements RepoAccessor {
    * @param findWrapper true if this accessor is to report finding a wrapper script,
    *                    and false otherwise
    */
-  public TestRepoAccessor(final String repo, boolean findWrapper) {
+  public TestRepoClient(final String repo, boolean findWrapper) {
     this.repo = repo;
     this.findWrapper = findWrapper;
   }

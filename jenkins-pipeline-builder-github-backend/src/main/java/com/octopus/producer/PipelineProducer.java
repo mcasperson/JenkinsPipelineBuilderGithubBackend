@@ -5,8 +5,8 @@ import com.octopus.builders.java.JavaGradleBuilder;
 import com.octopus.builders.java.JavaMavenBuilder;
 import com.octopus.http.HttpClient;
 import com.octopus.http.StringHttpClient;
-import com.octopus.repoaccessors.RepoAccessor;
-import com.octopus.repoaccessors.github.GithubRepoAccessor;
+import com.octopus.repoclients.RepoClient;
+import com.octopus.repoclients.github.GithubRepoClient;
 import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
@@ -42,8 +42,8 @@ public class PipelineProducer {
    * @return An implementation of RepoAccessor.
    */
   @Produces
-  public RepoAccessor getRepoAccessor(final HttpClient httpClient) {
-    return GithubRepoAccessor.builder()
+  public RepoClient getRepoAccessor(final HttpClient httpClient) {
+    return GithubRepoClient.builder()
         .httpClient(httpClient)
         .username(clientId.orElse(""))
         .password(clientSecret.orElse(""))

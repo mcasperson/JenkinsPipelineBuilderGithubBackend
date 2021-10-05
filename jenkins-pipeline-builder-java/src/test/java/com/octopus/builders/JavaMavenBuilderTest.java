@@ -5,9 +5,9 @@ import com.octopus.builders.java.JavaGradleBuilder;
 import com.octopus.builders.java.JavaMavenBuilder;
 import com.octopus.jenkinsclient.JenkinsClient;
 import com.octopus.jenkinsclient.JenkinsDetails;
-import com.octopus.repoaccessors.GradleTestRepoAccessor;
-import com.octopus.repoaccessors.MavenTestRepoAccessor;
-import com.octopus.repoaccessors.RepoAccessor;
+import com.octopus.repoclients.GradleTestRepoClient;
+import com.octopus.repoclients.MavenTestRepoClient;
+import com.octopus.repoclients.RepoClient;
 import io.vavr.control.Try;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -78,7 +78,7 @@ public class JavaMavenBuilderTest {
 
   @ParameterizedTest
   @MethodSource("provideTestRepos")
-  public void verifyTemplate(@NonNull final String name, @NonNull final RepoAccessor accessor)
+  public void verifyTemplate(@NonNull final String name, @NonNull final RepoClient accessor)
       throws IOException {
     final String template = Arrays.stream(PIPELINE_BUILDERS)
         .filter(p -> p.canBuild(accessor))
@@ -122,27 +122,27 @@ public class JavaMavenBuilderTest {
     return Stream.of(
         Arguments.of(
             "gradle",
-            new GradleTestRepoAccessor(
+            new GradleTestRepoClient(
                 "https://github.com/mcasperson/SampleGradleProject-SpringBoot",
                 false)),
         Arguments.of(
             "maven",
-            new MavenTestRepoAccessor(
+            new MavenTestRepoClient(
                 "https://github.com/mcasperson/SampleMavenProject-SpringBoot",
                 false)),
         Arguments.of(
             "mavenWrapper",
-            new MavenTestRepoAccessor(
+            new MavenTestRepoClient(
                 "https://github.com/mcasperson/SampleMavenProject-SpringBoot",
                 true)),
         Arguments.of(
             "mavenWrapperQuarkus",
-            new MavenTestRepoAccessor(
+            new MavenTestRepoClient(
                 "https://github.com/mcasperson/SampleMavenProject-Quarkus",
                 true)),
         Arguments.of(
             "gradleWrapper",
-            new GradleTestRepoAccessor(
+            new GradleTestRepoClient(
                 "https://github.com/mcasperson/SampleGradleProject-SpringBoot",
                 true))
     );

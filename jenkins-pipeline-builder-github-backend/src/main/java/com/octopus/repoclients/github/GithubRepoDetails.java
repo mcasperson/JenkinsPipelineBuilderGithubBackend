@@ -1,4 +1,4 @@
-package com.octopus.repoaccessors.github;
+package com.octopus.repoclients.github;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

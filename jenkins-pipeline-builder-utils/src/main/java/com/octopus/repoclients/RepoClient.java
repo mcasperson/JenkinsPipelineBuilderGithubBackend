@@ -1,4 +1,4 @@
-package com.octopus.repoaccessors;
+package com.octopus.repoclients;
 
 import io.vavr.control.Try;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * An abstraction for accessing files in a repo.
  */
-public interface RepoAccessor {
+public interface RepoClient {
 
   void setRepo(String repo);
 

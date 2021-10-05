@@ -11,7 +11,7 @@ import com.octopus.dsl.Function1Arg;
 import com.octopus.dsl.Function1ArgTrailingLambda;
 import com.octopus.dsl.FunctionManyArgs;
 import com.octopus.dsl.FunctionTrailingLambda;
-import com.octopus.repoaccessors.RepoAccessor;
+import com.octopus.repoclients.RepoClient;
 import java.util.List;
 import lombok.NonNull;
 
@@ -24,7 +24,7 @@ public class JavaMavenBuilder implements PipelineBuilder {
   private boolean usesWrapper = false;
 
   @Override
-  public Boolean canBuild(@NonNull final RepoAccessor accessor) {
+  public Boolean canBuild(@NonNull final RepoClient accessor) {
     if (GIT_BUILDER.fileExists(accessor, "pom.xml")) {
       usesWrapper = usesWrapper(accessor);
       return true;
@@ -34,7 +34,7 @@ public class JavaMavenBuilder implements PipelineBuilder {
   }
 
   @Override
-  public String generate(@NonNull final RepoAccessor accessor) {
+  public String generate(@NonNull final RepoClient accessor) {
     return FunctionTrailingLambda.builder()
         .name("pipeline")
         .children(new ImmutableList.Builder<Element>()
@@ -62,7 +62,7 @@ public class JavaMavenBuilder implements PipelineBuilder {
         .toString();
   }
 
-  private boolean usesWrapper(@NonNull final RepoAccessor accessor) {
+  private boolean usesWrapper(@NonNull final RepoClient accessor) {
     return GIT_BUILDER.fileExists(accessor, "mvnw");
   }
 

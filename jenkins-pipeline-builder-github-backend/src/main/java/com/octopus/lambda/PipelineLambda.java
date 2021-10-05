@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.collect.ImmutableMap;
 import com.octopus.builders.PipelineBuilder;
-import com.octopus.repoaccessors.RepoAccessor;
+import com.octopus.repoclients.RepoClient;
 import java.util.Map;
 import java.util.Optional;
 import javax.enterprise.inject.Instance;
@@ -27,7 +27,7 @@ public class PipelineLambda implements RequestHandler<Map<String, Object>, Proxy
   private static final Logger LOG = Logger.getLogger(PipelineLambda.class.toString());
 
   @Inject
-  RepoAccessor accessor;
+  RepoClient accessor;
 
   @Inject
   Instance<PipelineBuilder> builders;

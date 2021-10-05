@@ -3,7 +3,7 @@ package com.octopus.resource;
 import static org.jboss.logging.Logger.Level.DEBUG;
 
 import com.octopus.builders.PipelineBuilder;
-import com.octopus.repoaccessors.RepoAccessor;
+import com.octopus.repoclients.RepoClient;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -23,7 +23,7 @@ public class PipelineResource {
   private static final Logger LOG = Logger.getLogger(PipelineResource.class.toString());
 
   @Inject
-  RepoAccessor accessor;
+  RepoClient accessor;
 
   @Inject
   Instance<PipelineBuilder> builders;

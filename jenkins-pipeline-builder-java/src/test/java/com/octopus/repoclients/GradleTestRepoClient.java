@@ -1,6 +1,6 @@
-package com.octopus.repoaccessors;
+package com.octopus.repoclients;
 
-public class MavenTestRepoAccessor extends TestRepoAccessor {
+public class GradleTestRepoClient extends TestRepoClient {
 
   /**
    * A mock repo accessor that pretends to find (or not find) project files and wrapper scripts.
@@ -8,17 +8,17 @@ public class MavenTestRepoAccessor extends TestRepoAccessor {
    * @param repo        The git repo
    * @param findWrapper true if this accessor is to report finding a wrapper script,
    */
-  public MavenTestRepoAccessor(final String repo, final boolean findWrapper) {
+  public GradleTestRepoClient(final String repo, final boolean findWrapper) {
     super(repo, findWrapper);
   }
 
   @Override
   public boolean testFile(String path) {
-    if (path.endsWith("pom.xml")) {
+    if (path.endsWith("build.gradle") || path.endsWith("build.gradle.kts")) {
       return true;
     }
 
-    if (findWrapper && path.endsWith("mvnw")) {
+    if (findWrapper && path.endsWith("gradlew")) {
       return true;
     }
 
