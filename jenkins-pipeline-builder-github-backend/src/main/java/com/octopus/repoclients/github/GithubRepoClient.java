@@ -8,7 +8,6 @@ import com.octopus.repoclients.RepoClient;
 import io.vavr.control.Try;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -16,8 +15,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import org.apache.shiro.util.AntPathMatcher;
+import org.apache.shiro.util.PatternMatcher;
 import org.jboss.logging.Logger;
-import org.springframework.util.AntPathMatcher;
 
 /**
  * An accessor that is configured to work with GitHub.
@@ -27,7 +27,7 @@ public class GithubRepoClient implements RepoClient {
 
   private static final Logger LOG = Logger.getLogger(GithubRepoClient.class.toString());
   private static final String GITHUB_REGEX = "https://github.com/(?<username>.*?)/(?<repo>.*?)(/|$)";
-  private static final AntPathMatcher ANT_PATH_MATCHER = new AntPathMatcher("/");
+  private static final PatternMatcher ANT_PATH_MATCHER = new AntPathMatcher();
   private static final Pattern GITHUB_PATTERN = Pattern.compile(GITHUB_REGEX);
   private static final String GITHUB_CLIENT_ID_ENV_VAR = "GITHUB_CLIENT_ID";
   private static final String GITHUB_CLIENT_SECRET_ENV_VAR = "GITHUB_CLIENT_SECRET";
@@ -72,7 +72,7 @@ public class GithubRepoClient implements RepoClient {
         .mapTry(t -> t
             .stream()
             .map(u -> u.get("path").toString())
-            .filter(p -> ANT_PATH_MATCHER.match(path, p))
+            .filter(p -> ANT_PATH_MATCHER.matches(path, p))
             .collect(Collectors.toList()));
   }
 
