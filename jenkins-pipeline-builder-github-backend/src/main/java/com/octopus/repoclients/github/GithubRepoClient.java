@@ -50,12 +50,21 @@ public class GithubRepoClient implements RepoClient {
 
   @Override
   public Try<String> getFile(@NonNull final String path) {
-    return httpClient.get(ensureEndsWithSlash(getHttpPathFromRepo()) + path, username, password);
+    return getDetails()
+        .flatMap(d -> getDefaultBranches().stream().map(b -> httpClient.get("https://raw.githubusercontent.com/" + d.getUsername() + "/" + d.getRepository() + "/" + b + "/" + path, username, password))
+            .filter(Try::isSuccess)
+            .findFirst()
+            .orElse(Try.failure(new Exception("All attempts to find a file failed."))));
   }
 
   @Override
   public boolean testFile(@NonNull final String path) {
-    return httpClient.head(ensureEndsWithSlash(getHttpPathFromRepo()) + path, username, password);
+    return getDetails()
+        .map(d -> getDefaultBranches()
+            .stream()
+            .map(b -> httpClient.head("https://raw.githubusercontent.com/" + d.getUsername() + "/" + d.getRepository() + "/" + b + "/" + path, username, password))
+            .anyMatch(b -> true))
+        .getOrElse(false);
   }
 
   @Override

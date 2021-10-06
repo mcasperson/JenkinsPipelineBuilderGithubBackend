@@ -32,7 +32,7 @@ public class JavaGitBuilder extends GitBuilder {
   public boolean fileExists(@NonNull final RepoClient accessor, @NonNull final String file) {
     return accessor.getDefaultBranches()
         .stream()
-        .anyMatch(b -> accessor.testFile("blob/" + b + "/" + file));
+        .anyMatch(b -> accessor.testFile(file));
   }
 
   /**

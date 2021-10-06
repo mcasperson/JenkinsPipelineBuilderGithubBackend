@@ -61,7 +61,7 @@ public class StringHttpClient implements HttpClient {
               buildHeaders(username, password))
             .of(response -> EntityUtils.toString(checkSuccess(response).getEntity()))
             .get())
-        .onSuccess(c -> LOG.log(DEBUG, "HTTP HEAD request was successful."))
+        .onSuccess(c -> LOG.log(DEBUG, "HTTP GET response body: " + c))
         .onFailure(e -> LOG.log(DEBUG, "Exception message: " + e.toString()));
   }
 
@@ -101,14 +101,14 @@ public class StringHttpClient implements HttpClient {
         .isSuccess();
   }
 
-  private List<Header> buildHeaders(@NonNull final String username, @NonNull final String password) {
+  private List<Header> buildHeaders(final String username, final String password) {
     return Stream.of(buildAuthHeader(username, password))
         .filter(Optional::isPresent)
         .map(Optional::get)
         .collect(Collectors.toList());
   }
 
-  private Optional<BasicHeader> buildAuthHeader(@NonNull final String username, @NonNull final String password) {
+  private Optional<BasicHeader> buildAuthHeader(final String username, final String password) {
     if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
       return Optional.empty();
     }

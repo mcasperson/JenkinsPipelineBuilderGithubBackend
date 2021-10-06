@@ -13,11 +13,13 @@ import com.octopus.dsl.FunctionManyArgs;
 import com.octopus.dsl.FunctionTrailingLambda;
 import com.octopus.repoclients.RepoClient;
 import java.util.List;
+import java.util.regex.Pattern;
 import lombok.NonNull;
 
 public class DotnetCoreBuilder implements PipelineBuilder {
 
   private static final GitBuilder GIT_BUILDER = new GitBuilder();
+  private static final Pattern DOT_NET_CORE_REGEX = Pattern.compile("Sdk\\s*=\\s*\"Microsoft\\.NET\\.Sdk\"");
   private List<String> solutionFiles;
 
   @Override
@@ -29,7 +31,9 @@ public class DotnetCoreBuilder implements PipelineBuilder {
      https://natemcmaster.com/blog/2017/03/09/vs2015-to-vs2017-upgrade/ provides some great insights
      into the various project file formats.
      */
-    final boolean isDotNetCore = projectFiles.stream().anyMatch(f -> accessor.getFile(f).getOrElse("").matches("Sdk\\s*=\\s*\"Microsoft\\.NET\\.Sdk\""));
+    final boolean isDotNetCore = projectFiles
+        .stream()
+        .anyMatch(f -> DOT_NET_CORE_REGEX.matcher(accessor.getFile(f).getOrElse("")).find());
     return !solutionFiles.isEmpty() && isDotNetCore;
   }
 
