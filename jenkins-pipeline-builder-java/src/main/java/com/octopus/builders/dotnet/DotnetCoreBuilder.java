@@ -1,5 +1,7 @@
 package com.octopus.builders.dotnet;
 
+import static org.jboss.logging.Logger.Level.DEBUG;
+
 import com.google.common.collect.ImmutableList;
 import com.octopus.builders.GitBuilder;
 import com.octopus.builders.PipelineBuilder;
@@ -16,17 +18,26 @@ import com.octopus.repoclients.RepoClient;
 import java.util.List;
 import java.util.regex.Pattern;
 import lombok.NonNull;
+import org.jboss.logging.Logger;
 
 public class DotnetCoreBuilder implements PipelineBuilder {
 
+  private static final Logger LOG = Logger.getLogger(DotnetCoreBuilder.class.toString());
   private static final GitBuilder GIT_BUILDER = new GitBuilder();
   private static final Pattern DOT_NET_CORE_REGEX = Pattern.compile("Sdk\\s*=\\s*\"Microsoft\\.NET\\.Sdk\"");
   private List<String> solutionFiles;
 
   @Override
   public Boolean canBuild(@NonNull final RepoClient accessor) {
+    LOG.log(DEBUG, "DotnetCoreBuilder.canBuild(RepoClient)");
     this.solutionFiles = accessor.getWildcardFiles("*.sln").getOrElse(List.of());
     final List<String> projectFiles = accessor.getWildcardFiles("**/*.csproj").getOrElse(List.of());
+
+    LOG.log(DEBUG, "Found " + solutionFiles.size() + " solution files");
+    solutionFiles.forEach(s -> LOG.log(DEBUG, "  " + s));
+
+    LOG.log(DEBUG, "Found " + projectFiles.size() + " project files");
+    projectFiles.forEach(s -> LOG.log(DEBUG, "  " + s));
 
     /*
      https://natemcmaster.com/blog/2017/03/09/vs2015-to-vs2017-upgrade/ provides some great insights
@@ -35,6 +46,9 @@ public class DotnetCoreBuilder implements PipelineBuilder {
     final boolean isDotNetCore = projectFiles
         .stream()
         .anyMatch(f -> DOT_NET_CORE_REGEX.matcher(accessor.getFile(f).getOrElse("")).find());
+
+    LOG.log(DEBUG, "Project file were " + (isDotNetCore ? "" : "not ") + "DotNet Core projects");
+
     return !solutionFiles.isEmpty() && isDotNetCore;
   }
 
