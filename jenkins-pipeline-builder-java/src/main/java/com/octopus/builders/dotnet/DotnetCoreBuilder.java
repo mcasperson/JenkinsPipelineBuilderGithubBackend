@@ -174,49 +174,49 @@ public class DotnetCoreBuilder implements PipelineBuilder {
         .name("stage")
         .arg("Publish")
         .children(GIT_BUILDER.createStepsElement(new ImmutableList.Builder<Element>()
-                .add(FunctionManyArgs.builder()
-                    .name("sh")
-                    .args(new ImmutableList.Builder<Argument>()
-                        .add(new Argument(
-                            "script",
-                            "dotnet publish --configuration Release",
-                            ArgType.STRING))
+            .add(FunctionManyArgs.builder()
+                .name("sh")
+                .args(new ImmutableList.Builder<Argument>()
+                    .add(new Argument(
+                        "script",
+                        "dotnet publish --configuration Release",
+                        ArgType.STRING))
+                    .build())
+                .build())
+            .add(FunctionTrailingLambda.builder()
+                .name("script")
+                .children(new ImmutableList.Builder<Element>()
+                    .add(StringContent.builder()
+                        .content(
+                            "// Find the matching artifacts\n"
+                                + "def files = findFiles(glob: '**/publish/*.dll')\n"
+                                + "  .collect{it.path.substring(0, it.path.lastIndexOf(\"/\"))}\n"
+                                + "  .unique(false)\n"
+                                + "echo 'Found ' + files.size() + ' potential publish dirs'\n"
+                                + "files.each{echo it}\n"
+                                + "env.PUBLISH_PATHS = files.collect{it}.join(':')\n"
+                                + "echo 'These paths are available from the PUBLISH_PATHS environment variable, separated by colons.'"
+                        )
                         .build())
                     .build())
-                .add(FunctionTrailingLambda.builder()
-                    .name("script")
-                    .children(new ImmutableList.Builder<Element>()
-                        .add(StringContent.builder()
-                            .content(
-                                "// Find the matching artifacts\n"
-                                    + "def files = findFiles(glob: '**/publish/*.dll')\n"
-                                    + "  .collect{it.path.substring(0, it.path.lastIndexOf(\"/\"))}\n"
-                                    + "  .unique(false)\n"
-                                    + "echo 'Found ' + files.size() + ' potential publish dirs'\n"
-                                    + "files.each{echo it}\n"
-                                    + "env.PUBLISH_PATHS = files.collect{it}.join(':')\n"
-                                    + "echo 'These paths are available from the PUBLISH_PATHS environment variable, separated by colons.'"
-                            )
-                            .build())
-                        .build())
-                    .build())
-                .add(Function1Arg.builder()
-                    .name("sh")
-                    .value("export IFS=\":\"\n"
-                        + "for PATH in ${PUBLISH_PATHS}; do\n"
-                        + "  cd \"${WORKSPACE}/${PATH}\"\n"
-                        + "  # Scan backwards for a csproj file. We'll use the project file name as the package ID."
-                        + "  for file in ../../../../*.csproj; do\n"
-                        + "    [ -e \"$file\" ] && PACKAGEID=\"${file%.*}\" || PACKAGEID=\"application\"\n"
-                        + "    break\n"
-                        + "  done\n"
-                        + "  # The Octopus CLI is used to create a package."
-                        + "  # Get the Octopus CLI from https://octopus.com/downloads/octopuscli#linux\n"
-                        + "  /usr/bin/octo pack --id ${PACKAGEID} --format zip --include ** --version 1.0.0.${BUILD_NUMBER}\n"
-                        + "  echo \"Created package \\\"${WORKSPACE}/${PATH}/${PACKAGEID}.1.0.0.${BUILD_NUMBER}.zip\\\"\"\n"
-                        + "done")
-                    .build())
-                .build()))
+                .build())
+            .add(Function1Arg.builder()
+                .name("sh")
+                .value("export IFS=\":\"\n"
+                    + "for PATH in ${PUBLISH_PATHS}; do\n"
+                    + "  cd \"${WORKSPACE}/${PATH}\"\n"
+                    + "  # Scan backwards for a csproj file. We'll use the project file name as the package ID."
+                    + "  for file in ../../../../*.csproj; do\n"
+                    + "    [ -e \"$file\" ] && PACKAGEID=\"${file%.*}\" || PACKAGEID=\"application\"\n"
+                    + "    break\n"
+                    + "  done\n"
+                    + "  # The Octopus CLI is used to create a package."
+                    + "  # Get the Octopus CLI from https://octopus.com/downloads/octopuscli#linux\n"
+                    + "  /usr/bin/octo pack --id ${PACKAGEID} --format zip --include ** --version 1.0.0.${BUILD_NUMBER}\n"
+                    + "  echo \"Created package \\\"${WORKSPACE}/${PATH}/${PACKAGEID}.1.0.0.${BUILD_NUMBER}.zip\\\"\"\n"
+                    + "done")
+                .build())
+            .build()))
         .build();
   }
 }
