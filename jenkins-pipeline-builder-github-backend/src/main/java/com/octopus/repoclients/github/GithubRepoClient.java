@@ -63,7 +63,7 @@ public class GithubRepoClient implements RepoClient {
         .map(d -> getDefaultBranches()
             .stream()
             .map(b -> httpClient.head("https://raw.githubusercontent.com/" + d.getUsername() + "/" + d.getRepository() + "/" + b + "/" + path, username, password))
-            .anyMatch(b -> true))
+            .anyMatch(b -> b))
         .getOrElse(false);
   }
 
