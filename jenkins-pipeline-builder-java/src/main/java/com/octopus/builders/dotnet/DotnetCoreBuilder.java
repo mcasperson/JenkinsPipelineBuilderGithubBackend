@@ -192,7 +192,7 @@ public class DotnetCoreBuilder implements PipelineBuilder {
                                 + "def files = findFiles(glob: '**/publish/*.dll')\n"
                                 + "  .collect{it.path.substring(0, it.path.lastIndexOf(\"/\"))}\n"
                                 + "  .unique(false)\n"
-                                + "echo 'Found ' + files.size() + ' potential publish dirs'\n"
+                                + "echo 'Found ' + files.size() + ' publish dirs'\n"
                                 + "files.each{echo it}\n"
                                 + "// Join the paths containing published application with colons."
                                 + "env.PUBLISH_PATHS = files.collect{it}.join(':')\n"
