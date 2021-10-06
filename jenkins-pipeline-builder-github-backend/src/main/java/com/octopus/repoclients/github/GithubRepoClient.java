@@ -26,7 +26,7 @@ import org.jboss.logging.Logger;
 public class GithubRepoClient implements RepoClient {
 
   private static final Logger LOG = Logger.getLogger(GithubRepoClient.class.toString());
-  private static final String GITHUB_REGEX = "https://github.com/(?<username>.*?)/(?<repo>.*?)(/|$)";
+  private static final String GITHUB_REGEX = "https://github.com/(?<username>.*?)/(?<repo>.*?)(/|\\.git|$).*";
   private static final PatternMatcher ANT_PATH_MATCHER = new AntPathMatcher();
   private static final Pattern GITHUB_PATTERN = Pattern.compile(GITHUB_REGEX);
   private static final String GITHUB_CLIENT_ID_ENV_VAR = "GITHUB_CLIENT_ID";
@@ -66,9 +66,10 @@ public class GithubRepoClient implements RepoClient {
     return getDetails()
         .map(d -> getDefaultBranches()
             .stream()
-            .map(b -> httpClient.head("https://raw.githubusercontent.com/" + d.getUsername() + "/" + d.getRepository() + "/" + b + "/" + path))
-            .anyMatch(b -> b))
-        .getOrElse(false);
+            .anyMatch(b -> httpClient.head(
+                "https://raw.githubusercontent.com/" + d.getUsername() + "/" + d.getRepository()
+                    + "/" + b + "/" + path)))
+        .get();
   }
 
   @Override
@@ -128,10 +129,10 @@ public class GithubRepoClient implements RepoClient {
         .getOrElse(List.of("main", "master"));
   }
 
-  private Try<GithubRepoDetails> getDetails() {
+  public Try<GithubRepoDetails> getDetails() {
     LOG.log(DEBUG, "GithubRepoAccessor.getDetails()");
 
-    final Matcher matcher = GITHUB_PATTERN.matcher(repo);
+    final Matcher matcher = GITHUB_PATTERN.matcher(repo.trim());
     if (matcher.matches()) {
       final GithubRepoDetails retValue = new GithubRepoDetails(
           matcher.group("username"),
