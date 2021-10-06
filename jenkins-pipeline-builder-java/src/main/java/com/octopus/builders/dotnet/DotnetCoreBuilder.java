@@ -153,14 +153,14 @@ public class DotnetCoreBuilder implements PipelineBuilder {
             .add(FunctionManyArgs.builder()
                 .name("sh")
                 .args(new ImmutableList.Builder<Argument>()
-                    .add(new Argument("script", "dotnet test " + solutionFiles.get(0) + " -l:trx;LogFileName=TestOutput.trx",
+                    .add(new Argument("script", "dotnet test " + solutionFiles.get(0) + " -l:trx",
                         ArgType.STRING))
                     .build())
                 .build())
             .add(FunctionManyArgs.builder()
                 .name("mstest")
                 .args(new ImmutableList.Builder<Argument>()
-                    .add(new Argument("testResultsPattern", "**/*.trx", ArgType.STRING))
+                    .add(new Argument("testResultsFile", "**/*.trx", ArgType.STRING))
                     .add(new Argument("failOnError", "false", ArgType.BOOLEAN))
                     .add(new Argument("keepLongStdio", "true", ArgType.BOOLEAN))
                     .build())
