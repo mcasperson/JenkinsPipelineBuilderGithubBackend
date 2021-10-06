@@ -72,7 +72,7 @@ public class JavaMavenBuilderTest {
               .run("apt update && sudo apt install --no-install-recommends gnupg curl ca-certificates apt-transport-https && "
                   + "curl -sSfL https://apt.octopus.com/public.key | apt-key add - && "
                   + "sh -c \"echo deb https://apt.octopus.com/ stable main > /etc/apt/sources.list.d/octopus.com.list\" && "
-                  + "apt update && sudo apt install octopuscli")
+                  + "apt update && sudo apt install -y octopuscli")
               .build()))
       .withCopyFileToContainer(MountableFile.forClasspathResource("jenkins/maven_tool.groovy"),
           "/usr/share/jenkins/ref/init.groovy.d/maven_tool.groovy")
