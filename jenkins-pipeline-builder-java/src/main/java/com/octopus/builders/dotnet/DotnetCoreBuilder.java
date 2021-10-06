@@ -27,7 +27,8 @@ public class DotnetCoreBuilder implements PipelineBuilder {
 
   private static final Logger LOG = Logger.getLogger(DotnetCoreBuilder.class.toString());
   private static final GitBuilder GIT_BUILDER = new GitBuilder();
-  private static final Pattern DOT_NET_CORE_REGEX = Pattern.compile("Sdk\\s*=\\s*\"Microsoft\\.NET\\.Sdk\"");
+  private static final Pattern DOT_NET_CORE_REGEX = Pattern.compile(
+      "Sdk\\s*=\\s*\"Microsoft\\.NET\\.Sdk\"");
   private List<String> solutionFiles;
 
   @Override
@@ -176,47 +177,40 @@ public class DotnetCoreBuilder implements PipelineBuilder {
         .name("stage")
         .arg("Publish")
         .children(GIT_BUILDER.createStepsElement(new ImmutableList.Builder<Element>()
-            .add(FunctionManyArgs.builder()
-                .name("sh")
-                .args(new ImmutableList.Builder<Argument>()
-                    .add(new Argument(
-                        "script",
-                        "dotnet publish " + solutionFiles.get(0) + " --configuration Release",
-                        ArgType.STRING))
-                    .build())
-                .build())
-            .add(FunctionTrailingLambda.builder()
-                .name("script")
-                .children(new ImmutableList.Builder<Element>()
-                    .add(StringContent.builder()
-                        .content(
-                            "// Find the matching artifacts\n"
-                                + "def files = findFiles(glob: '/**/publish.')\n"
-                                + "echo 'Found ' + files.size() + ' potential publish dirs'\n"
-                                + "files.each{echo it.path}\n"
-                                + "env.PUBLISH_PATHS = files.collect {it.path}.join(':')\n"
-                                + "echo 'These paths are available from the PUBLISH_PATHS environment variable, separated by colons.'"
-                        )
+                .add(FunctionManyArgs.builder()
+                    .name("sh")
+                    .args(new ImmutableList.Builder<Argument>()
+                        .add(new Argument(
+                            "script",
+                            "dotnet publish " + solutionFiles.get(0) + " --configuration Release",
+                            ArgType.STRING))
                         .build())
                     .build())
-                .build())
-            .add(FunctionTrailingLambda.builder()
-                .name("sh")
-                .children(new ImmutableList.Builder<Element>()
-                    .add(StringContent.builder()
-                        .content(
-                            "IFS=':' read -ra PUBLISH_PATH <<< \"PUBLISH_PATHS\"\n"
-                                + "for i in \"${PUBLISH_PATH[@]}\"; do\n"
-                                + "  cd \"$i\"\n"
-                                + "  octo pack --id application --format zip --include ** --version 1.0.0.${BUILD_NUMBER}\n"
-                                + "  echo \"Created package \\\"$i/application.1.0.0.${BUILD_NUMBER}.zip\\\"\"\n"
-                                + "done"
-                        )
+                .add(FunctionTrailingLambda.builder()
+                    .name("script")
+                    .children(new ImmutableList.Builder<Element>()
+                        .add(StringContent.builder()
+                            .content(
+                                "// Find the matching artifacts\n"
+                                    + "def files = findFiles(glob: '/**/publish.')\n"
+                                    + "echo 'Found ' + files.size() + ' potential publish dirs'\n"
+                                    + "files.each{echo it.path}\n"
+                                    + "env.PUBLISH_PATHS = files.collect {it.path}.join(':')\n"
+                                    + "echo 'These paths are available from the PUBLISH_PATHS environment variable, separated by colons.'"
+                            )
+                            .build())
                         .build())
                     .build())
-                .build())
-            .build())
-        )
+                .add(Function1Arg.builder()
+                    .name("sh")
+                    .value("IFS=':' read -ra PUBLISH_PATH <<< \"PUBLISH_PATHS\"\n"
+                        + "for i in \"${PUBLISH_PATH[@]}\"; do\n"
+                        + "  cd \"$i\"\n"
+                        + "  octo pack --id application --format zip --include ** --version 1.0.0.${BUILD_NUMBER}\n"
+                        + "  echo \"Created package \\\"$i/application.1.0.0.${BUILD_NUMBER}.zip\\\"\"\n"
+                        + "done")
+                    .build())
+                .build()))
         .build();
   }
 }

@@ -18,6 +18,9 @@ public class Function1Arg extends ElementWithChildren {
    * @return The groovy function
    */
   public String toString() {
+    if (value.contains("\n")) {
+      return getIndent() + name + " ''''\n" + String.join("\n" + getIndent(), value.split("\n")) + getIndent() + "\n''''";
+    }
     return getIndent() + name + " '" + value + "'";
   }
 }
