@@ -85,19 +85,19 @@ public class GithubRepoClient implements RepoClient {
             .map(b -> httpClient.get(
                 "https://api.github.com/repos/" + d.getUsername() + "/" + d.getRepository()
                     + "/git/trees/" + b + "?recursive=1"))
-            .filter(t -> t.isSuccess())
+            .filter(Try::isSuccess)
             .findFirst()
-            .orElse(Try.failure(new Exception("Could not contact any of the branches")))
-            // Convert the resulting JSON into a map
-            .mapTry(j -> new ObjectMapper().readValue(j, Map.class))
-            // files are contained in the tree array
-            .mapTry(d -> (List<Map<Object, Object>>) d.get("tree"))
-            // each member of the tree array is an object containing a path
-            .mapTry(t -> t
-                .stream()
-                .map(u -> u.get("path").toString())
-                .filter(p -> ANT_PATH_MATCHER.matches(path, p))
-                .collect(Collectors.toList()));
+            .orElse(Try.failure(new Exception("Could not contact any of the branches"))))
+        // Convert the resulting JSON into a map
+        .mapTry(j -> new ObjectMapper().readValue(j, Map.class))
+        // files are contained in the tree array
+        .mapTry(d -> (List<Map<Object, Object>>) d.get("tree"))
+        // each member of the tree array is an object containing a path
+        .mapTry(t -> t
+            .stream()
+            .map(u -> u.get("path").toString())
+            .filter(p -> ANT_PATH_MATCHER.matches(path, p))
+            .collect(Collectors.toList()));
   }
 
   @Override
