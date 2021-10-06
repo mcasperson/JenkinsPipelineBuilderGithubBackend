@@ -1,5 +1,7 @@
 package com.octopus.builders.java;
 
+import static org.jboss.logging.Logger.Level.DEBUG;
+
 import com.google.common.collect.ImmutableList;
 import com.octopus.builders.PipelineBuilder;
 import com.octopus.dsl.ArgType;
@@ -14,12 +16,14 @@ import com.octopus.repoclients.RepoClient;
 import java.util.Arrays;
 import java.util.List;
 import lombok.NonNull;
+import org.jboss.logging.Logger;
 
 /**
  * A pipeline builder for Gradle projects.
  */
 public class JavaGradleBuilder implements PipelineBuilder {
 
+  private static final Logger LOG = Logger.getLogger(JavaGradleBuilder.class.toString());
   private static final JavaGitBuilder GIT_BUILDER = new JavaGitBuilder();
   private static final String[] GRADLE_BUILD_FILES = {"build.gradle", "build.gradle.kts"};
   private static final String GRADLE_OUTPUT_DIR = "build/libs";
@@ -27,8 +31,12 @@ public class JavaGradleBuilder implements PipelineBuilder {
 
   @Override
   public Boolean canBuild(@NonNull final RepoClient accessor) {
+    LOG.log(DEBUG, "JavaGradleBuilder.canBuild(RepoClient)");
+
     if (Arrays.stream(GRADLE_BUILD_FILES).anyMatch(f -> accessor.testFile(f))) {
+      LOG.log(DEBUG, String.join(" or ", GRADLE_BUILD_FILES) + " was found");
       usesWrapper = usesWrapper(accessor);
+      LOG.log(DEBUG, "Wrapper script was " + (usesWrapper ? "" : "not ") + "found");
       return true;
     }
 

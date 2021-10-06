@@ -1,5 +1,7 @@
 package com.octopus.builders.java;
 
+import static org.jboss.logging.Logger.Level.DEBUG;
+
 import com.google.common.collect.ImmutableList;
 import com.octopus.builders.PipelineBuilder;
 import com.octopus.dsl.ArgType;
@@ -13,19 +15,25 @@ import com.octopus.dsl.FunctionTrailingLambda;
 import com.octopus.repoclients.RepoClient;
 import java.util.List;
 import lombok.NonNull;
+import org.jboss.logging.Logger;
 
 /**
  * A pipeline builder for Maven projects.
  */
 public class JavaMavenBuilder implements PipelineBuilder {
 
+  private static final Logger LOG = Logger.getLogger(JavaMavenBuilder.class.toString());
   private static final JavaGitBuilder GIT_BUILDER = new JavaGitBuilder();
   private boolean usesWrapper = false;
 
   @Override
   public Boolean canBuild(@NonNull final RepoClient accessor) {
+    LOG.log(DEBUG, "JavaMavenBuilder.canBuild(RepoClient)");
+
     if (accessor.testFile("pom.xml")) {
+      LOG.log(DEBUG, "pom.xml file was found");
       usesWrapper = usesWrapper(accessor);
+      LOG.log(DEBUG, "Wrapper script was " + (usesWrapper ? "" : "not ") + "found");
       return true;
     }
 
