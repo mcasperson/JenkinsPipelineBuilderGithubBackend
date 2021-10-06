@@ -202,7 +202,8 @@ public class DotnetCoreBuilder implements PipelineBuilder {
                 .build())
             .add(Function1Arg.builder()
                 .name("sh")
-                .value("export IFS=\":\"\n"
+                .value("# Split the PUBLISH_PATHS variable on colons. Each segment represents a published application.\n"
+                    + "export IFS=\":\"\n"
                     + "for PATH in ${PUBLISH_PATHS}; do\n"
                     + "  cd \"${WORKSPACE}/${PATH}\"\n"
                     + "  # Scan backwards for a csproj file. We'll use the project file name as the package ID."
