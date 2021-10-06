@@ -205,7 +205,7 @@ public class DotnetCoreBuilder implements PipelineBuilder {
                     .value("export IFS=\":\"\n"
                         + "for PATH in ${PUBLISH_PATHS}; do\n"
                         + "  cd \"${WORKSPACE}/${PATH}\"\n"
-                        + "  # Scan backwards for a csproj file. We'll use the project file name as the package ID"
+                        + "  # Scan backwards for a csproj file. We'll use the project file name as the package ID."
                         + "  for file in ../../../../*.csproj; do\n"
                         + "    [ -e \"$file\" ] && PACKAGEID=\"${file%.*}\" || PACKAGEID=\"application\"\n"
                         + "    break\n"
