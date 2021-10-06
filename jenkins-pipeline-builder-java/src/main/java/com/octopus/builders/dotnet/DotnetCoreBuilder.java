@@ -114,10 +114,6 @@ public class DotnetCoreBuilder implements PipelineBuilder {
         .name("stage")
         .arg("Restore Dependencies")
         .children(GIT_BUILDER.createStepsElement(new ImmutableList.Builder<Element>()
-            .add(Comment.builder()
-                .content(
-                    "Save the dependencies that went into this build into an artifact. This allows you to review any builds for vulnerabilities later on.")
-                .build())
             .add(FunctionManyArgs.builder()
                 .name("sh")
                 .args(new ImmutableList.Builder<Argument>()
