@@ -27,7 +27,7 @@ public class JavaGradleBuilder implements PipelineBuilder {
 
   @Override
   public Boolean canBuild(@NonNull final RepoClient accessor) {
-    if (Arrays.stream(GRADLE_BUILD_FILES).anyMatch(f -> GIT_BUILDER.fileExists(accessor, f))) {
+    if (Arrays.stream(GRADLE_BUILD_FILES).anyMatch(f -> accessor.testFile(f))) {
       usesWrapper = usesWrapper(accessor);
       return true;
     }
@@ -64,7 +64,7 @@ public class JavaGradleBuilder implements PipelineBuilder {
   }
 
   private Boolean usesWrapper(@NonNull final RepoClient accessor) {
-    return GIT_BUILDER.fileExists(accessor, "gradlew");
+    return accessor.testFile("gradlew");
   }
 
   private String gradleExecutable() {

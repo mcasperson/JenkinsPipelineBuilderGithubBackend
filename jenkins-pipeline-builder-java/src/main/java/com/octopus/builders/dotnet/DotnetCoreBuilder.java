@@ -11,6 +11,7 @@ import com.octopus.dsl.Function1Arg;
 import com.octopus.dsl.Function1ArgTrailingLambda;
 import com.octopus.dsl.FunctionManyArgs;
 import com.octopus.dsl.FunctionTrailingLambda;
+import com.octopus.dsl.StringContent;
 import com.octopus.repoclients.RepoClient;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -152,6 +153,53 @@ public class DotnetCoreBuilder implements PipelineBuilder {
                     .build())
                 .build())
             .build()))
+        .build();
+  }
+
+  private Element createPublishStep() {
+    return Function1ArgTrailingLambda.builder()
+        .name("stage")
+        .arg("Publish")
+        .children(GIT_BUILDER.createStepsElement(new ImmutableList.Builder<Element>()
+            .add(FunctionManyArgs.builder()
+                .name("sh")
+                .args(new ImmutableList.Builder<Argument>()
+                    .add(new Argument(
+                        "script",
+                        "dotnet publish ${workspace}/" + solutionFiles.get(0) + " --configuration Release",
+                        ArgType.STRING))
+                    .build())
+                .build())
+            .add(FunctionTrailingLambda.builder()
+                .name("script")
+                .children(new ImmutableList.Builder<Element>()
+                    .add(StringContent.builder()
+                        .content(
+                            "// Find the matching artifacts\n"
+                                + "def files = findFiles(glob: '/**/publish.')\n"
+                                + "echo 'Found ' + files.size() + ' potential publish dirs'\n"
+                                + "env.PUBLISH_PATHS = files.collect {it.path}.join(':')\n"
+                                + "echo 'These paths are available from the PUBLISH_PATHS environment variable, separated by colons.'"
+                        )
+                        .build())
+                    .build())
+                .build())
+            .add(FunctionTrailingLambda.builder()
+                .name("sh")
+                .children(new ImmutableList.Builder<Element>()
+                    .add(StringContent.builder()
+                        .content(
+                            "IFS=':' read -ra PUBLISH_PATH <<< \"PUBLISH_PATHS\"\n"
+                                + "for i in \"${PUBLISH_PATH[@]}\"; do\n"
+                                + "  cd \"$i\"\n"
+                                + "  octo pack --id application --format zip --include ** --version 1.0.0.${BUILD_NUMBER}"
+                                + "done"
+                        )
+                        .build())
+                    .build())
+                .build())
+            .build())
+        )
         .build();
   }
 }

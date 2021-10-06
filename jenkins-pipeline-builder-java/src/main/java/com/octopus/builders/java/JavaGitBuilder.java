@@ -23,19 +23,6 @@ public class JavaGitBuilder extends GitBuilder {
   private static final Logger LOG = Logger.getLogger(JavaGitBuilder.class.toString());
 
   /**
-   * Tests to see if a file exists.
-   *
-   * @param accessor The repo accessor.
-   * @param file     The file to test.
-   * @return true if the file exists, and false otherwise.
-   */
-  public boolean fileExists(@NonNull final RepoClient accessor, @NonNull final String file) {
-    return accessor.getDefaultBranches()
-        .stream()
-        .anyMatch(b -> accessor.testFile(file));
-  }
-
-  /**
    * Creates the deployment stage.
    *
    * @param buildDir The directory holding the compiled artifacts.

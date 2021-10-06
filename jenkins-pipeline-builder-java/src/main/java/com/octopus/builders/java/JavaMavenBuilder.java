@@ -24,7 +24,7 @@ public class JavaMavenBuilder implements PipelineBuilder {
 
   @Override
   public Boolean canBuild(@NonNull final RepoClient accessor) {
-    if (GIT_BUILDER.fileExists(accessor, "pom.xml")) {
+    if (accessor.testFile("pom.xml")) {
       usesWrapper = usesWrapper(accessor);
       return true;
     }
@@ -62,7 +62,7 @@ public class JavaMavenBuilder implements PipelineBuilder {
   }
 
   private boolean usesWrapper(@NonNull final RepoClient accessor) {
-    return GIT_BUILDER.fileExists(accessor, "mvnw");
+    return accessor.testFile("mvnw");
   }
 
   private String mavenExecutable() {
