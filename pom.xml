@@ -68,6 +68,12 @@
       <artifactId>httpclient</artifactId>
       <groupId>org.apache.httpcomponents</groupId>
       <version>4.5.13</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>commons-logging</artifactId>
+          <groupId>commons-logging</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <artifactId>guava</artifactId>
