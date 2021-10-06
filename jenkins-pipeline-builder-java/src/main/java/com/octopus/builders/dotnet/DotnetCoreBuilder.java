@@ -209,7 +209,7 @@ public class DotnetCoreBuilder implements PipelineBuilder {
                         + "for PATH in $PUBLISH_PATHS; do\n"
                         + "  cd \"$WORKSPACE/$PATH\"\n"
                         + "  octo pack --id application --format zip --include ** --version 1.0.0.${BUILD_NUMBER}\n"
-                        + "  echo \"Created package \\\"$i/application.1.0.0.${BUILD_NUMBER}.zip\\\"\"\n"
+                        + "  echo \"Created package \\\"$WORKSPACE/$PATH/application.1.0.0.${BUILD_NUMBER}.zip\\\"\"\n"
                         + "done")
                     .build())
                 .build()))
