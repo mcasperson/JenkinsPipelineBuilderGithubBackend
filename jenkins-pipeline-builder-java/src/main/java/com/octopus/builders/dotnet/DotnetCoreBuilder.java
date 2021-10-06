@@ -205,9 +205,9 @@ public class DotnetCoreBuilder implements PipelineBuilder {
                     .build())
                 .add(Function1Arg.builder()
                     .name("sh")
-                    .value("IFS=':' read -ra PUBLISH_PATH <<< \"PUBLISH_PATHS\"\n"
-                        + "for i in \"${PUBLISH_PATH[@]}\"; do\n"
-                        + "  cd \"$i\"\n"
+                    .value("export IFS=\":\"\n"
+                        + "for PATH in $PUBLISH_PATHS; do\n"
+                        + "  cd \"$WORKSPACE/$PATH\"\n"
                         + "  octo pack --id application --format zip --include ** --version 1.0.0.${BUILD_NUMBER}\n"
                         + "  echo \"Created package \\\"$i/application.1.0.0.${BUILD_NUMBER}.zip\\\"\"\n"
                         + "done")
