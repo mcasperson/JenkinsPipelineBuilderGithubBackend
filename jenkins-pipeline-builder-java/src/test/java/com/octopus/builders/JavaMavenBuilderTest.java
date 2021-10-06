@@ -55,7 +55,7 @@ public class JavaMavenBuilderTest {
                   + "workflow-aggregator:2.6 "
                   + "git:4.8.2 "
                   + "msbuild:1.30 "
-                  + "nunit:0.27")
+                  + "mstest:1.0.0")
               .run("apt-get update")
               .run("apt-get install maven wget sudo -y")
               .run("wget https://services.gradle.org/distributions/gradle-7.2-bin.zip")
