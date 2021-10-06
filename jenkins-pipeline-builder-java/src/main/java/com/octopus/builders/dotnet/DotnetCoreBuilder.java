@@ -192,10 +192,12 @@ public class DotnetCoreBuilder implements PipelineBuilder {
                         .add(StringContent.builder()
                             .content(
                                 "// Find the matching artifacts\n"
-                                    + "def files = findFiles(glob: '/**/publish.')\n"
+                                    + "def files = findFiles(glob: '**/publish/*.dll')\n"
+                                    + "  .collect{it.path.substring(0, it.path.lastIndexOf(\"/\"))}\n"
+                                    + "  .unique(false)\n"
                                     + "echo 'Found ' + files.size() + ' potential publish dirs'\n"
-                                    + "files.each{echo it.path}\n"
-                                    + "env.PUBLISH_PATHS = files.collect {it.path}.join(':')\n"
+                                    + "files.each{echo it}\n"
+                                    + "env.PUBLISH_PATHS = files.collect{it}.join(':')\n"
                                     + "echo 'These paths are available from the PUBLISH_PATHS environment variable, separated by colons.'"
                             )
                             .build())
