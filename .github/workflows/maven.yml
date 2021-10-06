@@ -7,6 +7,10 @@ on:
 jobs:
   build:
 
+    env:
+      APP_GITHUB_SECRET: ${{ secrets.APP_GITHUB_SECRET }}
+      APP_GITHUB_ID: ${{ secrets.APP_GITHUB_SECRET }}
+
     runs-on: ubuntu-latest
 
     steps:

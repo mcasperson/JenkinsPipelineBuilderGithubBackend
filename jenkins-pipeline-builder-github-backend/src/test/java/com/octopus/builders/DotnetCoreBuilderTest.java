@@ -8,6 +8,7 @@ import com.octopus.repoclients.github.GithubRepoClient;
 import org.junit.jupiter.api.Test;
 
 public class DotnetCoreBuilderTest {
+
   private static final DotnetCoreBuilder DOTNET_CORE_BUILDER = new DotnetCoreBuilder();
 
   @Test
@@ -16,6 +17,8 @@ public class DotnetCoreBuilderTest {
         .builder()
         .httpClient(new StringHttpClient())
         .repo("https://github.com/OctopusSamples/RandomQuotes")
+        .username(System.getenv("APP_GITHUB_ID"))
+        .password(System.getenv("APP_GITHUB_SECRET"))
         .build()));
   }
 }

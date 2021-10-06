@@ -72,7 +72,7 @@ public class GithubRepoClient implements RepoClient {
     return getDetails()
         // Get the repository tree list
         .flatMap(d -> httpClient.get(
-            "https://api.github.com/repos/" + d.getUsername() + "/" +  d.getRepository() + "/git/trees/master?recursive=1"))
+            "https://api.github.com/repos/" + d.getUsername() + "/" +  d.getRepository() + "/git/trees/master?recursive=1", username, password))
         // Convert the resulting JSON into a map
         .mapTry(j -> new ObjectMapper().readValue(j, Map.class))
         // files are contained in the tree array
