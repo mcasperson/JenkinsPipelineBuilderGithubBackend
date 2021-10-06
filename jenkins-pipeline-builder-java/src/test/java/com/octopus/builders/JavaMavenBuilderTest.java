@@ -57,7 +57,7 @@ public class JavaMavenBuilderTest {
                   + "msbuild:1.30 "
                   + "nunit:0.27")
               .run("apt-get update")
-              .run("apt-get install maven wget -y")
+              .run("apt-get install maven wget sudo -y")
               .run("wget https://services.gradle.org/distributions/gradle-7.2-bin.zip")
               .run("unzip gradle-7.2-bin.zip")
               .run("mv gradle-7.2 /opt")

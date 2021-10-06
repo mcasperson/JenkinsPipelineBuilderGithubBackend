@@ -93,7 +93,7 @@ public class DotnetCoreBuilder implements PipelineBuilder {
                 .name("sh")
                 .args(new ImmutableList.Builder<Argument>()
                     .add(new Argument("script",
-                        "dotnet list package ${workspace}/" + solutionFiles.get(0) + " > dependencies.txt",
+                        "dotnet list package " + solutionFiles.get(0) + " > dependencies.txt",
                         ArgType.STRING))
                     .build())
                 .build())
@@ -121,7 +121,7 @@ public class DotnetCoreBuilder implements PipelineBuilder {
                 .name("sh")
                 .args(new ImmutableList.Builder<Argument>()
                     .add(new Argument("script",
-                        "dotnet restore ${workspace}/" + solutionFiles.get(0),
+                        "dotnet restore " + solutionFiles.get(0),
                         ArgType.STRING))
                     .build())
                 .build())
@@ -138,7 +138,7 @@ public class DotnetCoreBuilder implements PipelineBuilder {
                 .name("sh")
                 .args(new ImmutableList.Builder<Argument>()
                     .add(new Argument("script",
-                        "dotnet build ${workspace}/" + solutionFiles.get(0) + " --configuration Release",
+                        "dotnet build " + solutionFiles.get(0) + " --configuration Release",
                         ArgType.STRING))
                     .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
                     .build())
@@ -155,7 +155,7 @@ public class DotnetCoreBuilder implements PipelineBuilder {
             .add(FunctionManyArgs.builder()
                 .name("sh")
                 .args(new ImmutableList.Builder<Argument>()
-                    .add(new Argument("script", "dotnet test ${workspace}/" + solutionFiles.get(0),
+                    .add(new Argument("script", "dotnet test " + solutionFiles.get(0),
                         ArgType.STRING))
                     .build())
                 .build())
@@ -184,7 +184,7 @@ public class DotnetCoreBuilder implements PipelineBuilder {
                 .args(new ImmutableList.Builder<Argument>()
                     .add(new Argument(
                         "script",
-                        "dotnet publish ${workspace}/" + solutionFiles.get(0) + " --configuration Release",
+                        "dotnet publish " + solutionFiles.get(0) + " --configuration Release",
                         ArgType.STRING))
                     .build())
                 .build())
