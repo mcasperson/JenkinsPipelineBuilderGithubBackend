@@ -30,6 +30,7 @@ public class DotnetCoreBuilder implements PipelineBuilder {
   @Override
   public Boolean canBuild(@NonNull final RepoClient accessor) {
     LOG.log(DEBUG, "DotnetCoreBuilder.canBuild(RepoClient)");
+
     this.solutionFiles = accessor.getWildcardFiles("*.sln").getOrElse(List.of());
     final List<String> projectFiles = accessor.getWildcardFiles("**/*.csproj").getOrElse(List.of());
 
