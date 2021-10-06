@@ -119,7 +119,7 @@ public class DotnetCoreBuilder implements PipelineBuilder {
                 .name("sh")
                 .args(new ImmutableList.Builder<Argument>()
                     .add(new Argument("script",
-                        "dotnet restore " + solutionFiles.get(0),
+                        "dotnet restore",
                         ArgType.STRING))
                     .build())
                 .build())
@@ -136,7 +136,7 @@ public class DotnetCoreBuilder implements PipelineBuilder {
                 .name("sh")
                 .args(new ImmutableList.Builder<Argument>()
                     .add(new Argument("script",
-                        "dotnet build " + solutionFiles.get(0) + " --configuration Release",
+                        "dotnet build --configuration Release",
                         ArgType.STRING))
                     .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
                     .build())
@@ -153,7 +153,7 @@ public class DotnetCoreBuilder implements PipelineBuilder {
             .add(FunctionManyArgs.builder()
                 .name("sh")
                 .args(new ImmutableList.Builder<Argument>()
-                    .add(new Argument("script", "dotnet test " + solutionFiles.get(0) + " -l:trx",
+                    .add(new Argument("script", "dotnet test -l:trx",
                         ArgType.STRING))
                     .build())
                 .build())
@@ -179,7 +179,7 @@ public class DotnetCoreBuilder implements PipelineBuilder {
                     .args(new ImmutableList.Builder<Argument>()
                         .add(new Argument(
                             "script",
-                            "dotnet publish " + solutionFiles.get(0) + " --configuration Release",
+                            "dotnet publish --configuration Release",
                             ArgType.STRING))
                         .build())
                     .build())
