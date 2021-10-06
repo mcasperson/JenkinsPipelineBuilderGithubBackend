@@ -50,6 +50,8 @@ public class GithubRepoClient implements RepoClient {
 
   @Override
   public Try<String> getFile(@NonNull final String path) {
+    LOG.debug("GithubRepoClient.getFile(String)");
+
     return getDetails()
         .flatMap(d -> getDefaultBranches().stream().map(b -> httpClient.get("https://raw.githubusercontent.com/" + d.getUsername() + "/" + d.getRepository() + "/" + b + "/" + path, username, password))
             .filter(Try::isSuccess)
@@ -59,6 +61,8 @@ public class GithubRepoClient implements RepoClient {
 
   @Override
   public boolean testFile(@NonNull final String path) {
+    LOG.debug("GithubRepoClient.testFile(String)");
+
     return getDetails()
         .map(d -> getDefaultBranches()
             .stream()
@@ -69,6 +73,8 @@ public class GithubRepoClient implements RepoClient {
 
   @Override
   public Try<List<String>> getWildcardFiles(@NonNull final String path) {
+    LOG.debug("GithubRepoClient.getWildcardFiles(String)");
+
     return getDetails()
         // Get the repository tree list
         .flatMap(d -> httpClient.get(
@@ -87,24 +93,12 @@ public class GithubRepoClient implements RepoClient {
 
   @Override
   public String getRepoPath() {
+    LOG.debug("GithubRepoClient.getRepoPath()");
+
     if (!repo.endsWith(".git")) {
       return repo + ".git";
     }
     return repo;
-  }
-
-  private String getHttpPathFromRepo() {
-    if (repo.endsWith(".git")) {
-      return repo.substring(0, repo.length() - 4);
-    }
-    return repo;
-  }
-
-  private String ensureEndsWithSlash(@NonNull final String path) {
-    if (!path.endsWith("/")) {
-      return path + "/";
-    }
-    return path;
   }
 
   /**
@@ -113,6 +107,8 @@ public class GithubRepoClient implements RepoClient {
    * @return The repository default branch.
    */
   public List<String> getDefaultBranches() {
+    LOG.debug("GithubRepoClient.getDefaultBranches()");
+
     return getDetails()
         // Get the repository details: https://docs.github.com/en/rest/reference/repos#get-a-repository
         .flatMap(d -> httpClient.get(
