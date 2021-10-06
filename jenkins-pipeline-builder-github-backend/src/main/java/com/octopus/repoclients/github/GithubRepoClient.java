@@ -53,7 +53,7 @@ public class GithubRepoClient implements RepoClient {
     LOG.debug("GithubRepoClient.getFile(String)");
 
     return getDetails()
-        .flatMap(d -> getDefaultBranches().stream().map(b -> httpClient.get("https://raw.githubusercontent.com/" + d.getUsername() + "/" + d.getRepository() + "/" + b + "/" + path, username, password))
+        .flatMap(d -> getDefaultBranches().stream().map(b -> httpClient.get("https://raw.githubusercontent.com/" + d.getUsername() + "/" + d.getRepository() + "/" + b + "/" + path))
             .filter(Try::isSuccess)
             .findFirst()
             .orElse(Try.failure(new Exception("All attempts to find a file failed."))));
@@ -66,7 +66,7 @@ public class GithubRepoClient implements RepoClient {
     return getDetails()
         .map(d -> getDefaultBranches()
             .stream()
-            .map(b -> httpClient.head("https://raw.githubusercontent.com/" + d.getUsername() + "/" + d.getRepository() + "/" + b + "/" + path, username, password))
+            .map(b -> httpClient.head("https://raw.githubusercontent.com/" + d.getUsername() + "/" + d.getRepository() + "/" + b + "/" + path))
             .anyMatch(b -> b))
         .getOrElse(false);
   }
@@ -78,7 +78,9 @@ public class GithubRepoClient implements RepoClient {
     return getDetails()
         // Get the repository tree list
         .flatMap(d -> httpClient.get(
-            "https://api.github.com/repos/" + d.getUsername() + "/" +  d.getRepository() + "/git/trees/master?recursive=1", username, password))
+            "https://api.github.com/repos/" + d.getUsername() + "/" +  d.getRepository() + "/git/trees/master?recursive=1",
+            username,
+            password))
         // Convert the resulting JSON into a map
         .mapTry(j -> new ObjectMapper().readValue(j, Map.class))
         // files are contained in the tree array
@@ -112,7 +114,9 @@ public class GithubRepoClient implements RepoClient {
     return getDetails()
         // Get the repository details: https://docs.github.com/en/rest/reference/repos#get-a-repository
         .flatMap(d -> httpClient.get(
-            "https://api.github.com/repos/" + d.getUsername() + "/" + d.getRepository()))
+            "https://api.github.com/repos/" + d.getUsername() + "/" + d.getRepository(),
+            username,
+            password))
         // Convert the resulting JSON into a map
         .mapTry(j -> new ObjectMapper().readValue(j, Map.class))
         // get the default branch key
