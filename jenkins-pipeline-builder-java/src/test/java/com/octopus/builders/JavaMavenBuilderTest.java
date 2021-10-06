@@ -68,7 +68,7 @@ public class JavaMavenBuilderTest {
               .run("mv zulu17.28.13-ca-jdk17.0.0-linux_x64 /opt")
               .run("wget https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb -O packages-microsoft-prod.deb")
               .run("dpkg -i packages-microsoft-prod.deb")
-              .run("apt-get update; apt-get install -y apt-transport-https && apt-get update && apt-get install -y dotnet-sdk-5.0")
+              .run("apt-get update; apt-get install -y apt-transport-https && apt-get update && apt-get install -y dotnet-sdk-5.0 dotnet-sdk-3.1")
               .build()))
       .withCopyFileToContainer(MountableFile.forClasspathResource("jenkins/maven_tool.groovy"),
           "/usr/share/jenkins/ref/init.groovy.d/maven_tool.groovy")

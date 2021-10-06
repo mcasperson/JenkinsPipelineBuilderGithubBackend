@@ -68,8 +68,8 @@ public class DotnetCoreBuilder implements PipelineBuilder {
                 .children(new ImmutableList.Builder<Element>()
                     .add(GIT_BUILDER.createEnvironmentStage())
                     .add(GIT_BUILDER.createCheckoutStep(accessor))
-                    .add(createDependenciesStep())
                     .add(createDependenciesInstallStep())
+                    .add(createDependenciesStep())
                     .add(createBuildStep())
                     .add(createTestStep())
                     .build())
@@ -93,7 +93,7 @@ public class DotnetCoreBuilder implements PipelineBuilder {
                 .name("sh")
                 .args(new ImmutableList.Builder<Argument>()
                     .add(new Argument("script",
-                        "dotnet list package " + solutionFiles.get(0) + " > dependencies.txt",
+                        "dotnet list package > dependencies.txt",
                         ArgType.STRING))
                     .build())
                 .build())
