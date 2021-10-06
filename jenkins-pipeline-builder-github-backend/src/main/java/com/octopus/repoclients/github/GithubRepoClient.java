@@ -135,6 +135,11 @@ public class GithubRepoClient implements RepoClient {
         .getOrElse(List.of("main", "master"));
   }
 
+  /**
+   * Extract the details of a GitHub repo from the url.
+   *
+   * @return The username and repo name, if they could be determined.
+   */
   public Try<GithubRepoDetails> getDetails() {
     LOG.log(DEBUG, "GithubRepoAccessor.getDetails()");
 

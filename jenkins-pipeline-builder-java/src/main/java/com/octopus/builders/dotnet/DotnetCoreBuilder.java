@@ -20,6 +20,9 @@ import java.util.regex.Pattern;
 import lombok.NonNull;
 import org.jboss.logging.Logger;
 
+/**
+ * The pipeline builder for dotnet core apps.
+ */
 public class DotnetCoreBuilder implements PipelineBuilder {
 
   private static final Logger LOG = Logger.getLogger(DotnetCoreBuilder.class.toString());

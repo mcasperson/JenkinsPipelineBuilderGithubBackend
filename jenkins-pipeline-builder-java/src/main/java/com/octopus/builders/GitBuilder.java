@@ -13,6 +13,9 @@ import com.octopus.repoclients.RepoClient;
 import java.util.List;
 import lombok.NonNull;
 
+/**
+ * The base class containing common functions to build shared parts of the pipeline.
+ */
 public class GitBuilder {
   /**
    * Creates the comments that appear at the top of the pipeline.
