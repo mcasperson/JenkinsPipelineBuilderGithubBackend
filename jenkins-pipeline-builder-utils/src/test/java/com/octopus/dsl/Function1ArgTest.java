@@ -14,4 +14,13 @@ public class Function1ArgTest {
         .build();
     assertEquals("function 'argument'", element.toString());
   }
+
+  @Test
+  public void testFunction1ArgMultiline() {
+    final Element element = Function1Arg.builder()
+        .name("function")
+        .value("line1\nline2")
+        .build();
+    assertEquals("function '''\n  line1\n  line2\n'''", element.toString());
+  }
 }
