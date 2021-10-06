@@ -188,12 +188,13 @@ public class DotnetCoreBuilder implements PipelineBuilder {
                 .children(new ImmutableList.Builder<Element>()
                     .add(StringContent.builder()
                         .content(
-                            "// Find the matching artifacts\n"
+                            "// Find published DLL files.\n"
                                 + "def files = findFiles(glob: '**/publish/*.dll')\n"
                                 + "  .collect{it.path.substring(0, it.path.lastIndexOf(\"/\"))}\n"
                                 + "  .unique(false)\n"
                                 + "echo 'Found ' + files.size() + ' potential publish dirs'\n"
                                 + "files.each{echo it}\n"
+                                + "// Join the paths containing published application with colons."
                                 + "env.PUBLISH_PATHS = files.collect{it}.join(':')\n"
                                 + "echo 'These paths are available from the PUBLISH_PATHS environment variable, separated by colons.'"
                         )
