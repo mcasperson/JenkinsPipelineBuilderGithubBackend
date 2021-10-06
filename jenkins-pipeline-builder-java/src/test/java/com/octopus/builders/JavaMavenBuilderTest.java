@@ -69,7 +69,7 @@ public class JavaMavenBuilderTest {
               .run("wget https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb -O packages-microsoft-prod.deb")
               .run("dpkg -i packages-microsoft-prod.deb")
               .run("apt-get update; apt-get install -y apt-transport-https && apt-get update && apt-get install -y dotnet-sdk-5.0 dotnet-sdk-3.1")
-              .run("apt update && sudo apt install --no-install-recommends gnupg curl ca-certificates apt-transport-https && "
+              .run("apt update && sudo apt install -y --no-install-recommends gnupg curl ca-certificates apt-transport-https && "
                   + "curl -sSfL https://apt.octopus.com/public.key | apt-key add - && "
                   + "sh -c \"echo deb https://apt.octopus.com/ stable main > /etc/apt/sources.list.d/octopus.com.list\" && "
                   + "apt update && sudo apt install -y octopuscli")
