@@ -205,8 +205,13 @@ public class DotnetCoreBuilder implements PipelineBuilder {
                     .value("export IFS=\":\"\n"
                         + "for PATH in ${PUBLISH_PATHS}; do\n"
                         + "  cd \"${WORKSPACE}/${PATH}\"\n"
-                        + "  /usr/bin/octo pack --id application --format zip --include ** --version 1.0.0.${BUILD_NUMBER}\n"
-                        + "  echo \"Created package \\\"${WORKSPACE}/${PATH}/application.1.0.0.${BUILD_NUMBER}.zip\\\"\"\n"
+                        + "  # Scan backwards for a csproj file. We'll use the project file name as the package ID"
+                        + "  for file in ../../../../*.csproj; do\n"
+                        + "    [ -e \"$file\" ] && PACKAGEID=\"${file%.*}\" || PACKAGEID=\"application\"\n"
+                        + "    break\n"
+                        + "  done\n"
+                        + "  /usr/bin/octo pack --id ${PACKAGEID} --format zip --include ** --version 1.0.0.${BUILD_NUMBER}\n"
+                        + "  echo \"Created package \\\"${WORKSPACE}/${PATH}/${PACKAGEID}.1.0.0.${BUILD_NUMBER}.zip\\\"\"\n"
                         + "done")
                     .build())
                 .build()))
