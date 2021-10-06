@@ -52,7 +52,7 @@ public class StringHttpClient implements HttpClient {
       final String username,
       final String password) {
     LOG.log(DEBUG, "StringHttpClient.get(String, String, String)");
-    LOG.log(DEBUG, "head: " + url);
+    LOG.log(DEBUG, "url: " + url);
     LOG.log(DEBUG, "username: " + username);
 
     return getClient()
@@ -73,7 +73,7 @@ public class StringHttpClient implements HttpClient {
    */
   public boolean head(@NonNull final String url) {
     LOG.log(DEBUG, "StringHttpClient.head(String)");
-    LOG.log(DEBUG, "head: " + url);
+    LOG.log(DEBUG, "url: " + url);
 
     return getClient()
         .of(httpClient -> headResponse(httpClient, url, List.of()).of(this::checkSuccess).get())
@@ -88,7 +88,7 @@ public class StringHttpClient implements HttpClient {
       final String username,
       final String password) {
     LOG.log(DEBUG, "StringHttpClient.head(String, String, String)");
-    LOG.log(DEBUG, "head: " + url);
+    LOG.log(DEBUG, "url: " + url);
     LOG.log(DEBUG, "username: " + username);
 
     return getClient()
