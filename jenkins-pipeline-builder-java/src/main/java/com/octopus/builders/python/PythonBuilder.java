@@ -64,6 +64,45 @@ public class PythonBuilder implements PipelineBuilder {
                         ArgType.STRING))
                     .build())
                 .build())
+            .add(FunctionManyArgs.builder()
+                .name("sh")
+                .args(new ImmutableList.Builder<Argument>()
+                    .add(new Argument("script",
+                        "pip install pipdeptree",
+                        ArgType.STRING))
+                    .build())
+                .build())
+            .add(FunctionManyArgs.builder()
+                .name("sh")
+                .args(new ImmutableList.Builder<Argument>()
+                    .add(new Argument("script",
+                        "pipdeptree > dependencies.txt",
+                        ArgType.STRING))
+                    .build())
+                .build())
+            .add(FunctionManyArgs.builder()
+                .name("archiveArtifacts")
+                .args(new ImmutableList.Builder<Argument>()
+                    .add(new Argument("artifacts", "dependencies.txt", ArgType.STRING))
+                    .add(new Argument("fingerprint", "true", ArgType.BOOLEAN))
+                    .build())
+                .build())
+            .add(FunctionManyArgs.builder()
+                .name("sh")
+                .args(new ImmutableList.Builder<Argument>()
+                    .add(new Argument(
+                        "script",
+                        "pip list --outdated --format=freeze > dependencieupdates.txt",
+                        ArgType.STRING))
+                    .build())
+                .build())
+            .add(FunctionManyArgs.builder()
+                .name("archiveArtifacts")
+                .args(new ImmutableList.Builder<Argument>()
+                    .add(new Argument("artifacts", "dependencieupdates.txt", ArgType.STRING))
+                    .add(new Argument("fingerprint", "true", ArgType.BOOLEAN))
+                    .build())
+                .build())
             .build()))
         .build();
   }
