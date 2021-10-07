@@ -129,6 +129,7 @@ public class NodejsNpmBuilder implements PipelineBuilder {
                     + "  --include **/*.json \\\n"
                     + "  --include **/*.env \\\n"
                     + "  --include **/*.txt \\\n"
+                    + "--include **/Procfile \\\n"
                     + "  --version 1.0.0.${BUILD_NUMBER}\n")
                 .build())
             .build()))
