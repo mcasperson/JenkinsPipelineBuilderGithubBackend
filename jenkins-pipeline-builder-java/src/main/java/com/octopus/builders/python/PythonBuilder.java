@@ -73,7 +73,17 @@ public class PythonBuilder implements PipelineBuilder {
                 .args(new ImmutableList.Builder<Argument>()
                     .add(new Argument(
                         "script",
-                        "nosetests -v test",
+                        "pip install pytest",
+                        ArgType.STRING))
+                    .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
+                    .build())
+                .build())
+            .add(FunctionManyArgs.builder()
+                .name("sh")
+                .args(new ImmutableList.Builder<Argument>()
+                    .add(new Argument(
+                        "script",
+                        "pytest",
                         ArgType.STRING))
                     .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
                     .build())
