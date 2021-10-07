@@ -39,6 +39,7 @@ public class NodejsNpmBuilder implements PipelineBuilder {
                     .add(createDependenciesStep())
                     .add(createTestStep())
                     .add(createBuildStep())
+                    .add(createPackageStep())
                     .build())
                 .build())
             .build()
@@ -97,6 +98,35 @@ public class NodejsNpmBuilder implements PipelineBuilder {
                         ArgType.STRING))
                     .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
                     .build())
+                .build())
+            .build()))
+        .build();
+  }
+
+  private Element createPackageStep() {
+    return Function1ArgTrailingLambda.builder()
+        .name("stage")
+        .arg("Package")
+        .children(GIT_BUILDER.createStepsElement(new ImmutableList.Builder<Element>()
+            .add(Function1Arg.builder()
+                .name("sh")
+                .value("# The Octopus CLI is used to create a package.\n"
+                    + "# Get the Octopus CLI from https://octopus.com/downloads/octopuscli#linux\n"
+                    + "if [ -d build ]; then\n"
+                    + "  /usr/bin/octo pack --id application --format zip "
+                    + "--include build/**/*.php "
+                    + "--include build/**/*.html "
+                    + "--include build/**/*.htm "
+                    + "--include build/**/*.css "
+                    + "--include build/**/*.js "
+                    + "--include build/**/*.sql "
+                    + "--include build/**/*.png "
+                    + "--include build/**/*.jpg "
+                    + "--include build/**/*.gif "
+                    + "--include build/**/*.json "
+                    + "--include build/**/*.env "
+                    + "--version 1.0.0.${BUILD_NUMBER}\n"
+                    + "fi")
                 .build())
             .build()))
         .build();
