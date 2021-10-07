@@ -120,6 +120,7 @@ public class NodejsNpmBuilder implements PipelineBuilder {
                     + "--include **/*.htm "
                     + "--include **/*.css "
                     + "--include **/*.js "
+                    + "--include **/*.min "
                     + "--include **/*.sql "
                     + "--include **/*.png "
                     + "--include **/*.jpg "
