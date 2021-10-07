@@ -34,12 +34,11 @@ public class DotnetCoreBuilder implements PipelineBuilder {
   public Boolean canBuild(@NonNull final RepoClient accessor) {
     LOG.log(DEBUG, "DotnetCoreBuilder.canBuild(RepoClient)");
 
-    final List<String> solutionFiles = accessor.getWildcardFiles("*.sln").getOrElse(List.of());
+    return hasSolutionFiles(accessor) && hasDotNetCoreProjectFiles(accessor);
+  }
+
+  private boolean hasDotNetCoreProjectFiles(@NonNull final RepoClient accessor) {
     final List<String> projectFiles = accessor.getWildcardFiles("**/*.csproj").getOrElse(List.of());
-
-    LOG.log(DEBUG, "Found " + solutionFiles.size() + " solution files");
-    solutionFiles.forEach(s -> LOG.log(DEBUG, "  " + s));
-
     LOG.log(DEBUG, "Found " + projectFiles.size() + " project files");
     projectFiles.forEach(s -> LOG.log(DEBUG, "  " + s));
 
@@ -47,13 +46,16 @@ public class DotnetCoreBuilder implements PipelineBuilder {
      https://natemcmaster.com/blog/2017/03/09/vs2015-to-vs2017-upgrade/ provides some great insights
      into the various project file formats.
      */
-    final boolean isDotNetCore = projectFiles
+    return projectFiles
         .stream()
         .anyMatch(f -> DOT_NET_CORE_REGEX.matcher(accessor.getFile(f).getOrElse("")).find());
+  }
 
-    LOG.log(DEBUG, "Project file were " + (isDotNetCore ? "" : "not ") + "DotNet Core projects");
-
-    return !solutionFiles.isEmpty() && isDotNetCore;
+  private boolean hasSolutionFiles(@NonNull final RepoClient accessor) {
+    final List<String> files = accessor.getWildcardFiles("*.sln").getOrElse(List.of());
+    LOG.log(DEBUG, "Found " + files.size() + " solution files");
+    files.forEach(s -> LOG.log(DEBUG, "  " + s));
+    return !files.isEmpty();
   }
 
   @Override
