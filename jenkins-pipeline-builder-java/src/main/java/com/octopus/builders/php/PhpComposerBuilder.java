@@ -38,6 +38,7 @@ public class PhpComposerBuilder implements PipelineBuilder {
                     .add(GIT_BUILDER.createCheckoutStep(accessor))
                     .add(createDependenciesStep())
                     .add(createTestStep())
+                    .add(createPackageStep())
                     .build())
                 .build())
             .build()
@@ -77,6 +78,31 @@ public class PhpComposerBuilder implements PipelineBuilder {
                         ArgType.STRING))
                     .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
                     .build())
+                .build())
+            .build()))
+        .build();
+  }
+
+  private Element createPackageStep() {
+    return Function1ArgTrailingLambda.builder()
+        .name("stage")
+        .arg("Package")
+        .children(GIT_BUILDER.createStepsElement(new ImmutableList.Builder<Element>()
+            .add(Function1Arg.builder()
+                .name("sh")
+                .value("# The Octopus CLI is used to create a package.\n"
+                    + "# Get the Octopus CLI from https://octopus.com/downloads/octopuscli#linux\n"
+                    + "/usr/bin/octo pack --id application --format zip "
+                    + "--include **/*.php "
+                    + "--include **/*.html "
+                    + "--include **/*.css "
+                    + "--include **/*.js "
+                    + "--include **/*.sql "
+                    + "--include **/*.png "
+                    + "--include **/*.jpg "
+                    + "--include **/*.gif "
+                    + "--version 1.0.0.${BUILD_NUMBER}\n"
+                    + "done")
                 .build())
             .build()))
         .build();
