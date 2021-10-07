@@ -64,6 +64,9 @@ public class JavaMavenBuilderTest {
               .run("apt-get update")
               // Install php, ruby, python
               .run("apt-get install maven wget curl sudo python3 python3-pip python3-html5lib ruby-full php7.4 php-cli php-zip php-dom unzip -y")
+              // Fixes "AttributeError: module 'html5lib.treebuilders.etree' has no attribute 'getETreeModule'"
+              .run("pip install --upgrade beautifulsoup4")
+              .run("pip install --upgrade html5lib")
               // install gradle
               .run("wget https://services.gradle.org/distributions/gradle-7.2-bin.zip")
               .run("unzip gradle-7.2-bin.zip")
