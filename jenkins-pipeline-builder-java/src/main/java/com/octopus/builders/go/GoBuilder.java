@@ -11,6 +11,8 @@ import com.octopus.dsl.Function1ArgTrailingLambda;
 import com.octopus.dsl.FunctionManyArgs;
 import com.octopus.dsl.FunctionTrailingLambda;
 import com.octopus.repoclients.RepoClient;
+import io.vavr.control.Try;
+import java.util.List;
 import lombok.NonNull;
 import org.jboss.logging.Logger;
 
@@ -21,8 +23,10 @@ public class GoBuilder implements PipelineBuilder {
 
   @Override
   public Boolean canBuild(@NonNull final RepoClient accessor) {
+    final Try<List<String>> files = accessor.getWildcardFiles("*.go");
+
     return accessor.testFile("go.mod")
-        || !accessor.getWildcardFiles("*.go").isEmpty();
+        || (files.isSuccess() && !files.get().isEmpty());
   }
 
   @Override
