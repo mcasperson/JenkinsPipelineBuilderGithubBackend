@@ -3,6 +3,7 @@ package com.octopus.builders;
 import com.google.common.io.Resources;
 import com.octopus.builders.java.JavaGradleBuilder;
 import com.octopus.builders.java.JavaMavenBuilder;
+import com.octopus.builders.python.PythonBuilder;
 import com.octopus.jenkinsclient.JenkinsClient;
 import com.octopus.jenkinsclient.JenkinsDetails;
 import com.octopus.repoclients.GradleTestRepoClient;
@@ -32,9 +33,11 @@ public class JavaMavenBuilderTest {
 
   private static final JavaMavenBuilder JAVA_MAVEN_BUILDER = new JavaMavenBuilder();
   private static final JavaGradleBuilder JAVA_GRADLE_BUILDER = new JavaGradleBuilder();
+  private static final PythonBuilder PYTHON_BUILDER  = new PythonBuilder();
   private static final PipelineBuilder[] PIPELINE_BUILDERS = {
       JAVA_MAVEN_BUILDER,
-      JAVA_GRADLE_BUILDER
+      JAVA_GRADLE_BUILDER,
+      PYTHON_BUILDER
   };
   private static final JenkinsClient JENKINS_CLIENT = new JenkinsClient();
 
