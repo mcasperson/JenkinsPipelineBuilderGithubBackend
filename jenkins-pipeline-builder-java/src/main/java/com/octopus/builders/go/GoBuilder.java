@@ -5,6 +5,7 @@ import com.octopus.builders.PipelineBuilder;
 import com.octopus.builders.java.JavaGitBuilder;
 import com.octopus.dsl.ArgType;
 import com.octopus.dsl.Argument;
+import com.octopus.dsl.Comment;
 import com.octopus.dsl.Element;
 import com.octopus.dsl.Function1Arg;
 import com.octopus.dsl.Function1ArgTrailingLambda;
@@ -74,14 +75,34 @@ public class GoBuilder implements PipelineBuilder {
         .name("stage")
         .arg("Test")
         .children(GIT_BUILDER.createStepsElement(new ImmutableList.Builder<Element>()
+            .add(Comment.builder()
+                .content("https://golangrepo.com/repo/gotestyourself-gotestsum")
+                .build())
             .add(FunctionManyArgs.builder()
                 .name("sh")
                 .args(new ImmutableList.Builder<Argument>()
                     .add(new Argument(
                         "script",
-                        "go test",
+                        "go get gotest.tools/gotestsum",
                         ArgType.STRING))
                     .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
+                    .build())
+                .build())
+            .add(FunctionManyArgs.builder()
+                .name("sh")
+                .args(new ImmutableList.Builder<Argument>()
+                    .add(new Argument(
+                        "script",
+                        "gotestsum --junitfile results.xml",
+                        ArgType.STRING))
+                    .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
+                    .build())
+                .build())
+            .add(FunctionManyArgs.builder()
+                .name("junit")
+                .args(new ImmutableList.Builder<Argument>()
+                    .add(new Argument("testResults", "results.xml", ArgType.STRING))
+                    .add(new Argument("allowEmptyResults ", "true", ArgType.BOOLEAN))
                     .build())
                 .build())
             .build()))
