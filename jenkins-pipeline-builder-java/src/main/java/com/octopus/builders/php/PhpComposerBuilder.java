@@ -92,7 +92,7 @@ public class PhpComposerBuilder implements PipelineBuilder {
                 .name("sh")
                 .value("# The Octopus CLI is used to create a package.\n"
                     + "# Get the Octopus CLI from https://octopus.com/downloads/octopuscli#linux\n"
-                    + "/usr/bin/octo pack --id application --format zip \\n"
+                    + "/usr/bin/octo pack --id application --format zip \\\n"
                     + "--include **/*.php \\\n"
                     + "--include **/*.html \\\n"
                     + "--include **/*.htm \\\n"
