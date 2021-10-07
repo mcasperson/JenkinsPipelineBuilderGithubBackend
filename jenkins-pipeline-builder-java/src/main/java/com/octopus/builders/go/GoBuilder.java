@@ -66,6 +66,41 @@ public class GoBuilder implements PipelineBuilder {
                         ArgType.STRING))
                     .build())
                 .build())
+            .add(FunctionManyArgs.builder()
+                .name("sh")
+                .args(new ImmutableList.Builder<Argument>()
+                    .add(new Argument("script",
+                        "go list > dependencies.txt",
+                        ArgType.STRING))
+                    .build())
+                .build())
+            .add(FunctionManyArgs.builder()
+                .name("archiveArtifacts")
+                .args(new ImmutableList.Builder<Argument>()
+                    .add(new Argument("artifacts", "dependencies.txt", ArgType.STRING))
+                    .add(new Argument("fingerprint", "true", ArgType.BOOLEAN))
+                    .build())
+                .build())
+            .add(Comment.builder()
+                .content(
+                    "https://stackoverflow.com/a/55866702/8246539")
+                .build())
+            .add(FunctionManyArgs.builder()
+                .name("sh")
+                .args(new ImmutableList.Builder<Argument>()
+                    .add(new Argument(
+                        "script",
+                        "go list -u -m -f '{{if .Update}}{{.}}{{end}}' all > dependencieupdates.txt",
+                        ArgType.STRING))
+                    .build())
+                .build())
+            .add(FunctionManyArgs.builder()
+                .name("archiveArtifacts")
+                .args(new ImmutableList.Builder<Argument>()
+                    .add(new Argument("artifacts", "dependencieupdates.txt", ArgType.STRING))
+                    .add(new Argument("fingerprint", "true", ArgType.BOOLEAN))
+                    .build())
+                .build())
             .build()))
         .build();
   }
