@@ -101,8 +101,7 @@ public class PhpComposerBuilder implements PipelineBuilder {
                     + "--include **/*.png "
                     + "--include **/*.jpg "
                     + "--include **/*.gif "
-                    + "--version 1.0.0.${BUILD_NUMBER}\n"
-                    + "done")
+                    + "--version 1.0.0.${BUILD_NUMBER}")
                 .build())
             .build()))
         .build();
