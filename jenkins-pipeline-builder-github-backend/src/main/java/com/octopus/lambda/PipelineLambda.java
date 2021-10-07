@@ -66,6 +66,7 @@ public class PipelineLambda implements RequestHandler<Map<String, Object>, Proxy
     accessor.setRepo(repo);
 
     final String pipeline = builders.stream()
+        .parallel()
         .filter(b -> b.canBuild(accessor))
         .findFirst()
         .map(b -> b.generate(accessor))
