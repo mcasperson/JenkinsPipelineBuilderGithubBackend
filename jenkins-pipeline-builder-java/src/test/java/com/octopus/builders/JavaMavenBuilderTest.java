@@ -57,6 +57,7 @@ public class JavaMavenBuilderTest {
                   + "msbuild:1.30 "
                   + "mstest:1.0.0")
               .run("apt-get update")
+              // Install php, ruby, python
               .run("apt-get install maven wget curl sudo python3 python3-pip ruby-full php7.4 php-cli php-zip unzip -y")
               // install gradle
               .run("wget https://services.gradle.org/distributions/gradle-7.2-bin.zip")
