@@ -5,6 +5,7 @@ import com.octopus.builders.PipelineBuilder;
 import com.octopus.builders.java.JavaGitBuilder;
 import com.octopus.dsl.ArgType;
 import com.octopus.dsl.Argument;
+import com.octopus.dsl.Comment;
 import com.octopus.dsl.Element;
 import com.octopus.dsl.Function1Arg;
 import com.octopus.dsl.Function1ArgTrailingLambda;
@@ -82,12 +83,18 @@ public class PythonBuilder implements PipelineBuilder {
                     .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
                     .build())
                 .build())
+            .add(Comment.builder()
+                .content(
+                    "Allow pytest to fail by always generating an exit code of zero.\n"
+                    + "https://docs.pytest.org/en/latest/reference/exit-codes.html\n"
+                    + "The junit plugin can pass or fail depending on the presence or absence of tests.")
+                .build())
             .add(FunctionManyArgs.builder()
                 .name("sh")
                 .args(new ImmutableList.Builder<Argument>()
                     .add(new Argument(
                         "script",
-                        "pytest --junitxml=results.xml",
+                        "pytest --junitxml=results.xml || true",
                         ArgType.STRING))
                     .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
                     .build())
@@ -95,7 +102,7 @@ public class PythonBuilder implements PipelineBuilder {
             .add(FunctionManyArgs.builder()
                 .name("junit")
                 .args(new ImmutableList.Builder<Argument>()
-                    .add(new Argument("testResults", "**/results.xml", ArgType.STRING))
+                    .add(new Argument("testResults", "results.xml", ArgType.STRING))
                     .add(new Argument("allowEmptyResults ", "true", ArgType.BOOLEAN))
                     .build())
                 .build())
