@@ -38,6 +38,7 @@ public class PythonComposerBuilder implements PipelineBuilder {
                     .add(GIT_BUILDER.createCheckoutStep(accessor))
                     .add(createDependenciesStep())
                     .add(createTestStep())
+                    .add(createPackageStep(accessor))
                     .build())
                 .build())
             .build()
@@ -74,6 +75,29 @@ public class PythonComposerBuilder implements PipelineBuilder {
                     .add(new Argument(
                         "script",
                         "nosetests -v test",
+                        ArgType.STRING))
+                    .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
+                    .build())
+                .build())
+            .build()))
+        .build();
+  }
+
+  private Element createPackageStep(@NonNull final RepoClient accessor) {
+    if (!accessor.testFile("setup.py")) {
+      return null;
+    }
+
+    return Function1ArgTrailingLambda.builder()
+        .name("stage")
+        .arg("Package")
+        .children(GIT_BUILDER.createStepsElement(new ImmutableList.Builder<Element>()
+            .add(FunctionManyArgs.builder()
+                .name("sh")
+                .args(new ImmutableList.Builder<Argument>()
+                    .add(new Argument(
+                        "script",
+                        "python setup.py sdist",
                         ArgType.STRING))
                     .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
                     .build())
