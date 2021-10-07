@@ -21,7 +21,8 @@ public class GoBuilder implements PipelineBuilder {
 
   @Override
   public Boolean canBuild(@NonNull final RepoClient accessor) {
-    return accessor.testFile("go.mod");
+    return accessor.testFile("go.mod")
+        || !accessor.getWildcardFiles("*.go").isEmpty();
   }
 
   @Override
