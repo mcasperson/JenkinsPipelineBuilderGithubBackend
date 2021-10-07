@@ -29,7 +29,6 @@ public class PhpComposerBuilder implements PipelineBuilder {
     return FunctionTrailingLambda.builder()
         .name("pipeline")
         .children(new ImmutableList.Builder<Element>()
-            .addAll(GIT_BUILDER.createTopComments())
             .add(Function1Arg.builder().name("agent").value("any").build())
             .add(FunctionTrailingLambda.builder()
                 .name("stages")
