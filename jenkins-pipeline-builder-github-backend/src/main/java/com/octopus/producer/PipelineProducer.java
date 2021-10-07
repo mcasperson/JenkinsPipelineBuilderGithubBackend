@@ -2,9 +2,13 @@ package com.octopus.producer;
 
 import com.octopus.builders.PipelineBuilder;
 import com.octopus.builders.dotnet.DotnetCoreBuilder;
+import com.octopus.builders.go.GoBuilder;
 import com.octopus.builders.java.JavaGradleBuilder;
 import com.octopus.builders.java.JavaMavenBuilder;
+import com.octopus.builders.nodejs.NodejsNpmBuilder;
 import com.octopus.builders.php.PhpComposerBuilder;
+import com.octopus.builders.python.PythonComposerBuilder;
+import com.octopus.builders.ruby.RubyGemBuilder;
 import com.octopus.http.HttpClient;
 import com.octopus.http.StringHttpClient;
 import com.octopus.repoclients.RepoClient;
@@ -94,5 +98,49 @@ public class PipelineProducer {
   @Produces
   public PipelineBuilder getPhpComposerBuilder() {
     return new PhpComposerBuilder();
+  }
+
+  /**
+   * Produces the Python pipeline builder.
+   *
+   * @return An implementation of PipelineBuilder.
+   */
+  @ApplicationScoped
+  @Produces
+  public PipelineBuilder getPythonBuilder() {
+    return new PythonComposerBuilder();
+  }
+
+  /**
+   * Produces the Ruby pipeline builder.
+   *
+   * @return An implementation of PipelineBuilder.
+   */
+  @ApplicationScoped
+  @Produces
+  public PipelineBuilder getRubyBuilder() {
+    return new RubyGemBuilder();
+  }
+
+  /**
+   * Produces the Go pipeline builder.
+   *
+   * @return An implementation of PipelineBuilder.
+   */
+  @ApplicationScoped
+  @Produces
+  public PipelineBuilder getGoBuilder() {
+    return new GoBuilder();
+  }
+
+  /**
+   * Produces the Node.js pipeline builder.
+   *
+   * @return An implementation of PipelineBuilder.
+   */
+  @ApplicationScoped
+  @Produces
+  public PipelineBuilder getNodejsNpmBuilder() {
+    return new NodejsNpmBuilder();
   }
 }
