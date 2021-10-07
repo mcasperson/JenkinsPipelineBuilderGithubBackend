@@ -35,7 +35,7 @@ public class PythonBuilder implements PipelineBuilder {
                 .children(new ImmutableList.Builder<Element>()
                     .add(GIT_BUILDER.createEnvironmentStage())
                     .add(GIT_BUILDER.createCheckoutStep(accessor))
-                    .add(createDependenciesStep())
+                    .add(createDependenciesStep(accessor))
                     .add(createTestStep())
                     .add(createPackageStep(accessor))
                     .build())
@@ -46,7 +46,11 @@ public class PythonBuilder implements PipelineBuilder {
         .toString();
   }
 
-  private Element createDependenciesStep() {
+  private Element createDependenciesStep(@NonNull final RepoClient accessor) {
+    final String command = accessor.testFile("setup.py")
+        ? "pip install ."
+        : "pip install -r requirements.txt";
+
     return Function1ArgTrailingLambda.builder()
         .name("stage")
         .arg("Install Dependencies")
@@ -55,7 +59,7 @@ public class PythonBuilder implements PipelineBuilder {
                 .name("sh")
                 .args(new ImmutableList.Builder<Argument>()
                     .add(new Argument("script",
-                        "pip install -r requirements.txt",
+                        command,
                         ArgType.STRING))
                     .build())
                 .build())
