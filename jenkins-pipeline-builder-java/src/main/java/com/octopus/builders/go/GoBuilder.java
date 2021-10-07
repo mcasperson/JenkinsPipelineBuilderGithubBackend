@@ -87,7 +87,7 @@ public class GoBuilder implements PipelineBuilder {
   private Element createBuildStep() {
     return Function1ArgTrailingLambda.builder()
         .name("stage")
-        .arg("Test")
+        .arg("Build")
         .children(GIT_BUILDER.createStepsElement(new ImmutableList.Builder<Element>()
             .add(FunctionManyArgs.builder()
                 .name("sh")
