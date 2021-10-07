@@ -8,6 +8,7 @@ import com.octopus.jenkinsclient.JenkinsClient;
 import com.octopus.jenkinsclient.JenkinsDetails;
 import com.octopus.repoclients.GradleTestRepoClient;
 import com.octopus.repoclients.MavenTestRepoClient;
+import com.octopus.repoclients.PhpTestRepoClient;
 import com.octopus.repoclients.PythonTestRepoClient;
 import com.octopus.repoclients.RepoClient;
 import io.vavr.control.Try;
@@ -154,7 +155,8 @@ public class JavaMavenBuilderTest {
         Arguments.of(
             "python",
             new PythonTestRepoClient(
-                "https://github.com/OctopusSamples/RandomQuotes-Python")),
+                "https://github.com/OctopusSamples/RandomQuotes-Python",
+                "main")),
         Arguments.of(
             "gradle",
             new GradleTestRepoClient(

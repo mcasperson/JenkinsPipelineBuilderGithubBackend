@@ -63,6 +63,7 @@ public class GitBuilder {
                 .name("checkout")
                 .args(new ImmutableList.Builder<Argument>()
                     .add(new Argument("$class", "GitSCM", ArgType.STRING))
+                    .add(new Argument("branches", "[[name: '*/" + accessor.getDefaultBranches().get(0) + "']], ", ArgType.ARRAY))
                     .add(new Argument("userRemoteConfigs",
                         "[[url: '" + accessor.getRepoPath() + "']]", ArgType.ARRAY))
                     .build())

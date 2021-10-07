@@ -6,7 +6,21 @@ import java.util.List;
 public abstract class TestRepoClient implements RepoClient {
 
   private String repo;
+  private String branch;
   protected boolean findWrapper;
+
+  /**
+   * A mock repo accessor that pretends to find (or not find) project
+   * files and wrapper scripts.
+   * @param repo The git repo
+   * @param findWrapper true if this accessor is to report finding a wrapper script,
+   *                    and false otherwise
+   */
+  public TestRepoClient(final String repo, final String branch, boolean findWrapper) {
+    this.repo = repo;
+    this.findWrapper = findWrapper;
+    this.branch = branch;
+  }
 
   /**
    * A mock repo accessor that pretends to find (or not find) project
@@ -18,6 +32,7 @@ public abstract class TestRepoClient implements RepoClient {
   public TestRepoClient(final String repo, boolean findWrapper) {
     this.repo = repo;
     this.findWrapper = findWrapper;
+    this.branch = "master";
   }
 
   @Override
@@ -37,6 +52,6 @@ public abstract class TestRepoClient implements RepoClient {
 
   @Override
   public List<String> getDefaultBranches() {
-    return List.of("main");
+    return List.of(branch);
   }
 }
