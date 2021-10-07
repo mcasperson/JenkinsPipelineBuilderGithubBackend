@@ -87,6 +87,9 @@ public class JavaMavenBuilderTest {
               // install composer
               .run("wget -O composer-setup.php https://getcomposer.org/installer")
               .run("sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer")
+              // install golang
+              .run("wget https://golang.org/dl/go1.17.1.linux-amd64.tar.gz")
+              .run("rm -rf /usr/local/go && tar -C /usr/local -xzf go1.17.1.linux-amd64.tar.gz")
               .build()))
       .withCopyFileToContainer(MountableFile.forClasspathResource("jenkins/maven_tool.groovy"),
           "/usr/share/jenkins/ref/init.groovy.d/maven_tool.groovy")
