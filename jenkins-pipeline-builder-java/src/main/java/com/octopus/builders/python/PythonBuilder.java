@@ -85,9 +85,43 @@ public class PythonBuilder implements PipelineBuilder {
 
   private Element createPackageStep(@NonNull final RepoClient accessor) {
     if (!accessor.testFile("setup.py")) {
-      return null;
+      return createZipStep();
     }
 
+    return createSetup();
+  }
+
+  private Element createZipStep() {
+    return Function1ArgTrailingLambda.builder()
+        .name("stage")
+        .arg("Package")
+        .children(GIT_BUILDER.createStepsElement(new ImmutableList.Builder<Element>()
+            .add(Function1Arg.builder()
+                .name("sh")
+                .value("# The Octopus CLI is used to create a package.\n"
+                    + "# Get the Octopus CLI from https://octopus.com/downloads/octopuscli#linux\n"
+                    + "/usr/bin/octo pack --id application --format zip \\n"
+                    + "--include **/*.py \\\n"
+                    + "--include **/*.html \\\n"
+                    + "--include **/*.htm \\\n"
+                    + "--include **/*.css \\\n"
+                    + "--include **/*.js \\\n"
+                    + "--include **/*.min \\\n"
+                    + "--include **/*.map \\\n"
+                    + "--include **/*.sql \\\n"
+                    + "--include **/*.png \\\n"
+                    + "--include **/*.jpg \\\n"
+                    + "--include **/*.gif \\\n"
+                    + "--include **/*.json \\\n"
+                    + "--include **/*.env \\\n"
+                    + "--include **/*.txt \\\n"
+                    + "--version 1.0.0.${BUILD_NUMBER}")
+                .build())
+            .build()))
+        .build();
+  }
+
+  private Element createSetup() {
     return Function1ArgTrailingLambda.builder()
         .name("stage")
         .arg("Package")

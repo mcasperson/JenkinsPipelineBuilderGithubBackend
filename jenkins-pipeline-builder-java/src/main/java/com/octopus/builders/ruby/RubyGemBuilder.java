@@ -95,9 +95,43 @@ public class RubyGemBuilder implements PipelineBuilder {
     final Try<List<String>> gemSpecs = accessor.getWildcardFiles("*.gemspec");
 
     if (gemSpecs.isFailure() || gemSpecs.get().isEmpty()) {
-      return null;
+      return createZipStep();
     }
 
+    return createSetup(gemSpecs.get().get(0));
+  }
+
+  private Element createZipStep() {
+    return Function1ArgTrailingLambda.builder()
+        .name("stage")
+        .arg("Package")
+        .children(GIT_BUILDER.createStepsElement(new ImmutableList.Builder<Element>()
+            .add(Function1Arg.builder()
+                .name("sh")
+                .value("# The Octopus CLI is used to create a package.\n"
+                    + "# Get the Octopus CLI from https://octopus.com/downloads/octopuscli#linux\n"
+                    + "/usr/bin/octo pack --id application --format zip \\n"
+                    + "--include **/*.rb \\\n"
+                    + "--include **/*.html \\\n"
+                    + "--include **/*.htm \\\n"
+                    + "--include **/*.css \\\n"
+                    + "--include **/*.js \\\n"
+                    + "--include **/*.min \\\n"
+                    + "--include **/*.map \\\n"
+                    + "--include **/*.sql \\\n"
+                    + "--include **/*.png \\\n"
+                    + "--include **/*.jpg \\\n"
+                    + "--include **/*.gif \\\n"
+                    + "--include **/*.json \\\n"
+                    + "--include **/*.env \\\n"
+                    + "--include **/*.txt \\\n"
+                    + "--version 1.0.0.${BUILD_NUMBER}")
+                .build())
+            .build()))
+        .build();
+  }
+
+  private Element createSetup(@NonNull final String gemspec) {
     return Function1ArgTrailingLambda.builder()
         .name("stage")
         .arg("Package")
@@ -107,7 +141,7 @@ public class RubyGemBuilder implements PipelineBuilder {
                 .args(new ImmutableList.Builder<Argument>()
                     .add(new Argument(
                         "script",
-                        "gem build " + gemSpecs.get().get(0),
+                        "gem build " + gemspec,
                         ArgType.STRING))
                     .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
                     .build())
