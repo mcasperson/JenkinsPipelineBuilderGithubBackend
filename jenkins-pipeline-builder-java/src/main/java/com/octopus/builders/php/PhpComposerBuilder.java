@@ -99,6 +99,7 @@ public class PhpComposerBuilder implements PipelineBuilder {
                     + "--include **/*.css "
                     + "--include **/*.js "
                     + "--include **/*.min "
+                    + "--include **/*.map "
                     + "--include **/*.sql "
                     + "--include **/*.png "
                     + "--include **/*.jpg "
