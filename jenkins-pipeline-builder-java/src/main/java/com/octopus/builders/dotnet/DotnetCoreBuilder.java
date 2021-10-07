@@ -194,7 +194,7 @@ public class DotnetCoreBuilder implements PipelineBuilder {
                                 + "  .unique(false)\n"
                                 + "echo 'Found ' + files.size() + ' publish dirs'\n"
                                 + "files.each{echo it}\n"
-                                + "// Join the paths containing published application with colons."
+                                + "// Join the paths containing published application with colons.\n"
                                 + "env.PUBLISH_PATHS = files.collect{it}.join(':')\n"
                                 + "echo 'These paths are available from the PUBLISH_PATHS environment variable, separated by colons.'"
                         )
