@@ -29,13 +29,12 @@ public class DotnetCoreBuilder implements PipelineBuilder {
   private static final GitBuilder GIT_BUILDER = new GitBuilder();
   private static final Pattern DOT_NET_CORE_REGEX = Pattern.compile(
       "Sdk\\s*=\\s*\"Microsoft\\.NET\\.Sdk\"");
-  private List<String> solutionFiles;
 
   @Override
   public Boolean canBuild(@NonNull final RepoClient accessor) {
     LOG.log(DEBUG, "DotnetCoreBuilder.canBuild(RepoClient)");
 
-    this.solutionFiles = accessor.getWildcardFiles("*.sln").getOrElse(List.of());
+    final List<String> solutionFiles = accessor.getWildcardFiles("*.sln").getOrElse(List.of());
     final List<String> projectFiles = accessor.getWildcardFiles("**/*.csproj").getOrElse(List.of());
 
     LOG.log(DEBUG, "Found " + solutionFiles.size() + " solution files");
