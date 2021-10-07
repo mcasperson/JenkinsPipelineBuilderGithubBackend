@@ -11,6 +11,8 @@ import com.octopus.dsl.Function1ArgTrailingLambda;
 import com.octopus.dsl.FunctionManyArgs;
 import com.octopus.dsl.FunctionTrailingLambda;
 import com.octopus.repoclients.RepoClient;
+import io.vavr.control.Try;
+import java.util.List;
 import lombok.NonNull;
 import org.jboss.logging.Logger;
 
@@ -38,6 +40,7 @@ public class RubyGemBuilder implements PipelineBuilder {
                     .add(GIT_BUILDER.createCheckoutStep(accessor))
                     .add(createDependenciesStep())
                     .add(createTestStep())
+                    .add(createPackageStep(accessor))
                     .build())
                 .build())
             .build()
@@ -82,6 +85,31 @@ public class RubyGemBuilder implements PipelineBuilder {
                 .name("junit")
                 .args(new ImmutableList.Builder<Argument>()
                     .add(new Argument("", "results.xml", ArgType.STRING))
+                    .build())
+                .build())
+            .build()))
+        .build();
+  }
+
+  private Element createPackageStep(@NonNull final RepoClient accessor) {
+    final Try<List<String>> gemSpecs = accessor.getWildcardFiles("*.gemspec");
+
+    if (gemSpecs.isFailure() || gemSpecs.get().isEmpty()) {
+      return null;
+    }
+
+    return Function1ArgTrailingLambda.builder()
+        .name("stage")
+        .arg("Package")
+        .children(GIT_BUILDER.createStepsElement(new ImmutableList.Builder<Element>()
+            .add(FunctionManyArgs.builder()
+                .name("sh")
+                .args(new ImmutableList.Builder<Argument>()
+                    .add(new Argument(
+                        "script",
+                        "gem build " + gemSpecs.get().get(0),
+                        ArgType.STRING))
+                    .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
                     .build())
                 .build())
             .build()))
