@@ -57,22 +57,36 @@ public class JavaMavenBuilderTest {
                   + "msbuild:1.30 "
                   + "mstest:1.0.0")
               .run("apt-get update")
-              .run("apt-get install maven wget sudo -y")
+              .run("apt-get install maven wget curl sudo python3 python3-pip ruby-full php7.4 php-cli php-zip unzip -y")
+              // install gradle
               .run("wget https://services.gradle.org/distributions/gradle-7.2-bin.zip")
               .run("unzip gradle-7.2-bin.zip")
               .run("mv gradle-7.2 /opt")
               .run("chmod +x /opt/gradle-7.2/bin/gradle")
               .run("ln -s /opt/gradle-7.2/bin/gradle /usr/bin/gradle")
+              // install jdk 17
               .run("wget https://cdn.azul.com/zulu/bin/zulu17.28.13-ca-jdk17.0.0-linux_x64.tar.gz")
               .run("tar -xzf zulu17.28.13-ca-jdk17.0.0-linux_x64.tar.gz")
               .run("mv zulu17.28.13-ca-jdk17.0.0-linux_x64 /opt")
+              // install dotnet
               .run("wget https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb -O packages-microsoft-prod.deb")
               .run("dpkg -i packages-microsoft-prod.deb")
+              // install octocli
               .run("apt-get update; apt-get install -y apt-transport-https && apt-get update && apt-get install -y dotnet-sdk-5.0 dotnet-sdk-3.1")
               .run("apt update && sudo apt install -y --no-install-recommends gnupg curl ca-certificates apt-transport-https && "
                   + "curl -sSfL https://apt.octopus.com/public.key | apt-key add - && "
                   + "sh -c \"echo deb https://apt.octopus.com/ stable main > /etc/apt/sources.list.d/octopus.com.list\" && "
                   + "apt update && sudo apt install -y octopuscli")
+              // install nodejs
+              .run("curl -fsSL https://deb.nodesource.com/setup_16.x | bash -")
+              .run("apt-get install -y nodejs")
+              // install yarn
+              .run("curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -")
+              .run("echo \"deb https://dl.yarnpkg.com/debian/ stable main\" | sudo tee /etc/apt/sources.list.d/yarn.list")
+              .run("sudo apt update; sudo apt install yarn")
+              // install composer
+              .run("wget -O composer-setup.php https://getcomposer.org/installer")
+              .run("sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer")
               .build()))
       .withCopyFileToContainer(MountableFile.forClasspathResource("jenkins/maven_tool.groovy"),
           "/usr/share/jenkins/ref/init.groovy.d/maven_tool.groovy")
