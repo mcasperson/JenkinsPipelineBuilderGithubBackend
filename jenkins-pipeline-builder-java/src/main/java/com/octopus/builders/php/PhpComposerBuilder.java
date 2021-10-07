@@ -95,6 +95,7 @@ public class PhpComposerBuilder implements PipelineBuilder {
                     + "/usr/bin/octo pack --id application --format zip "
                     + "--include **/*.php "
                     + "--include **/*.html "
+                    + "--include **/*.htm "
                     + "--include **/*.css "
                     + "--include **/*.js "
                     + "--include **/*.sql "
