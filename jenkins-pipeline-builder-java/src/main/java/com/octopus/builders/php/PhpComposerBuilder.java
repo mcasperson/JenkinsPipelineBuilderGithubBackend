@@ -11,7 +11,10 @@ import com.octopus.dsl.Function1ArgTrailingLambda;
 import com.octopus.dsl.FunctionManyArgs;
 import com.octopus.dsl.FunctionTrailingLambda;
 import com.octopus.repoclients.RepoClient;
+import io.vavr.control.Try;
+import java.util.List;
 import lombok.NonNull;
+import org.apache.commons.io.FilenameUtils;
 import org.jboss.logging.Logger;
 
 public class PhpComposerBuilder implements PipelineBuilder {
@@ -36,7 +39,7 @@ public class PhpComposerBuilder implements PipelineBuilder {
                     .add(GIT_BUILDER.createEnvironmentStage())
                     .add(GIT_BUILDER.createCheckoutStep(accessor))
                     .add(createDependenciesStep())
-                    .add(createTestStep())
+                    .add(createTestStep(accessor))
                     .add(createPackageStep())
                     .build())
                 .build())
@@ -63,7 +66,13 @@ public class PhpComposerBuilder implements PipelineBuilder {
         .build();
   }
 
-  private Element createTestStep() {
+  private Element createTestStep(@NonNull final RepoClient accessor) {
+
+    final Try<List<String>> testFiles = accessor.getWildcardFiles("*Test.php");
+    final String directory = testFiles.isSuccess() && !testFiles.get().isEmpty()
+        ? FilenameUtils.getPath(testFiles.get().get(0))
+        : "tests";
+
     return Function1ArgTrailingLambda.builder()
         .name("stage")
         .arg("Test")
@@ -73,7 +82,7 @@ public class PhpComposerBuilder implements PipelineBuilder {
                 .args(new ImmutableList.Builder<Argument>()
                     .add(new Argument(
                         "script",
-                        "vendor/phpunit/phpunit/phpunit --bootstrap build/bootstrap.php",
+                        "vendor/bin/phpunit " + directory,
                         ArgType.STRING))
                     .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
                     .build())

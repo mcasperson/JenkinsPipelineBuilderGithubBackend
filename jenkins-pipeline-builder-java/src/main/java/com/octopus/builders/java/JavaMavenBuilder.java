@@ -190,7 +190,7 @@ public class JavaMavenBuilder implements PipelineBuilder {
             .add(FunctionManyArgs.builder()
                 .name("junit")
                 .args(new ImmutableList.Builder<Argument>()
-                    .add(new Argument("", "target/surefire-reports/*.xml", ArgType.STRING))
+                    .add(new Argument("testResults", "target/surefire-reports/*.xml", ArgType.STRING))
                     .add(new Argument("allowEmptyResults ", "true", ArgType.BOOLEAN))
                     .build())
                 .build())

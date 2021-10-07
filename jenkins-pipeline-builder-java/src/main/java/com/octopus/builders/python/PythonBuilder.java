@@ -95,7 +95,7 @@ public class PythonBuilder implements PipelineBuilder {
             .add(FunctionManyArgs.builder()
                 .name("junit")
                 .args(new ImmutableList.Builder<Argument>()
-                    .add(new Argument("", "results.xml", ArgType.STRING))
+                    .add(new Argument("testResults", "results.xml", ArgType.STRING))
                     .add(new Argument("allowEmptyResults ", "true", ArgType.BOOLEAN))
                     .build())
                 .build())
