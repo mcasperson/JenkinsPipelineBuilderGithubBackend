@@ -83,9 +83,15 @@ public class PythonBuilder implements PipelineBuilder {
                 .args(new ImmutableList.Builder<Argument>()
                     .add(new Argument(
                         "script",
-                        "pytest",
+                        "pytest --junitxml=results.xml",
                         ArgType.STRING))
                     .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
+                    .build())
+                .build())
+            .add(FunctionManyArgs.builder()
+                .name("junit")
+                .args(new ImmutableList.Builder<Argument>()
+                    .add(new Argument("", "results.xml", ArgType.STRING))
                     .build())
                 .build())
             .build()))
