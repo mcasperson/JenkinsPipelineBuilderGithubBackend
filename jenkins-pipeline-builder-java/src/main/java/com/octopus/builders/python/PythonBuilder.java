@@ -87,12 +87,18 @@ public class PythonBuilder implements PipelineBuilder {
                     .add(new Argument("fingerprint", "true", ArgType.BOOLEAN))
                     .build())
                 .build())
+            .add(Comment.builder()
+                .content(
+                    "\"pip list --outdated\" can return the error \"AttributeError: module 'html5lib.treebuilders.etree' has no attribute 'getETreeModule'\"\n"
+                    + "in some circumstances. We'll allow this to fail by ensuring the command below always has an exit code of 0, but you can remove the\n"
+                    + "\"|| true\" to see any failures.")
+                .build())
             .add(FunctionManyArgs.builder()
                 .name("sh")
                 .args(new ImmutableList.Builder<Argument>()
                     .add(new Argument(
                         "script",
-                        "pip list --outdated --format=freeze > dependencieupdates.txt",
+                        "pip list --outdated --format=freeze > dependencieupdates.txt || true",
                         ArgType.STRING))
                     .build())
                 .build())
