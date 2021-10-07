@@ -4,6 +4,7 @@ import com.octopus.builders.PipelineBuilder;
 import com.octopus.builders.dotnet.DotnetCoreBuilder;
 import com.octopus.builders.java.JavaGradleBuilder;
 import com.octopus.builders.java.JavaMavenBuilder;
+import com.octopus.builders.php.PhpComposerBuilder;
 import com.octopus.http.HttpClient;
 import com.octopus.http.StringHttpClient;
 import com.octopus.repoclients.RepoClient;
@@ -82,5 +83,16 @@ public class PipelineProducer {
   @Produces
   public PipelineBuilder getDotNetCoreBuilder() {
     return new DotnetCoreBuilder();
+  }
+
+  /**
+   * Produces the PHP pipeline builder.
+   *
+   * @return An implementation of PipelineBuilder.
+   */
+  @ApplicationScoped
+  @Produces
+  public PipelineBuilder getPhpComposerBuilder() {
+    return new PhpComposerBuilder();
   }
 }
