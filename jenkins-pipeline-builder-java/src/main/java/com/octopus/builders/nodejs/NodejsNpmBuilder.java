@@ -114,7 +114,6 @@ public class NodejsNpmBuilder implements PipelineBuilder {
                     + "if [ -d build ]; then\n"
                     + "  cd build\n"
                     + "  /usr/bin/octo pack --id application --format zip \\\n"
-                    + "  --include **/*.php \\\n"
                     + "  --include **/*.html \\\n"
                     + "  --include **/*.htm \\\n"
                     + "  --include **/*.css \\\n"
