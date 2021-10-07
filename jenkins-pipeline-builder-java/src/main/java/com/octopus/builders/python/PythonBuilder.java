@@ -14,9 +14,9 @@ import com.octopus.repoclients.RepoClient;
 import lombok.NonNull;
 import org.jboss.logging.Logger;
 
-public class PythonComposerBuilder implements PipelineBuilder {
+public class PythonBuilder implements PipelineBuilder {
 
-  private static final Logger LOG = Logger.getLogger(PythonComposerBuilder.class.toString());
+  private static final Logger LOG = Logger.getLogger(PythonBuilder.class.toString());
   private static final JavaGitBuilder GIT_BUILDER = new JavaGitBuilder();
 
   @Override

@@ -7,7 +7,7 @@ import com.octopus.builders.java.JavaGradleBuilder;
 import com.octopus.builders.java.JavaMavenBuilder;
 import com.octopus.builders.nodejs.NodejsNpmBuilder;
 import com.octopus.builders.php.PhpComposerBuilder;
-import com.octopus.builders.python.PythonComposerBuilder;
+import com.octopus.builders.python.PythonBuilder;
 import com.octopus.builders.ruby.RubyGemBuilder;
 import com.octopus.http.HttpClient;
 import com.octopus.http.StringHttpClient;
@@ -108,7 +108,7 @@ public class PipelineProducer {
   @ApplicationScoped
   @Produces
   public PipelineBuilder getPythonBuilder() {
-    return new PythonComposerBuilder();
+    return new PythonBuilder();
   }
 
   /**
