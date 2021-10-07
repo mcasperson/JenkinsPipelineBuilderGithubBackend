@@ -112,8 +112,10 @@ public class NodejsNpmBuilder implements PipelineBuilder {
                 .value("# The Octopus CLI is used to create a package.\n"
                     + "# Get the Octopus CLI from https://octopus.com/downloads/octopuscli#linux\n"
                     + "if [ -d build ]; then\n"
+                    + "  # If the build directory exists, assume this contains the compiled code to package.\n"
                     + "  cd build\n"
-                    + "  /usr/bin/octo pack --id application --format zip \\\n"
+                    + "fi"
+                    + "/usr/bin/octo pack --id application --format zip \\\n"
                     + "  --include **/*.html \\\n"
                     + "  --include **/*.htm \\\n"
                     + "  --include **/*.css \\\n"
@@ -127,8 +129,7 @@ public class NodejsNpmBuilder implements PipelineBuilder {
                     + "  --include **/*.json \\\n"
                     + "  --include **/*.env \\\n"
                     + "  --include **/*.txt \\\n"
-                    + "  --version 1.0.0.${BUILD_NUMBER}\n"
-                    + "fi")
+                    + "  --version 1.0.0.${BUILD_NUMBER}\n")
                 .build())
             .build()))
         .build();
