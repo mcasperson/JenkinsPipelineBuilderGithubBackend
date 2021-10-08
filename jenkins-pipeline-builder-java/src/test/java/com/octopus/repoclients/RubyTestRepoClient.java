@@ -16,7 +16,7 @@ public class RubyTestRepoClient extends TestRepoClient {
 
   @Override
   public boolean testFile(String path) {
-    if (path.endsWith("Rubygem")) {
+    if (path.endsWith("Gemfile")) {
       return true;
     }
 
