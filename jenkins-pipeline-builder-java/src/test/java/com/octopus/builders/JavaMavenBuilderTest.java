@@ -66,9 +66,10 @@ public class JavaMavenBuilderTest {
       .withDockerfileFromBuilder(builder ->
           builder
               .from("jenkins/jenkins:lts")
+              .user("root")
               // let the jenkins user run sudo
               .run("echo \"jenkins ALL=(ALL) NOPASSWD: ALL\" >> /etc/sudoers")
-              .user("root")
+              // install plugins
               .run("jenkins-plugin-cli --plugins "
                   + "pipeline-utility-steps:2.10.0 "
                   + "gradle:1.37.1 "
