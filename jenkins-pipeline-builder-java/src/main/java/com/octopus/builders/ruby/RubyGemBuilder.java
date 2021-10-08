@@ -97,7 +97,7 @@ public class RubyGemBuilder implements PipelineBuilder {
   }
 
   private Element createTestStep(@NonNull final RepoClient accessor) {
-    final Try<List<String>> files = accessor.getWildcardFiles("**/run_test.rb");
+    final Try<List<String>> files = accessor.getWildcardFiles("**/run-test.rb");
     if (files.isSuccess() && !files.get().isEmpty()) {
       return createTestUnitTestStep(files.get().get(0));
     }
