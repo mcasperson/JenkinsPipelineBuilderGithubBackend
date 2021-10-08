@@ -67,8 +67,6 @@ public class JavaMavenBuilderTest {
           builder
               .from("jenkins/jenkins:lts")
               .user("root")
-              // let the jenkins user run sudo
-              .run("echo \"jenkins ALL=(ALL) NOPASSWD: ALL\" >> /etc/sudoers")
               // install plugins
               .run("jenkins-plugin-cli --plugins "
                   + "pipeline-utility-steps:2.10.0 "
@@ -82,6 +80,8 @@ public class JavaMavenBuilderTest {
               .run("apt-get update")
               // Install php, ruby, python
               .run("apt-get install maven wget curl sudo python3 python3-pip ruby-full ruby-dev php7.4 php-cli php-zip php-dom php-mbstring unzip -y")
+              // let the jenkins user run sudo
+              .run("echo \"jenkins ALL=(ALL) NOPASSWD: ALL\" >> /etc/sudoers")
               // install gradle
               .run("wget https://services.gradle.org/distributions/gradle-7.2-bin.zip")
               .run("unzip gradle-7.2-bin.zip")
