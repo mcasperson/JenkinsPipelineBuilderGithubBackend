@@ -10,8 +10,8 @@ public class GoTestRepoClient extends TestRepoClient {
    *
    * @param repo        The git repo
    */
-  public GoTestRepoClient(final String repo) {
-    super(repo, false);
+  public GoTestRepoClient(final String repo, final String branch) {
+    super(repo, branch,false);
   }
 
   @Override

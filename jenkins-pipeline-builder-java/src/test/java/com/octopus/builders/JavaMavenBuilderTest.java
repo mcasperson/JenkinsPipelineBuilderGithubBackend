@@ -111,6 +111,7 @@ public class JavaMavenBuilderTest {
               // install golang
               .run("wget https://golang.org/dl/go1.17.1.linux-amd64.tar.gz")
               .run("rm -rf /usr/local/go && tar -C /usr/local -xzf go1.17.1.linux-amd64.tar.gz")
+              .env("PATH", "/usr/local/go/bin:/root/go/bin:${PATH}")
               .build()))
       .withCopyFileToContainer(MountableFile.forClasspathResource("jenkins/maven_tool.groovy"),
           "/usr/share/jenkins/ref/init.groovy.d/maven_tool.groovy")
@@ -168,13 +169,15 @@ public class JavaMavenBuilderTest {
   private static Stream<Arguments> provideTestRepos() {
     return Stream.of(
         Arguments.of(
-            "ruby",
+            "go",
             new GoTestRepoClient(
-                "https://github.com/OctopusSamples/RandomQuotes-Go")),
+                "https://github.com/OctopusSamples/RandomQuotes-Go",
+                "main")),
         Arguments.of(
             "ruby",
             new RubyTestRepoClient(
-                "https://github.com/OctopusSamples/RandomQuotes-Ruby")),
+                "https://github.com/OctopusSamples/RandomQuotes-Ruby",
+                "master")),
         Arguments.of(
             "php",
             new NodeTestRepoClient(

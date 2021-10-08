@@ -10,8 +10,8 @@ public class RubyTestRepoClient extends TestRepoClient {
    *
    * @param repo        The git repo
    */
-  public RubyTestRepoClient(final String repo) {
-    super(repo, false);
+  public RubyTestRepoClient(final String repo, final String branch) {
+    super(repo, branch,false);
   }
 
   @Override

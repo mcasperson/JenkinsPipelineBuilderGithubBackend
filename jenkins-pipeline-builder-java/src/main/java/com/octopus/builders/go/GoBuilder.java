@@ -118,7 +118,7 @@ public class GoBuilder implements PipelineBuilder {
                 .args(new ImmutableList.Builder<Argument>()
                     .add(new Argument(
                         "script",
-                        "go get gotest.tools/gotestsum",
+                        "go install gotest.tools/gotestsum@latest",
                         ArgType.STRING))
                     .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
                     .build())
