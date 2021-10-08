@@ -66,6 +66,8 @@ public class JavaMavenBuilderTest {
       .withDockerfileFromBuilder(builder ->
           builder
               .from("jenkins/jenkins:lts")
+              // let the jenkins user run sudo
+              .run("echo \"jenkins ALL=(ALL) NOPASSWD: ALL\" >> /etc/sudoers")
               .user("root")
               .run("jenkins-plugin-cli --plugins "
                   + "pipeline-utility-steps:2.10.0 "
@@ -78,7 +80,7 @@ public class JavaMavenBuilderTest {
                   + "mstest:1.0.0")
               .run("apt-get update")
               // Install php, ruby, python
-              .run("apt-get install maven wget curl sudo python3 python3-pip python3-html5lib ruby-full php7.4 php-cli php-zip php-dom php-mbstring unzip -y")
+              .run("apt-get install vim maven wget curl sudo python3 python3-pip python3-html5lib ruby-full php7.4 php-cli php-zip php-dom php-mbstring unzip -y")
               // install gradle
               .run("wget https://services.gradle.org/distributions/gradle-7.2-bin.zip")
               .run("unzip gradle-7.2-bin.zip")
