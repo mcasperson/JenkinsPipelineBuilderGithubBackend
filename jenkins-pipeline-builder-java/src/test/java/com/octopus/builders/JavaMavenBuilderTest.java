@@ -81,7 +81,7 @@ public class JavaMavenBuilderTest {
                   + "mstest:1.0.0")
               .run("apt-get update")
               // Install php, ruby, python
-              .run("apt-get install vim maven wget curl sudo python3 python3-pip python3-html5lib ruby-full php7.4 php-cli php-zip php-dom php-mbstring unzip -y")
+              .run("apt-get install vim maven wget curl sudo python3 python3-pip python3-html5lib ruby-full ruby-dev php7.4 php-cli php-zip php-dom php-mbstring unzip -y")
               // install gradle
               .run("wget https://services.gradle.org/distributions/gradle-7.2-bin.zip")
               .run("unzip gradle-7.2-bin.zip")
@@ -115,8 +115,6 @@ public class JavaMavenBuilderTest {
               .run("wget https://golang.org/dl/go1.17.1.linux-amd64.tar.gz")
               .run("rm -rf /usr/local/go && tar -C /usr/local -xzf go1.17.1.linux-amd64.tar.gz")
               .env("PATH", "/usr/local/go/bin:/root/go/bin:${PATH}")
-              // install ruby
-              .run("apt-get install ruby-dev")
               .build()))
       .withCopyFileToContainer(MountableFile.forClasspathResource("jenkins/maven_tool.groovy"),
           "/usr/share/jenkins/ref/init.groovy.d/maven_tool.groovy")
