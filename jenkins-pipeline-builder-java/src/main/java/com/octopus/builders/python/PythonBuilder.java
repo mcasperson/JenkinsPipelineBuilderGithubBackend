@@ -54,7 +54,7 @@ public class PythonBuilder implements PipelineBuilder {
 
     return Function1ArgTrailingLambda.builder()
         .name("stage")
-        .arg("Install Dependencies")
+        .arg("Dependencies")
         .children(GIT_BUILDER.createStepsElement(new ImmutableList.Builder<Element>()
             .add(FunctionManyArgs.builder()
                 .name("sh")
