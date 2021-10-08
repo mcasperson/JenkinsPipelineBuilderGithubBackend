@@ -27,5 +27,7 @@ public class Element {
     return "  ".repeat(Math.max(0, depth));
   }
 
-
+  public String toString() {
+    return "";
+  }
 }
