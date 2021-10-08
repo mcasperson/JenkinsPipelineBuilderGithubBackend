@@ -90,7 +90,7 @@ public class GoBuilder implements PipelineBuilder {
                 .args(new ImmutableList.Builder<Argument>()
                     .add(new Argument(
                         "script",
-                        "go list -u -m -f '{{if .Update}}{{.}}{{end}}' all > dependencieupdates.txt",
+                        "go list -u -m -f \"{{if .Update}}{{.}}{{end}}\" all > dependencieupdates.txt",
                         ArgType.STRING))
                     .build())
                 .build())
