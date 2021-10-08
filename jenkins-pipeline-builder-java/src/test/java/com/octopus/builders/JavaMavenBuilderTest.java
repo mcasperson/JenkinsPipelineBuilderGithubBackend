@@ -16,6 +16,7 @@ import com.octopus.repoclients.NodeTestRepoClient;
 import com.octopus.repoclients.PhpTestRepoClient;
 import com.octopus.repoclients.PythonTestRepoClient;
 import com.octopus.repoclients.RepoClient;
+import com.octopus.repoclients.RubyTestRepoClient;
 import io.vavr.control.Try;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -165,6 +166,10 @@ public class JavaMavenBuilderTest {
 
   private static Stream<Arguments> provideTestRepos() {
     return Stream.of(
+        Arguments.of(
+            "ruby",
+            new RubyTestRepoClient(
+                "https://github.com/OctopusSamples/RandomQuotes-Ruby")),
         Arguments.of(
             "php",
             new NodeTestRepoClient(
