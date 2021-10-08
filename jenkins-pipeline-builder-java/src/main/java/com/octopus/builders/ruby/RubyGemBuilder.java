@@ -144,7 +144,7 @@ public class RubyGemBuilder implements PipelineBuilder {
                 .args(new ImmutableList.Builder<Argument>()
                     .add(new Argument(
                         "script",
-                        "rspec -r rspec_junit_formatter --format RspecJunitFormatter --out results.xml",
+                        "rspec --format RspecJunitFormatter --out results.xml",
                         ArgType.STRING))
                     .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
                     .build())
