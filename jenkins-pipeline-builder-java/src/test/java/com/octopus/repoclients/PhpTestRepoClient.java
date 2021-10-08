@@ -22,9 +22,4 @@ public class PhpTestRepoClient extends TestRepoClient {
 
     return false;
   }
-
-  @Override
-  public Try<List<String>> getWildcardFiles(String path) {
-    return Try.of(() -> List.of());
-  }
 }

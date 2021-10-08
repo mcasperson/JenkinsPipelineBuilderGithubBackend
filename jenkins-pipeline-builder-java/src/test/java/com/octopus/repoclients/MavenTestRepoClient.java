@@ -27,9 +27,4 @@ public class MavenTestRepoClient extends TestRepoClient {
 
     return false;
   }
-
-  @Override
-  public Try<List<String>> getWildcardFiles(String path) {
-    return Try.failure(new Exception("Not implemented"));
-  }
 }

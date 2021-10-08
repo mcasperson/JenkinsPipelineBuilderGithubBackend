@@ -9,6 +9,7 @@ import com.octopus.jenkinsclient.JenkinsClient;
 import com.octopus.jenkinsclient.JenkinsDetails;
 import com.octopus.repoclients.GradleTestRepoClient;
 import com.octopus.repoclients.MavenTestRepoClient;
+import com.octopus.repoclients.NodeTestRepoClient;
 import com.octopus.repoclients.PhpTestRepoClient;
 import com.octopus.repoclients.PythonTestRepoClient;
 import com.octopus.repoclients.RepoClient;
@@ -155,6 +156,10 @@ public class JavaMavenBuilderTest {
 
   private static Stream<Arguments> provideTestRepos() {
     return Stream.of(
+        Arguments.of(
+            "php",
+            new NodeTestRepoClient(
+                "https://github.com/OctopusSamples/RandomQuotes-JS")),
         Arguments.of(
             "php",
             new PhpTestRepoClient(

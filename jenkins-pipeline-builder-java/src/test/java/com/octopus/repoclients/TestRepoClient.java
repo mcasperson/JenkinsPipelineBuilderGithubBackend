@@ -54,4 +54,9 @@ public abstract class TestRepoClient implements RepoClient {
   public List<String> getDefaultBranches() {
     return List.of(branch);
   }
+
+  @Override
+  public Try<List<String>> getWildcardFiles(String path) {
+    return Try.of(() -> List.of());
+  }
 }
