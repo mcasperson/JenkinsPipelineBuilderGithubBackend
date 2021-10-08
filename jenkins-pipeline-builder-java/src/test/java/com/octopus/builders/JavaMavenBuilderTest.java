@@ -172,15 +172,15 @@ public class JavaMavenBuilderTest {
   private static Stream<Arguments> provideTestRepos() {
     return Stream.of(
         Arguments.of(
-            "go",
-            new GoTestRepoClient(
-                "https://github.com/OctopusSamples/RandomQuotes-Go",
-                "main")),
-        Arguments.of(
             "ruby",
             new RubyTestRepoClient(
                 "https://github.com/OctopusSamples/RandomQuotes-Ruby",
                 "master")),
+        Arguments.of(
+            "go",
+            new GoTestRepoClient(
+                "https://github.com/OctopusSamples/RandomQuotes-Go",
+                "main")),
         Arguments.of(
             "php",
             new NodeTestRepoClient(
