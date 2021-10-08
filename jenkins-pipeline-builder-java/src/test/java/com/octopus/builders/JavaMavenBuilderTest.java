@@ -3,6 +3,7 @@ package com.octopus.builders;
 import com.google.common.io.Resources;
 import com.octopus.builders.java.JavaGradleBuilder;
 import com.octopus.builders.java.JavaMavenBuilder;
+import com.octopus.builders.php.PhpComposerBuilder;
 import com.octopus.builders.python.PythonBuilder;
 import com.octopus.jenkinsclient.JenkinsClient;
 import com.octopus.jenkinsclient.JenkinsDetails;
@@ -35,10 +36,12 @@ public class JavaMavenBuilderTest {
   private static final JavaMavenBuilder JAVA_MAVEN_BUILDER = new JavaMavenBuilder();
   private static final JavaGradleBuilder JAVA_GRADLE_BUILDER = new JavaGradleBuilder();
   private static final PythonBuilder PYTHON_BUILDER  = new PythonBuilder();
+  private static final PhpComposerBuilder PHP_COMPOSER_BUILDER  = new PhpComposerBuilder();
   private static final PipelineBuilder[] PIPELINE_BUILDERS = {
       JAVA_MAVEN_BUILDER,
       JAVA_GRADLE_BUILDER,
-      PYTHON_BUILDER
+      PYTHON_BUILDER,
+      PHP_COMPOSER_BUILDER
   };
   private static final JenkinsClient JENKINS_CLIENT = new JenkinsClient();
 
@@ -63,7 +66,7 @@ public class JavaMavenBuilderTest {
                   + "mstest:1.0.0")
               .run("apt-get update")
               // Install php, ruby, python
-              .run("apt-get install maven wget curl sudo python3 python3-pip python3-html5lib ruby-full php7.4 php-cli php-zip php-dom unzip -y")
+              .run("apt-get install maven wget curl sudo python3 python3-pip python3-html5lib ruby-full php7.4 php-cli php-zip php-dom php-mbstring unzip -y")
               // install gradle
               .run("wget https://services.gradle.org/distributions/gradle-7.2-bin.zip")
               .run("unzip gradle-7.2-bin.zip")
@@ -152,6 +155,10 @@ public class JavaMavenBuilderTest {
 
   private static Stream<Arguments> provideTestRepos() {
     return Stream.of(
+        Arguments.of(
+            "php",
+            new PhpTestRepoClient(
+                "https://github.com/OctopusSamples/RandomQuotes-PHP")),
         Arguments.of(
             "python",
             new PythonTestRepoClient(

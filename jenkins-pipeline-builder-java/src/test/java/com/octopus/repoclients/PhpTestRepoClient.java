@@ -25,6 +25,6 @@ public class PhpTestRepoClient extends TestRepoClient {
 
   @Override
   public Try<List<String>> getWildcardFiles(String path) {
-    return Try.failure(new Exception("Not implemented"));
+    return Try.of(() -> List.of());
   }
 }
