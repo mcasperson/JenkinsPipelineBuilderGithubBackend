@@ -38,7 +38,7 @@ public class RubyGemBuilder implements PipelineBuilder {
                     .add(GIT_BUILDER.createEnvironmentStage())
                     .add(GIT_BUILDER.createCheckoutStep(accessor))
                     .add(createDependenciesStep())
-                    .add(createTestStep())
+                    .add(createTestStep(accessor))
                     .add(createPackageStep(accessor))
                     .build())
                 .build())
@@ -96,7 +96,35 @@ public class RubyGemBuilder implements PipelineBuilder {
         .build();
   }
 
-  private Element createTestStep() {
+  private Element createTestStep(@NonNull final RepoClient accessor) {
+    final Try<List<String>> files = accessor.getWildcardFiles("**/run_test.rb");
+    if (files.isSuccess() && !files.get().isEmpty()) {
+      return createTestUnitTestStep(files.get().get(0));
+    }
+
+    return createRspecTestStep();
+  }
+
+  private Element createTestUnitTestStep(@NonNull final String runner) {
+    return Function1ArgTrailingLambda.builder()
+        .name("stage")
+        .arg("Test")
+        .children(GIT_BUILDER.createStepsElement(new ImmutableList.Builder<Element>()
+            .add(FunctionManyArgs.builder()
+                .name("sh")
+                .args(new ImmutableList.Builder<Argument>()
+                    .add(new Argument(
+                        "script",
+                        "ruby " + runner,
+                        ArgType.STRING))
+                    .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
+                    .build())
+                .build())
+            .build()))
+        .build();
+  }
+
+  private Element createRspecTestStep() {
     return Function1ArgTrailingLambda.builder()
         .name("stage")
         .arg("Test")
