@@ -83,7 +83,7 @@ public class NodejsNpmBuilder implements PipelineBuilder {
                 .args(new ImmutableList.Builder<Argument>()
                     .add(new Argument(
                         "script",
-                        "npm outdated > dependencieupdates.txt",
+                        "npm outdated > dependencieupdates.txt || true",
                         ArgType.STRING))
                     .build())
                 .build())
