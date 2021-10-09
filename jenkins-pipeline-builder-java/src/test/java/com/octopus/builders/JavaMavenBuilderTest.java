@@ -67,6 +67,7 @@ public class JavaMavenBuilderTest {
           builder
               .from("jenkins/jenkins:lts")
               .user("root")
+              // install plugins
               .run("jenkins-plugin-cli --plugins "
                   + "pipeline-utility-steps:2.10.0 "
                   + "gradle:1.37.1 "
@@ -78,7 +79,9 @@ public class JavaMavenBuilderTest {
                   + "mstest:1.0.0")
               .run("apt-get update")
               // Install php, ruby, python
-              .run("apt-get install maven wget curl sudo python3 python3-pip python3-html5lib ruby-full php7.4 php-cli php-zip php-dom php-mbstring unzip -y")
+              .run("apt-get install maven wget curl sudo python3 python3-pip ruby-full ruby-dev php7.4 php-cli php-zip php-dom php-mbstring unzip -y")
+              // let the jenkins user run sudo
+              .run("echo \"jenkins ALL=(ALL) NOPASSWD: ALL\" >> /etc/sudoers")
               // install gradle
               .run("wget https://services.gradle.org/distributions/gradle-7.2-bin.zip")
               .run("unzip gradle-7.2-bin.zip")
@@ -169,15 +172,15 @@ public class JavaMavenBuilderTest {
   private static Stream<Arguments> provideTestRepos() {
     return Stream.of(
         Arguments.of(
-            "go",
-            new GoTestRepoClient(
-                "https://github.com/OctopusSamples/RandomQuotes-Go",
-                "main")),
-        Arguments.of(
             "ruby",
             new RubyTestRepoClient(
                 "https://github.com/OctopusSamples/RandomQuotes-Ruby",
                 "master")),
+        Arguments.of(
+            "go",
+            new GoTestRepoClient(
+                "https://github.com/OctopusSamples/RandomQuotes-Go",
+                "main")),
         Arguments.of(
             "php",
             new NodeTestRepoClient(
