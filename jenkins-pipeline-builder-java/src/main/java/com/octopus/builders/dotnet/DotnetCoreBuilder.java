@@ -175,7 +175,7 @@ public class DotnetCoreBuilder implements PipelineBuilder {
                 .args(new ImmutableList.Builder<Argument>()
                     .add(new Argument(
                         "script",
-                        "dotnet publish --configuration Release",
+                        "dotnet publish --configuration Release /p:AssemblyVersion=${VERSION_SEMVER}",
                         ArgType.STRING))
                     .build())
                 .build())
