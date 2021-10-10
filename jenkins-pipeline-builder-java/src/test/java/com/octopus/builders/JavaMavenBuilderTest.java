@@ -147,6 +147,8 @@ public class JavaMavenBuilderTest {
         .map(p -> p.generate(accessor))
         .findFirst().get();
 
+    System.out.println(template);
+
     // Add the job to the docker image
     addJobToJenkins(getScriptJob(template), name);
 
