@@ -138,6 +138,9 @@ public class JavaMavenBuilderTest {
   @MethodSource("provideTestRepos")
   public void verifyTemplate(@NonNull final String name, @NonNull final RepoClient accessor)
       throws IOException {
+
+    System.out.println("Testing " + accessor.getClass().getName());
+
     final String template = Arrays.stream(PIPELINE_BUILDERS)
         .filter(p -> p.canBuild(accessor))
         .map(p -> p.generate(accessor))
