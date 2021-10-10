@@ -5,6 +5,7 @@ import com.octopus.builders.PipelineBuilder;
 import com.octopus.builders.java.JavaGitBuilder;
 import com.octopus.dsl.ArgType;
 import com.octopus.dsl.Argument;
+import com.octopus.dsl.Comment;
 import com.octopus.dsl.Element;
 import com.octopus.dsl.Function1Arg;
 import com.octopus.dsl.Function1ArgTrailingLambda;
@@ -61,6 +62,10 @@ public class RubyGemBuilder implements PipelineBuilder {
                         ArgType.STRING))
                     .build())
                 .build())
+            .add(Comment.builder()
+                .content(
+                    "Save the dependencies that went into this build into an artifact. This allows you to review any builds for vulnerabilities later on.")
+                .build())
             .add(FunctionManyArgs.builder()
                 .name("sh")
                 .args(new ImmutableList.Builder<Argument>()
@@ -75,6 +80,9 @@ public class RubyGemBuilder implements PipelineBuilder {
                     .add(new Argument("artifacts", "dependencies.txt", ArgType.STRING))
                     .add(new Argument("fingerprint", "true", ArgType.BOOLEAN))
                     .build())
+                .build())
+            .add(Comment.builder()
+                .content("List any dependency updates.")
                 .build())
             .add(FunctionManyArgs.builder()
                 .name("sh")
