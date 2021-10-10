@@ -74,7 +74,6 @@ public class DotnetCoreBuilder implements PipelineBuilder {
                 .children(new ImmutableList.Builder<Element>()
                     .add(GIT_BUILDER.createEnvironmentStage())
                     .add(GIT_BUILDER.createCheckoutStep(accessor))
-                    .add(createDependenciesInstallStep())
                     .add(createDependenciesStep())
                     .add(createBuildStep())
                     .add(createTestStep())
@@ -90,8 +89,16 @@ public class DotnetCoreBuilder implements PipelineBuilder {
   private Element createDependenciesStep() {
     return Function1ArgTrailingLambda.builder()
         .name("stage")
-        .arg("List Dependencies")
+        .arg("Dependencies")
         .children(GIT_BUILDER.createStepsElement(new ImmutableList.Builder<Element>()
+            .add(FunctionManyArgs.builder()
+                .name("sh")
+                .args(new ImmutableList.Builder<Argument>()
+                    .add(new Argument("script",
+                        "dotnet restore",
+                        ArgType.STRING))
+                    .build())
+                .build())
             .add(Comment.builder()
                 .content(
                     "Save the dependencies that went into this build into an artifact. This allows you to review any builds for vulnerabilities later on.")
@@ -109,23 +116,6 @@ public class DotnetCoreBuilder implements PipelineBuilder {
                 .args(new ImmutableList.Builder<Argument>()
                     .add(new Argument("artifacts", "dependencies.txt", ArgType.STRING))
                     .add(new Argument("fingerprint", "true", ArgType.BOOLEAN))
-                    .build())
-                .build())
-            .build()))
-        .build();
-  }
-
-  private Element createDependenciesInstallStep() {
-    return Function1ArgTrailingLambda.builder()
-        .name("stage")
-        .arg("Restore Dependencies")
-        .children(GIT_BUILDER.createStepsElement(new ImmutableList.Builder<Element>()
-            .add(FunctionManyArgs.builder()
-                .name("sh")
-                .args(new ImmutableList.Builder<Argument>()
-                    .add(new Argument("script",
-                        "dotnet restore",
-                        ArgType.STRING))
                     .build())
                 .build())
             .build()))

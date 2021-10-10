@@ -97,7 +97,7 @@ public class JavaGradleBuilder implements PipelineBuilder {
   private Element createDependenciesStep() {
     return Function1ArgTrailingLambda.builder()
         .name("stage")
-        .arg("List Dependencies")
+        .arg("Dependencies")
         .children(GIT_BUILDER.createStepsElement(new ImmutableList.Builder<Element>()
             .add(Comment.builder()
                 .content(
