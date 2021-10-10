@@ -162,10 +162,7 @@ public class JavaMavenBuilder implements PipelineBuilder {
                 .name("sh")
                 .value(mavenExecutable()
                     + " --batch-mode build-helper:parse-version versions:set \\\n"
-                    + "-DnewVersion=\\\\${parsedVersion.majorVersion}\\\n"
-                    + ".\\\\${parsedVersion.minorVersion}\\\n"
-                    + ".\\\\${parsedVersion.incrementalVersion}\\\n"
-                    + ".${BUILD_NUMBER}")
+                    + "-DnewVersion=\\\\${parsedVersion.majorVersion}.\\\\${parsedVersion.minorVersion}.\\\\${parsedVersion.incrementalVersion}.${BUILD_NUMBER}")
                 .build())
             .add(FunctionManyArgs.builder()
                 .name("sh")
