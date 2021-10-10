@@ -51,7 +51,7 @@ public class JavaGradleBuilder implements PipelineBuilder {
             .addAll(GIT_BUILDER.createTopComments())
             .add(Comment.builder()
                 .content(
-                    "* JUnit: https://plugins.jenkins.io/junit/")
+                    "* JUnit: https://plugins.jenkins.io/junit/\n* Gradle: https://plugins.jenkins.io/gradle/")
                 .build())
             .add(FunctionTrailingLambda.builder()
                 .name("tools")
