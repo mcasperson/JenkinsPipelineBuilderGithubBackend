@@ -159,18 +159,19 @@ public class JavaMavenBuilder implements PipelineBuilder {
             .add(Comment.builder()
                 .content("Set the build number on the generated artifact.")
                 .build())
-                .add(Function1Arg.builder()
-                    .name("sh")
-                    .children(new ImmutableList.Builder<Element>()
-                        .add(StringContent.builder()
-                            .content(mavenExecutable() + " --batch-mode build-helper:parse-version versions:set \\\n"
+            .add(Function1Arg.builder()
+                .name("sh")
+                .children(new ImmutableList.Builder<Element>()
+                    .add(StringContent.builder()
+                        .content(mavenExecutable()
+                            + " --batch-mode build-helper:parse-version versions:set \\\n"
                             + "-DnewVersion=\\\\${parsedVersion.majorVersion}\\\n"
                             + ".\\\\${parsedVersion.minorVersion}\\\n"
                             + ".\\\\${parsedVersion.incrementalVersion}\\\n"
                             + ".${BUILD_NUMBER}")
-                            .build())
                         .build())
                     .build())
+                .build())
             .add(FunctionManyArgs.builder()
                 .name("sh")
                 .args(new ImmutableList.Builder<Argument>()
@@ -198,7 +199,8 @@ public class JavaMavenBuilder implements PipelineBuilder {
             .add(FunctionManyArgs.builder()
                 .name("junit")
                 .args(new ImmutableList.Builder<Argument>()
-                    .add(new Argument("testResults", "target/surefire-reports/*.xml", ArgType.STRING))
+                    .add(new Argument("testResults", "target/surefire-reports/*.xml",
+                        ArgType.STRING))
                     .add(new Argument("allowEmptyResults ", "true", ArgType.BOOLEAN))
                     .build())
                 .build())
