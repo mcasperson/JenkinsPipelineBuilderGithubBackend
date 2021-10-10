@@ -127,7 +127,7 @@ public class GitBuilder {
                             + "  env.VERSION_MAJORMINORPATCH = props.GitVersion_MajorMinorPatch\n"
                             + "  env.VERSION_SHA = props.GitVersion_Sha\n"
                             + "} else {\n"
-                            + "  env.VERSION_SEMVER=\"1.0.0.${BUILD_NUMBER}\"\n"
+                            + "  env.VERSION_SEMVER=\"1.0.0.\" + env.BUILD_NUMBER\n"
                             + "}"
                     )
                     .build())
