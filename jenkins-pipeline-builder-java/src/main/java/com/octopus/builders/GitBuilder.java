@@ -17,6 +17,7 @@ import lombok.NonNull;
  * The base class containing common functions to build shared parts of the pipeline.
  */
 public class GitBuilder {
+
   /**
    * Creates the comments that appear at the top of the pipeline.
    *
@@ -26,7 +27,10 @@ public class GitBuilder {
     return new ImmutableList.Builder<Element>()
         .add(Comment.builder()
             .content(
-                "This pipeline requires the following plugins:\n* Pipeline Utility Steps Plugin: https://wiki.jenkins.io/display/JENKINS/Pipeline+Utility+Steps+Plugin")
+                "This pipeline requires the following plugins:\n"
+                    + "* Pipeline Utility Steps Plugin: https://wiki.jenkins.io/display/JENKINS/Pipeline+Utility+Steps+Plugin\n"
+                    + "* Git: https://plugins.jenkins.io/git/\n"
+                    + "* Workflow Aggregator: https://plugins.jenkins.io/workflow-aggregator/")
             .build())
         .build();
   }
@@ -63,7 +67,9 @@ public class GitBuilder {
                 .name("checkout")
                 .args(new ImmutableList.Builder<Argument>()
                     .add(new Argument("$class", "GitSCM", ArgType.STRING))
-                    .add(new Argument("branches", "[[name: '*/" + accessor.getDefaultBranches().get(0) + "']]", ArgType.ARRAY))
+                    .add(new Argument("branches",
+                        "[[name: '*/" + accessor.getDefaultBranches().get(0) + "']]",
+                        ArgType.ARRAY))
                     .add(new Argument("userRemoteConfigs",
                         "[[url: '" + accessor.getRepoPath() + "']]", ArgType.ARRAY))
                     .build())
