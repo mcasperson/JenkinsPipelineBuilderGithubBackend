@@ -121,6 +121,7 @@ public class JavaMavenBuilderTest {
               .run("wget https://github.com/GitTools/GitVersion/releases/download/5.7.0/gitversion-linux-x64-5.7.0.tar.gz")
               .run("mkdir /opt/gitversion")
               .run("tar -C /opt/gitversion -xzf gitversion-linux-x64-5.7.0.tar.gz")
+              .run("chmod -R 755 /opt/gitversion")
               .env("PATH", "/opt/gitversion:${PATH}")
               .build()))
       .withCopyFileToContainer(MountableFile.forClasspathResource("jenkins/maven_tool.groovy"),
