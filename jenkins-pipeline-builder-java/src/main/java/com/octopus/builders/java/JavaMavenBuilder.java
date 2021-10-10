@@ -159,8 +159,8 @@ public class JavaMavenBuilder implements PipelineBuilder {
             .add(Comment.builder()
                 .content("Set the build number on the generated artifact.")
                 .build())
-                .add(FunctionTrailingLambda.builder()
-                    .name("script")
+                .add(Function1Arg.builder()
+                    .name("sh")
                     .children(new ImmutableList.Builder<Element>()
                         .add(StringContent.builder()
                             .content(mavenExecutable() + " --batch-mode build-helper:parse-version versions:set \\\n"
