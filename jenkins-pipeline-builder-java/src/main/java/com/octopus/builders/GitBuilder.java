@@ -88,6 +88,11 @@ public class GitBuilder {
 
   }
 
+  /**
+   * Create the steps required to run gitversion and capture the results in environment vars.
+   *
+   * @return A list of steps executing and processing gitversion.
+   */
   public List<Element> createGitVersionSteps() {
     return new ImmutableList.Builder<Element>()
         .add(Comment.builder()

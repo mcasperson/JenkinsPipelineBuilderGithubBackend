@@ -18,6 +18,9 @@ import lombok.NonNull;
 import org.apache.commons.io.FilenameUtils;
 import org.jboss.logging.Logger;
 
+/**
+ * PHP builder.
+ */
 public class PhpComposerBuilder implements PipelineBuilder {
 
   private static final Logger LOG = Logger.getLogger(PhpComposerBuilder.class.toString());

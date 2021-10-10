@@ -17,6 +17,9 @@ import java.util.Map;
 import lombok.NonNull;
 import org.jboss.logging.Logger;
 
+/**
+ * Node JS builder.
+ */
 public class NodejsBuilder implements PipelineBuilder {
 
   private static final Logger LOG = Logger.getLogger(NodejsBuilder.class.toString());
@@ -157,7 +160,7 @@ public class NodejsBuilder implements PipelineBuilder {
   private boolean scriptExists(@NonNull final RepoClient accessor, @NonNull final String script) {
     return accessor.getFile("package.json")
         .mapTry(j -> new ObjectMapper().readValue(j, Map.class))
-        .mapTry(m -> (Map)(m.get("scripts")))
+        .mapTry(m -> (Map) (m.get("scripts")))
         .mapTry(s -> s.containsKey(script))
         .getOrElse(false);
   }

@@ -17,6 +17,9 @@ import java.util.List;
 import lombok.NonNull;
 import org.jboss.logging.Logger;
 
+/**
+ * Go builder.
+ */
 public class GoBuilder implements PipelineBuilder {
 
   private static final Logger LOG = Logger.getLogger(GoBuilder.class.toString());

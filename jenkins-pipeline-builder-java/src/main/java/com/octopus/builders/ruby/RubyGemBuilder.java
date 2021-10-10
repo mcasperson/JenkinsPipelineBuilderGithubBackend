@@ -17,6 +17,9 @@ import java.util.List;
 import lombok.NonNull;
 import org.jboss.logging.Logger;
 
+/**
+ * Ruby builder.
+ */
 public class RubyGemBuilder implements PipelineBuilder {
 
   private static final Logger LOG = Logger.getLogger(RubyGemBuilder.class.toString());
