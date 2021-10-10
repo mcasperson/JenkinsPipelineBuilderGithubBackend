@@ -12,6 +12,7 @@ import com.octopus.dsl.Function1Arg;
 import com.octopus.dsl.Function1ArgTrailingLambda;
 import com.octopus.dsl.FunctionManyArgs;
 import com.octopus.dsl.FunctionTrailingLambda;
+import com.octopus.dsl.StringContent;
 import com.octopus.repoclients.RepoClient;
 import java.util.List;
 import lombok.NonNull;
@@ -158,15 +159,18 @@ public class JavaMavenBuilder implements PipelineBuilder {
             .add(Comment.builder()
                 .content("Set the build number on the generated artifact.")
                 .build())
-            .add(FunctionManyArgs.builder()
-                .name("sh")
-                .args(new ImmutableList.Builder<Argument>()
-                    .add(new Argument("script", mavenExecutable()
-                        + " --batch-mode build-helper:parse-version versions:set -DnewVersion=\\\\${parsedVersion.majorVersion}.\\\\${parsedVersion.minorVersion}.\\\\${parsedVersion.incrementalVersion}.${BUILD_NUMBER}",
-                        ArgType.STRING))
-                    .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
+                .add(FunctionTrailingLambda.builder()
+                    .name("script")
+                    .children(new ImmutableList.Builder<Element>()
+                        .add(StringContent.builder()
+                            .content(mavenExecutable() + " --batch-mode build-helper:parse-version versions:set \\\n"
+                            + "-DnewVersion=\\\\${parsedVersion.majorVersion}\\\n"
+                            + ".\\\\${parsedVersion.minorVersion}\\\n"
+                            + ".\\\\${parsedVersion.incrementalVersion}\\\n"
+                            + ".${BUILD_NUMBER}")
+                            .build())
+                        .build())
                     .build())
-                .build())
             .add(FunctionManyArgs.builder()
                 .name("sh")
                 .args(new ImmutableList.Builder<Argument>()
