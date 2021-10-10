@@ -26,7 +26,7 @@ public class GitBuilder {
     return new ImmutableList.Builder<Element>()
         .add(Comment.builder()
             .content(
-                "This pipeline requires the Pipeline Utility Steps Plugin: https://wiki.jenkins.io/display/JENKINS/Pipeline+Utility+Steps+Plugin")
+                "This pipeline requires the following plugins:\n* Pipeline Utility Steps Plugin: https://wiki.jenkins.io/display/JENKINS/Pipeline+Utility+Steps+Plugin")
             .build())
         .build();
   }

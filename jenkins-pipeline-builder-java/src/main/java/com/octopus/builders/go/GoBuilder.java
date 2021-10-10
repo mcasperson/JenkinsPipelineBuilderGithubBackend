@@ -36,6 +36,10 @@ public class GoBuilder implements PipelineBuilder {
         .name("pipeline")
         .children(new ImmutableList.Builder<Element>()
             .addAll(GIT_BUILDER.createTopComments())
+            .add(Comment.builder()
+                .content(
+                    "* JUnit: https://plugins.jenkins.io/junit/")
+                .build())
             .add(Function1Arg.builder().name("agent").value("any").build())
             .add(FunctionTrailingLambda.builder()
                 .name("stages")
