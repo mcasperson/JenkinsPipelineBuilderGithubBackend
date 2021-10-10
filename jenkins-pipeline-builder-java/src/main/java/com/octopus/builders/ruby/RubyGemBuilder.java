@@ -191,6 +191,7 @@ public class RubyGemBuilder implements PipelineBuilder {
         .name("stage")
         .arg("Package")
         .children(GIT_BUILDER.createStepsElement(new ImmutableList.Builder<Element>()
+            .addAll(GIT_BUILDER.createGitVersionSteps())
             .add(Function1Arg.builder()
                 .name("sh")
                 .value("# The Octopus CLI is used to create a package.\n"
@@ -211,7 +212,7 @@ public class RubyGemBuilder implements PipelineBuilder {
                     + "--include '**/*.env' \\\n"
                     + "--include '**/*.txt' \\\n"
                     + "--include '**/Procfile' \\\n"
-                    + "--version 1.0.0.${BUILD_NUMBER}")
+                    + "--version ${VERSION_SEMVER}")
                 .build())
             .build()))
         .build();
