@@ -117,6 +117,11 @@ public class JavaMavenBuilderTest {
               .run("wget https://golang.org/dl/go1.17.1.linux-amd64.tar.gz")
               .run("rm -rf /usr/local/go && tar -C /usr/local -xzf go1.17.1.linux-amd64.tar.gz")
               .env("PATH", "/usr/local/go/bin:/root/go/bin:${PATH}")
+              // install gitversion
+              .run("wget https://github.com/GitTools/GitVersion/releases/download/5.7.0/gitversion-linux-x64-5.7.0.tar.gz")
+              .run("mkdir /opt/gitversion")
+              .run("tar -C /opt/gitversion -xzf gitversion-linux-x64-5.7.0.tar.gz")
+              .env("PATH", "/opt/gitversion:${PATH}")
               .build()))
       .withCopyFileToContainer(MountableFile.forClasspathResource("jenkins/maven_tool.groovy"),
           "/usr/share/jenkins/ref/init.groovy.d/maven_tool.groovy")

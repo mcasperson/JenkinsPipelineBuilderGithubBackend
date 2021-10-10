@@ -87,4 +87,47 @@ public class GitBuilder {
         .build();
 
   }
+
+  public List<Element> createGitVersionSteps() {
+    return new ImmutableList.Builder<Element>()
+        .add(Comment.builder()
+            .content(
+                "Gitversion is available from https://github.com/GitTools/GitVersion/releases.\n"
+                    + "We attempt to run gitversion if the executable is available.")
+            .build())
+        .add(FunctionManyArgs.builder()
+            .name("sh")
+            .args(new ImmutableList.Builder<Argument>()
+                .add(new Argument(
+                    "script",
+                    "which gitversion && gitversion /output buildserver || true",
+                    ArgType.STRING))
+                .build())
+            .build())
+        .add(Comment.builder()
+            .content(
+                "Capture the git version as an environment variable, or use a default version if gitversion wasn't available.\n"
+                    + "https://gitversion.net/docs/reference/build-servers/jenkins")
+            .build())
+        .add(FunctionTrailingLambda.builder()
+            .name("script")
+            .children(new ImmutableList.Builder<Element>()
+                .add(StringContent.builder()
+                    .content(
+                        "if (fileExists('gitversion.properties')) {\n"
+                            + "  def props = readProperties file: 'gitversion.properties'\n"
+                            + "  env.VERSION_SEMVER = props.GitVersion_SemVer\n"
+                            + "  env.VERSION_BRANCHNAME = props.GitVersion_BranchName\n"
+                            + "  env.VERSION_ASSEMBLYSEMVER = props.GitVersion_AssemblySemVer\n"
+                            + "  env.VERSION_MAJORMINORPATCH = props.GitVersion_MajorMinorPatch\n"
+                            + "  env.VERSION_SHA = props.GitVersion_Sha\n"
+                            + "} else {\n"
+                            + "  env.VERSION_SEMVER=1.0.0\n"
+                            + "}"
+                    )
+                    .build())
+                .build())
+            .build())
+        .build();
+  }
 }

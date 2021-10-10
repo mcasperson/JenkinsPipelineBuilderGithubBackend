@@ -169,6 +169,7 @@ public class DotnetCoreBuilder implements PipelineBuilder {
         .name("stage")
         .arg("Publish")
         .children(GIT_BUILDER.createStepsElement(new ImmutableList.Builder<Element>()
+            .addAll(GIT_BUILDER.createGitVersionSteps())
             .add(FunctionManyArgs.builder()
                 .name("sh")
                 .args(new ImmutableList.Builder<Argument>()
@@ -198,22 +199,23 @@ public class DotnetCoreBuilder implements PipelineBuilder {
                 .build())
             .add(Function1Arg.builder()
                 .name("sh")
-                .value("# Split the PUBLISH_PATHS variable on colons. Each segment represents a published application.\n"
-                    + "export IFS=\":\"\n"
-                    + "for PATH in ${PUBLISH_PATHS}; do\n"
-                    + "  # Work backwards from the typical bin/Release/<sdk>/publish dir to where a solution file would be.\n"
-                    + "  cd \"${WORKSPACE}/${PATH}/../../../..\"\n"
-                    + "  # Scan for a csproj file. We'll use the project file name as the package ID.\n"
-                    + "  for file in *.csproj; do\n"
-                    + "    [ -e \"$file\" ] && PACKAGEID=\"${file%.*}\" || PACKAGEID=\"application\"\n"
-                    + "    break\n"
-                    + "  done\n"
-                    + "  cd \"${WORKSPACE}/${PATH}\"\n"
-                    + "  # The Octopus CLI is used to create a package.\n"
-                    + "  # Get the Octopus CLI from https://octopus.com/downloads/octopuscli#linux\n"
-                    + "  /usr/bin/octo pack --id ${PACKAGEID} --format zip --include ** --version 1.0.0.${BUILD_NUMBER}\n"
-                    + "  echo \"Created package \\\"${WORKSPACE}/${PATH}/${PACKAGEID}.1.0.0.${BUILD_NUMBER}.zip\\\"\"\n"
-                    + "done")
+                .value(
+                    "# Split the PUBLISH_PATHS variable on colons. Each segment represents a published application.\n"
+                        + "export IFS=\":\"\n"
+                        + "for PATH in ${PUBLISH_PATHS}; do\n"
+                        + "  # Work backwards from the typical bin/Release/<sdk>/publish dir to where a solution file would be.\n"
+                        + "  cd \"${WORKSPACE}/${PATH}/../../../..\"\n"
+                        + "  # Scan for a csproj file. We'll use the project file name as the package ID.\n"
+                        + "  for file in *.csproj; do\n"
+                        + "    [ -e \"$file\" ] && PACKAGEID=\"${file%.*}\" || PACKAGEID=\"application\"\n"
+                        + "    break\n"
+                        + "  done\n"
+                        + "  cd \"${WORKSPACE}/${PATH}\"\n"
+                        + "  # The Octopus CLI is used to create a package.\n"
+                        + "  # Get the Octopus CLI from https://octopus.com/downloads/octopuscli#linux\n"
+                        + "  /usr/bin/octo pack --id ${PACKAGEID} --format zip --include ** --version .${VERSION_SEMVER}.${BUILD_NUMBER}\n"
+                        + "  echo \"Created package \\\"${WORKSPACE}/${PATH}/${PACKAGEID}.${VERSION_SEMVER}.${BUILD_NUMBER}.zip\\\"\"\n"
+                        + "done")
                 .build())
             .build()))
         .build();
