@@ -1,8 +1,5 @@
 package com.octopus.repoclients;
 
-import io.vavr.control.Try;
-import java.util.List;
-
 public class MavenTestRepoClient extends TestRepoClient {
 
   /**
@@ -16,7 +13,7 @@ public class MavenTestRepoClient extends TestRepoClient {
   }
 
   @Override
-  public boolean testFile(String path) {
+  public boolean testFile(final String path) {
     if (path.endsWith("pom.xml")) {
       return true;
     }

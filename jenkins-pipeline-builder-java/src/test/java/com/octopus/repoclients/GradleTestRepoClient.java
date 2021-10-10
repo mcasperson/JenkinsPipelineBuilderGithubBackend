@@ -16,7 +16,7 @@ public class GradleTestRepoClient extends TestRepoClient {
   }
 
   @Override
-  public boolean testFile(String path) {
+  public boolean testFile(final String path) {
     if (path.endsWith("build.gradle") || path.endsWith("build.gradle.kts")) {
       return true;
     }

@@ -18,6 +18,10 @@ public class Function1Arg extends ElementWithChildren {
    * @return The groovy function
    */
   public String toString() {
+    if (value == null) {
+      throw new IllegalStateException("Value can not be null");
+    }
+
     if (value.contains("\n")) {
       return getIndent() + name + " '''\n" + getIndent() + "  " + String.join("\n" + getIndent() + "  ", value.split("\n")) + "\n" + getIndent() + "'''";
     }

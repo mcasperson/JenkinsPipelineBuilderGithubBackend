@@ -12,7 +12,6 @@ import com.octopus.dsl.Function1Arg;
 import com.octopus.dsl.Function1ArgTrailingLambda;
 import com.octopus.dsl.FunctionManyArgs;
 import com.octopus.dsl.FunctionTrailingLambda;
-import com.octopus.dsl.StringContent;
 import com.octopus.repoclients.RepoClient;
 import java.util.List;
 import lombok.NonNull;
@@ -161,16 +160,12 @@ public class JavaMavenBuilder implements PipelineBuilder {
                 .build())
             .add(Function1Arg.builder()
                 .name("sh")
-                .children(new ImmutableList.Builder<Element>()
-                    .add(StringContent.builder()
-                        .content(mavenExecutable()
-                            + " --batch-mode build-helper:parse-version versions:set \\\n"
-                            + "-DnewVersion=\\\\${parsedVersion.majorVersion}\\\n"
-                            + ".\\\\${parsedVersion.minorVersion}\\\n"
-                            + ".\\\\${parsedVersion.incrementalVersion}\\\n"
-                            + ".${BUILD_NUMBER}")
-                        .build())
-                    .build())
+                .value(mavenExecutable()
+                    + " --batch-mode build-helper:parse-version versions:set \\\n"
+                    + "-DnewVersion=\\\\${parsedVersion.majorVersion}\\\n"
+                    + ".\\\\${parsedVersion.minorVersion}\\\n"
+                    + ".\\\\${parsedVersion.incrementalVersion}\\\n"
+                    + ".${BUILD_NUMBER}")
                 .build())
             .add(FunctionManyArgs.builder()
                 .name("sh")
