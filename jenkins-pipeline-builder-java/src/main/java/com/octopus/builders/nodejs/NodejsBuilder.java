@@ -12,18 +12,19 @@ import com.octopus.dsl.Function1ArgTrailingLambda;
 import com.octopus.dsl.FunctionManyArgs;
 import com.octopus.dsl.FunctionTrailingLambda;
 import com.octopus.repoclients.RepoClient;
-import io.vavr.control.Try;
 import java.util.Map;
 import lombok.NonNull;
 import org.jboss.logging.Logger;
 
-public class NodejsNpmBuilder implements PipelineBuilder {
+public class NodejsBuilder implements PipelineBuilder {
 
-  private static final Logger LOG = Logger.getLogger(NodejsNpmBuilder.class.toString());
+  private static final Logger LOG = Logger.getLogger(NodejsBuilder.class.toString());
   private static final JavaGitBuilder GIT_BUILDER = new JavaGitBuilder();
+  private boolean useYarn = false;
 
   @Override
   public Boolean canBuild(@NonNull final RepoClient accessor) {
+    useYarn = accessor.testFile("yarn.lock");
     return accessor.testFile("package.json");
   }
 
@@ -50,6 +51,10 @@ public class NodejsNpmBuilder implements PipelineBuilder {
         .toString();
   }
 
+  private String getPackageManager() {
+    return useYarn ? "yarn" : "npm";
+  }
+
   private Element createDependenciesStep() {
     return Function1ArgTrailingLambda.builder()
         .name("stage")
@@ -59,7 +64,7 @@ public class NodejsNpmBuilder implements PipelineBuilder {
                 .name("sh")
                 .args(new ImmutableList.Builder<Argument>()
                     .add(new Argument("script",
-                        "npm install",
+                        getPackageManager() + " install",
                         ArgType.STRING))
                     .build())
                 .build())
@@ -67,7 +72,7 @@ public class NodejsNpmBuilder implements PipelineBuilder {
                 .name("sh")
                 .args(new ImmutableList.Builder<Argument>()
                     .add(new Argument("script",
-                        "npm ls --all > dependencies.txt",
+                        getPackageManager() + " list --all > dependencies.txt",
                         ArgType.STRING))
                     .build())
                 .build())
@@ -83,7 +88,7 @@ public class NodejsNpmBuilder implements PipelineBuilder {
                 .args(new ImmutableList.Builder<Argument>()
                     .add(new Argument(
                         "script",
-                        "npm outdated > dependencieupdates.txt || true",
+                        getPackageManager() + " outdated > dependencieupdates.txt || true",
                         ArgType.STRING))
                     .build())
                 .build())
@@ -108,7 +113,7 @@ public class NodejsNpmBuilder implements PipelineBuilder {
                 .args(new ImmutableList.Builder<Argument>()
                     .add(new Argument(
                         "script",
-                        "npm test",
+                        getPackageManager() + " test",
                         ArgType.STRING))
                     .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
                     .build())
@@ -128,7 +133,7 @@ public class NodejsNpmBuilder implements PipelineBuilder {
                   .args(new ImmutableList.Builder<Argument>()
                       .add(new Argument(
                           "script",
-                          "npm run build",
+                          getPackageManager() + " run build",
                           ArgType.STRING))
                       .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
                       .build())

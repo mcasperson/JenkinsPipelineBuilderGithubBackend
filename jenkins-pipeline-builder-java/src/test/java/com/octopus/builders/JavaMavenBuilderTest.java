@@ -4,7 +4,7 @@ import com.google.common.io.Resources;
 import com.octopus.builders.go.GoBuilder;
 import com.octopus.builders.java.JavaGradleBuilder;
 import com.octopus.builders.java.JavaMavenBuilder;
-import com.octopus.builders.nodejs.NodejsNpmBuilder;
+import com.octopus.builders.nodejs.NodejsBuilder;
 import com.octopus.builders.php.PhpComposerBuilder;
 import com.octopus.builders.python.PythonBuilder;
 import com.octopus.builders.ruby.RubyGemBuilder;
@@ -43,7 +43,7 @@ public class JavaMavenBuilderTest {
   private static final JavaGradleBuilder JAVA_GRADLE_BUILDER = new JavaGradleBuilder();
   private static final PythonBuilder PYTHON_BUILDER  = new PythonBuilder();
   private static final PhpComposerBuilder PHP_COMPOSER_BUILDER  = new PhpComposerBuilder();
-  private static final NodejsNpmBuilder NODEJS_NPM_BUILDER  = new NodejsNpmBuilder();
+  private static final NodejsBuilder NODEJS_NPM_BUILDER  = new NodejsBuilder();
   private static final RubyGemBuilder RUBY_GEM_BUILDER  = new RubyGemBuilder();
   private static final GoBuilder GO_BUILDER  = new GoBuilder();
   private static final PipelineBuilder[] PIPELINE_BUILDERS = {

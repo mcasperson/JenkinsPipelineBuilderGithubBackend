@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * The base class for all the DSL elements.
+ * The base class for all the DSL elements. Also used to represent an empty element in the DSL.
  */
 @Getter
 @SuperBuilder

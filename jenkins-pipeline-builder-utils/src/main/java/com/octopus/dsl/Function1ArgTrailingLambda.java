@@ -24,7 +24,11 @@ public class Function1ArgTrailingLambda extends FunctionTrailingLambda {
     safeChildren.forEach(c -> c.parent = this);
 
     return getIndent() + name + "('" + arg + "') {\n"
-        + safeChildren.stream().map(Object::toString).collect(Collectors.joining("\n"))
+        + safeChildren
+          .stream()
+          .map(Object::toString)
+          .filter(c -> !c.isBlank())
+          .collect(Collectors.joining("\n"))
         + "\n" + getIndent() + "}";
   }
 }

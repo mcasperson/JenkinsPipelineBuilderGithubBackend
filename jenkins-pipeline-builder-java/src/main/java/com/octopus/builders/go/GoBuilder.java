@@ -42,7 +42,7 @@ public class GoBuilder implements PipelineBuilder {
                 .children(new ImmutableList.Builder<Element>()
                     .add(GIT_BUILDER.createEnvironmentStage())
                     .add(GIT_BUILDER.createCheckoutStep(accessor))
-                    .add(createDependenciesStep())
+                    .add(createDependenciesStep(accessor))
                     .add(createTestStep())
                     .add(createBuildStep())
                     .build())
@@ -53,19 +53,23 @@ public class GoBuilder implements PipelineBuilder {
         .toString();
   }
 
-  private Element createDependenciesStep() {
+  private Element createDependenciesStep(@NonNull final RepoClient accessor) {
+    if (!accessor.testFile("go.mod")) {
+      return Element.builder().build();
+    }
+
     return Function1ArgTrailingLambda.builder()
         .name("stage")
         .arg("Dependencies")
         .children(GIT_BUILDER.createStepsElement(new ImmutableList.Builder<Element>()
             .add(FunctionManyArgs.builder()
-                .name("sh")
-                .args(new ImmutableList.Builder<Argument>()
-                    .add(new Argument("script",
-                        "go get ./...",
-                        ArgType.STRING))
-                    .build())
-                .build())
+                  .name("sh")
+                  .args(new ImmutableList.Builder<Argument>()
+                      .add(new Argument("script",
+                          "go get ./...",
+                          ArgType.STRING))
+                      .build())
+                  .build())
             .add(FunctionManyArgs.builder()
                 .name("sh")
                 .args(new ImmutableList.Builder<Argument>()

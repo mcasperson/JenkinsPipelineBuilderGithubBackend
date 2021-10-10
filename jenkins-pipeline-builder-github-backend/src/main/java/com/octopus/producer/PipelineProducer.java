@@ -5,7 +5,7 @@ import com.octopus.builders.dotnet.DotnetCoreBuilder;
 import com.octopus.builders.go.GoBuilder;
 import com.octopus.builders.java.JavaGradleBuilder;
 import com.octopus.builders.java.JavaMavenBuilder;
-import com.octopus.builders.nodejs.NodejsNpmBuilder;
+import com.octopus.builders.nodejs.NodejsBuilder;
 import com.octopus.builders.php.PhpComposerBuilder;
 import com.octopus.builders.python.PythonBuilder;
 import com.octopus.builders.ruby.RubyGemBuilder;
@@ -141,6 +141,6 @@ public class PipelineProducer {
   @ApplicationScoped
   @Produces
   public PipelineBuilder getNodejsNpmBuilder() {
-    return new NodejsNpmBuilder();
+    return new NodejsBuilder();
   }
 }
