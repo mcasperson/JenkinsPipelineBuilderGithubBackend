@@ -229,7 +229,7 @@ public class DotnetCoreBuilder implements PipelineBuilder {
                         + "    [ -e \"$file\" ] && PACKAGEID=\"${file%.*}\" || PACKAGEID=\"application\"\n"
                         + "    break\n"
                         + "  done\n"
-                        + "  # Sit in the publish parent directory. This is where the package is created."
+                        + "  # Sit in the publish parent directory. This is where the package is created.\n"
                         + "  cd \"${WORKSPACE}/${PATH}/..\"\n"
                         + "  # The Octopus CLI is used to create a package.\n"
                         + "  # Get the Octopus CLI from https://octopus.com/downloads/octopuscli#linux\n"
