@@ -1,6 +1,7 @@
 package com.octopus.builders;
 
 import com.google.common.io.Resources;
+import com.octopus.builders.dotnet.DotnetCoreBuilder;
 import com.octopus.builders.go.GoBuilder;
 import com.octopus.builders.java.JavaGradleBuilder;
 import com.octopus.builders.java.JavaMavenBuilder;
@@ -47,6 +48,7 @@ public class JavaMavenBuilderTest {
   private static final NodejsBuilder NODEJS_NPM_BUILDER  = new NodejsBuilder();
   private static final RubyGemBuilder RUBY_GEM_BUILDER  = new RubyGemBuilder();
   private static final GoBuilder GO_BUILDER  = new GoBuilder();
+  private static final DotnetCoreBuilder DOTNET_CORE_BUILDER  = new DotnetCoreBuilder();
   private static final PipelineBuilder[] PIPELINE_BUILDERS = {
       JAVA_MAVEN_BUILDER,
       JAVA_GRADLE_BUILDER,
@@ -54,7 +56,8 @@ public class JavaMavenBuilderTest {
       PHP_COMPOSER_BUILDER,
       NODEJS_NPM_BUILDER,
       RUBY_GEM_BUILDER,
-      GO_BUILDER
+      GO_BUILDER,
+      DOTNET_CORE_BUILDER
   };
   private static final JenkinsClient JENKINS_CLIENT = new JenkinsClient();
 
