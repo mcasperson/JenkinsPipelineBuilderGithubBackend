@@ -79,7 +79,7 @@ public class PhpComposerBuilder implements PipelineBuilder {
                 .name("sh")
                 .args(new ImmutableList.Builder<Argument>()
                     .add(new Argument("script",
-                        "composer show -i -t > dependencies.txt",
+                        "composer show --all > dependencies.txt",
                         ArgType.STRING))
                     .build())
                 .build())
