@@ -8,7 +8,7 @@ public class DotnetTestRepoClient extends TestRepoClient {
   /**
    * A mock repo accessor that pretends to find (or not find) project files and wrapper scripts.
    *
-   * @param repo        The git repo
+   * @param repo The git repo
    */
   public DotnetTestRepoClient(final String repo) {
     super(repo, false);
@@ -21,5 +21,11 @@ public class DotnetTestRepoClient extends TestRepoClient {
     }
 
     return false;
+  }
+
+  @Override
+  public Try<String> getFile(String path) {
+    // just enough to fake a dotnet core project
+    return Try.of(() -> "Sdk=\"Microsoft.NET.Sdk\"");
   }
 }

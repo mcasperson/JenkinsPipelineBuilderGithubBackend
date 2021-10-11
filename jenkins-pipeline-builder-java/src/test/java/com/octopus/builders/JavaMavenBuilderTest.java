@@ -10,6 +10,7 @@ import com.octopus.builders.python.PythonBuilder;
 import com.octopus.builders.ruby.RubyGemBuilder;
 import com.octopus.jenkinsclient.JenkinsClient;
 import com.octopus.jenkinsclient.JenkinsDetails;
+import com.octopus.repoclients.DotnetTestRepoClient;
 import com.octopus.repoclients.GoTestRepoClient;
 import com.octopus.repoclients.GradleTestRepoClient;
 import com.octopus.repoclients.MavenTestRepoClient;
@@ -184,6 +185,10 @@ public class JavaMavenBuilderTest {
 
   private static Stream<Arguments> provideTestRepos() {
     return Stream.of(
+        Arguments.of(
+            "dotnetcore",
+            new DotnetTestRepoClient(
+                "https://github.com/OctopusSamples/RandomQuotes")),
         Arguments.of(
             "ruby",
             new RubyTestRepoClient(
