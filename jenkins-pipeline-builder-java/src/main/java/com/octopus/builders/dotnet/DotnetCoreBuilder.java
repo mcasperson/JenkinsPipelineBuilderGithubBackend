@@ -230,7 +230,7 @@ public class DotnetCoreBuilder implements PipelineBuilder {
                         + "    break\n"
                         + "  done\n"
                         + "  # Sit in the publish parent directory. This is where the package is created."
-                        + "  cd \"${WORKSPACE}\"\n"
+                        + "  cd \"${WORKSPACE}/${PATH}/..\"\n"
                         + "  # The Octopus CLI is used to create a package.\n"
                         + "  # Get the Octopus CLI from https://octopus.com/downloads/octopuscli#linux\n"
                         + "  /usr/bin/octo pack \\\n"
@@ -239,9 +239,7 @@ public class DotnetCoreBuilder implements PipelineBuilder {
                         + "  --format zip \\\n"
                         + "  --include ** \\\n"
                         + "  --version ${VERSION_SEMVER} \\\n"
-                        + "  --outFolder \"${WORKSPACE}/${PATH}/..\" \\\n"
-                        + "  --basePath \"${WORKSPACE}/${PATH}\"\n"
-                        + "  echo \"Created package \\\"${WORKSPACE}/${PATH}/../${PACKAGEID}.${VERSION_SEMVER}.zip\\\"\"\n"
+                        + "  --basePath \"${WORKSPACE}/${PATH}\""
                         + "done")
                 .build())
             .build()))
