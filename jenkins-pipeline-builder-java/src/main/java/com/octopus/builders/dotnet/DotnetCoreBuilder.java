@@ -239,7 +239,7 @@ public class DotnetCoreBuilder implements PipelineBuilder {
                         + "  --format zip \\\n"
                         + "  --include ** \\\n"
                         + "  --version ${VERSION_SEMVER} \\\n"
-                        + "  --basePath \"${WORKSPACE}/${PATH}\""
+                        + "  --basePath \"${WORKSPACE}/${PATH}\"\n"
                         + "done")
                 .build())
             .build()))
