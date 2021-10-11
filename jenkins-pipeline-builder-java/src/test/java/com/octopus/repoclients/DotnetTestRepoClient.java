@@ -16,7 +16,7 @@ public class DotnetTestRepoClient extends TestRepoClient {
 
   @Override
   public boolean testFile(String path) {
-    if (path.endsWith(".sln")) {
+    if (path.endsWith(".sln") || path.endsWith(".csproj")) {
       return true;
     }
 
@@ -27,5 +27,10 @@ public class DotnetTestRepoClient extends TestRepoClient {
   public Try<String> getFile(String path) {
     // just enough to fake a dotnet core project
     return Try.of(() -> "Sdk=\"Microsoft.NET.Sdk\"");
+  }
+
+  @Override
+  public Try<List<String>> getWildcardFiles(String path) {
+    return Try.of(() -> List.of("myproj.csproj"));
   }
 }
