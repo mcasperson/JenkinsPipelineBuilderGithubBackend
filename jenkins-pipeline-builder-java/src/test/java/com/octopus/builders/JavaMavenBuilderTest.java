@@ -147,6 +147,8 @@ public class JavaMavenBuilderTest {
   public void verifyTemplate(@NonNull final String name, @NonNull final RepoClient accessor)
       throws IOException {
 
+    System.out.println(jenkins.getLogs());
+
     System.out.println("Testing " + accessor.getClass().getName());
 
     final String template = Arrays.stream(PIPELINE_BUILDERS)
