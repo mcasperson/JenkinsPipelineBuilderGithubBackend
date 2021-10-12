@@ -80,7 +80,8 @@ public class JavaMavenBuilderTest {
                   + "workflow-aggregator:2.6 "
                   + "git:4.8.2 "
                   + "msbuild:1.30 "
-                  + "mstest:1.0.0")
+                  + "mstest:1.0.0 "
+                  + "octopusdeploy:3.1.6")
               .run("apt-get update")
               // Install php, ruby, python
               .run("apt-get install maven wget curl sudo python3 python3-pip ruby-full ruby-dev php7.4 php-cli php-zip php-dom php-mbstring unzip -y")
