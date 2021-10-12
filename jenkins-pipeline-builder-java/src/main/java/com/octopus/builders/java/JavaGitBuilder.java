@@ -62,9 +62,9 @@ public class JavaGitBuilder extends GitBuilder {
                                 + "\t}\n"
                                 + "}\n"
                                 + "if (largestFile != null) {\n"
-                                + "\tenv.JAVA_ARTIFACT = largestFile.path\n"
+                                + "\tenv.ARTIFACTS = largestFile.path\n"
                                 + "\techo 'Found artifact at ' + largestFile.path\n"
-                                + "\techo 'This path is available from the JAVA_ARTIFACT environment variable.'\n"
+                                + "\techo 'This path is available from the ARTIFACTS environment variable.'\n"
                                 + "}\n"
                         )
                         .build())

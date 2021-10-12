@@ -66,7 +66,8 @@ public class DotnetCoreBuilder implements PipelineBuilder {
             .addAll(GIT_BUILDER.createTopComments())
             .add(Comment.builder()
                 .content(
-                    "* MSTest: https://plugins.jenkins.io/mstest/")
+                    "* MSTest: https://plugins.jenkins.io/mstest/\n"
+                    + "* Octopus Deploy: https://plugins.jenkins.io/octopusdeploy/")
                 .build())
             .add(Function1Arg.builder().name("agent").value("any").build())
             .add(FunctionTrailingLambda.builder()
@@ -216,31 +217,36 @@ public class DotnetCoreBuilder implements PipelineBuilder {
                         .build())
                     .build())
                 .build())
-            .add(Function1Arg.builder()
-                .name("sh")
-                .value(
-                    "# Split the PUBLISH_PATHS variable on colons. Each segment represents a published application.\n"
-                        + "export IFS=\":\"\n"
-                        + "for PATH in ${PUBLISH_PATHS}; do\n"
-                        + "  # Work backwards from the typical bin/Release/<sdk>/publish dir to where a solution file would be.\n"
-                        + "  cd \"${WORKSPACE}/${PATH}/../../../..\"\n"
-                        + "  # Scan for a csproj file. We'll use the project file name as the package ID.\n"
-                        + "  for file in *.csproj; do\n"
-                        + "    [ -e \"$file\" ] && PACKAGEID=\"${file%.*}\" || PACKAGEID=\"application\"\n"
-                        + "    break\n"
-                        + "  done\n"
-                        + "  # Sit in the publish parent directory. This is where the package is created.\n"
-                        + "  cd \"${WORKSPACE}/${PATH}/..\"\n"
-                        + "  # The Octopus CLI is used to create a package.\n"
-                        + "  # Get the Octopus CLI from https://octopus.com/downloads/octopuscli#linux\n"
-                        + "  /usr/bin/octo pack \\\n"
-                        + "  --overwrite \\\n"
-                        + "  --id ${PACKAGEID} \\\n"
-                        + "  --format zip \\\n"
-                        + "  --include ** \\\n"
-                        + "  --version ${VERSION_SEMVER} \\\n"
-                        + "  --basePath \"${WORKSPACE}/${PATH}\"\n"
-                        + "done")
+            .add(FunctionTrailingLambda.builder()
+                .name("script")
+                .children(new ImmutableList.Builder<Element>()
+                    .add(StringContent.builder()
+                        .content("env.PUBLISH_PATHS.split(\":\").each {\n"
+                            + "\tdef packageId = \"application\"\n"
+                            + "\tdir(\"${env.WORKSPACE}/${it}/../../../..\") {\n"
+                            + "\t\t def projFiles = findFiles(glob: '*.csproj')\n"
+                            + "\t\t if (projFiles.size() != 0) packageId = projFiles[0].path.substring(0, projFiles[0].path.lastIndexOf(\".\"))\t\t\n"
+                            + "\t}\n"
+                            + "\tdir(\"${env.WORKSPACE}/${it}/..\") {\n"
+                            + "\t\toctopusPack(\n"
+                            + "\t\t\tadditionalArgs: '', \n"
+                            + "\t\t\tbasePath: \"${env.WORKSPACE}/${it}\",\n"
+                            + "\t\t\tincludePaths: \"**\",\n"
+                            + "\t\t\toverwriteExisting: true, \n"
+                            + "\t\t\tpackageFormat: 'zip', \n"
+                            + "\t\t\tpackageId: packageId, \n"
+                            + "\t\t\tpackageVersion: env.VERSION_SEMVER, \n"
+                            + "\t\t\tsourcePath: '', \n"
+                            + "\t\t\ttoolId: 'Default', \n"
+                            + "\t\t\tverboseLogging: false)\n"
+                            + "\t\tdef artifact = \"${pwd()}/${packageId}.${env.VERSION_SEMVER}.zip\"\n"
+                            + "\t\tenv.ARTIFACTS = artifact + \":\" + env.ARTIFACTS\n"
+                            + "\t\techo \"Generated artifact at ${artifact}\"\n"
+                            + "\t}\n"
+                            + "}\n"
+                            + "echo \"Artifact paths have been saved in the ARTIFACTS environment variable\"")
+                        .build())
+                    .build())
                 .build())
             .build()))
         .build();
