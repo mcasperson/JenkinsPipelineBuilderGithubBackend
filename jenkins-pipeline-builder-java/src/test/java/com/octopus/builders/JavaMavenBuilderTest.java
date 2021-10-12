@@ -135,6 +135,8 @@ public class JavaMavenBuilderTest {
           "/usr/share/jenkins/ref/init.groovy.d/gradle_tool.groovy")
       .withCopyFileToContainer(MountableFile.forClasspathResource("jenkins/java_tool.groovy"),
           "/usr/share/jenkins/ref/init.groovy.d/java_tool.groovy")
+      .withCopyFileToContainer(MountableFile.forClasspathResource("jenkins/octopus_tool.groovy"),
+          "/usr/share/jenkins/ref/init.groovy.d/octopus_tool.groovy")
       .withExposedPorts(8080)
       .withEnv("JAVA_OPTS",
           "-Djenkins.install.runSetupWizard=false "
