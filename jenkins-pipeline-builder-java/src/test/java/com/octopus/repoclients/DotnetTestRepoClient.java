@@ -24,13 +24,20 @@ public class DotnetTestRepoClient extends TestRepoClient {
   }
 
   @Override
-  public Try<String> getFile(String path) {
+  public Try<String> getFile(final String path) {
     // just enough to fake a dotnet core project
-    return Try.of(() -> "Sdk=\"Microsoft.NET.Sdk\"");
+    return path.equals("myproj.csproj")
+        ? Try.of(() -> "Sdk=\"Microsoft.NET.Sdk\"")
+        : Try.failure(new Exception("file not found"));
   }
 
   @Override
-  public Try<List<String>> getWildcardFiles(String path) {
-    return Try.of(() -> path.equals("**/*.csproj") ? List.of("myproj.csproj") : List.of());
+  public Try<List<String>> getWildcardFiles(final String path) {
+    if (path.equals("**/*.csproj")) {
+      return Try.of(() -> List.of("myproj.csproj"));
+    } else if (path.equals("*.sln")) {
+      return Try.of(() -> List.of("myproj.sln"));
+    }
+    return Try.of(List::of);
   }
 }
