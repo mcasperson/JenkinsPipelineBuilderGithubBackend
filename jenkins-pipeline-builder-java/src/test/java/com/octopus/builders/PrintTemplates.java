@@ -2,7 +2,10 @@ package com.octopus.builders;
 
 import com.octopus.builders.dotnet.DotnetCoreBuilder;
 import com.octopus.builders.nodejs.NodejsBuilder;
+import com.octopus.builders.php.PhpComposerBuilder;
 import com.octopus.repoclients.DotnetTestRepoClient;
+import com.octopus.repoclients.NodeTestRepoClient;
+import com.octopus.repoclients.PhpTestRepoClient;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +27,16 @@ public class PrintTemplates {
   public void printNodejsTemplate() {
     final String template =
         new NodejsBuilder()
-            .generate(new DotnetTestRepoClient("https://github.com/OctopusSamples/RandomQuotes-js"));
+            .generate(new NodeTestRepoClient("https://github.com/OctopusSamples/RandomQuotes-js"));
+    Assertions.assertNotEquals( "", template );
+    System.out.println(template);
+  }
+
+  @Test
+  public void printPhpTemplate() {
+    final String template =
+        new PhpComposerBuilder()
+            .generate(new PhpTestRepoClient("https://github.com/OctopusSamples/RandomQuotes-PHP"));
     Assertions.assertNotEquals( "", template );
     System.out.println(template);
   }

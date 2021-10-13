@@ -11,6 +11,7 @@ import com.octopus.dsl.Function1Arg;
 import com.octopus.dsl.Function1ArgTrailingLambda;
 import com.octopus.dsl.FunctionManyArgs;
 import com.octopus.dsl.FunctionTrailingLambda;
+import com.octopus.dsl.StringContent;
 import com.octopus.repoclients.RepoClient;
 import io.vavr.control.Try;
 import java.util.List;
@@ -49,7 +50,7 @@ public class PhpComposerBuilder implements PipelineBuilder {
                     .add(GIT_BUILDER.createCheckoutStep(accessor))
                     .add(createDependenciesStep())
                     .add(createTestStep(accessor))
-                    .add(createPackageStep())
+                    .add(createPackageStep(accessor))
                     .build())
                 .build())
             .build()
@@ -145,33 +146,29 @@ public class PhpComposerBuilder implements PipelineBuilder {
         .build();
   }
 
-  private Element createPackageStep() {
+  private Element createPackageStep(@NonNull final RepoClient accessor) {
     return Function1ArgTrailingLambda.builder()
         .name("stage")
         .arg("Package")
         .children(GIT_BUILDER.createStepsElement(new ImmutableList.Builder<Element>()
             .addAll(GIT_BUILDER.createGitVersionSteps())
-            .add(Function1Arg.builder()
-                .name("sh")
-                .value("# The Octopus CLI is used to create a package.\n"
-                    + "# Get the Octopus CLI from https://octopus.com/downloads/octopuscli#linux\n"
-                    + "/usr/bin/octo pack --overwrite --id application --format zip \\\n"
-                    + "--include '**/*.php' \\\n"
-                    + "--include '**/*.html' \\\n"
-                    + "--include '**/*.htm' \\\n"
-                    + "--include '**/*.css' \\\n"
-                    + "--include '**/*.js' \\\n"
-                    + "--include '**/*.min' \\\n"
-                    + "--include '**/*.map' \\\n"
-                    + "--include '**/*.sql' \\\n"
-                    + "--include '**/*.png' \\\n"
-                    + "--include '**/*.jpg' \\\n"
-                    + "--include '**/*.gif' \\\n"
-                    + "--include '**/*.json' \\\n"
-                    + "--include '**/*.env' \\\n"
-                    + "--include '**/*.txt' \\\n"
-                    + "--include '**/Procfile' \\\n"
-                    + "--version ${VERSION_SEMVER}")
+            .add(FunctionTrailingLambda.builder()
+                .name("script")
+                .children(new ImmutableList.Builder<Element>()
+                    .add(StringContent.builder()
+                        .content("octopusPack(\n"
+                            + "\tadditionalArgs: '',\n"
+                            + "\tsourcePath: '.',\n"
+                            + "\toutputPath : \".\",\n"
+                            + "\tincludePaths: \"**/*.php\\n**/*.html\\n**/*.htm\\n**/*.css\\n**/*.js\\n**/*.min\\n**/*.map\\n**/*.sql\\n**/*.png\\n**/*.jpg\\n**/*.jpeg\\n**/*.gif\\n**/*.json\\n**/*.env\\n**/*.txt\\n**/Procfile\",\n"
+                            + "\toverwriteExisting: true, \n"
+                            + "\tpackageFormat: 'zip', \n"
+                            + "\tpackageId: '" + accessor.getRepoName().getOrElse("application") + "', \n"
+                            + "\tpackageVersion: env.VERSION_SEMVER, \n"
+                            + "\ttoolId: 'Default', \n"
+                            + "\tverboseLogging: false)")
+                        .build())
+                    .build())
                 .build())
             .build()))
         .build();
