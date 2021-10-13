@@ -50,6 +50,7 @@ public interface RepoClient {
   List<String> getDefaultBranches();
 
   /**
+   * Returns the name of the repo.
    *
    * @return The name of the repo.
    */
