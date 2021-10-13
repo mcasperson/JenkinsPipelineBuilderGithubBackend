@@ -7,21 +7,21 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import lombok.NonNull;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.message.BasicHeader;
-import org.jboss.logging.Logger;
-import lombok.NonNull;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpHead;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
+import org.jboss.logging.Logger;
 
 /**
  * An implementation of HttpClient that returns the string content of any accessed file.
@@ -59,8 +59,8 @@ public class StringHttpClient implements HttpClient {
 
     return getClient()
         .of(httpClient -> getResponse(
-              httpClient, url,
-              buildHeaders(username, password))
+            httpClient, url,
+            buildHeaders(username, password))
             .of(response -> EntityUtils.toString(checkSuccess(response).getEntity()))
             .get())
         .onSuccess(c -> LOG.log(DEBUG, "HTTP GET response body: " + c))
@@ -106,6 +106,14 @@ public class StringHttpClient implements HttpClient {
         .onFailure(e -> LOG.log(DEBUG, "Exception message: " + e.toString()));
   }
 
+  /**
+   * Performs a HTTP POST with custom headers.
+   *
+   * @param url     The URL to access.
+   * @param body    The request body.
+   * @param headers The request headers.
+   * @return A Try monad that either contains the String of the requested resource, or an exception.
+   */
   public Try<String> post(
       @NonNull final String url,
       @NonNull final String body,
@@ -127,6 +135,15 @@ public class StringHttpClient implements HttpClient {
         .onFailure(e -> LOG.log(DEBUG, "Exception message: " + e.toString()));
   }
 
+  /**
+   * Performs a HTTP POST with custom headers.
+   *
+   * @param url      The URL to access.
+   * @param body     The request body.
+   * @param username The optional username.
+   * @param password The optional password.
+   * @return A Try monad that either contains the String of the requested resource, or an exception.
+   */
   public Try<String> post(
       @NonNull final String url,
       @NonNull final String body,
@@ -178,8 +195,8 @@ public class StringHttpClient implements HttpClient {
 
     return getClient()
         .of(httpClient -> headResponse(
-              httpClient, url,
-              buildHeaders(username, password))
+            httpClient, url,
+            buildHeaders(username, password))
             .of(this::checkSuccess).get())
         .onSuccess(c -> LOG.log(DEBUG, "HTTP HEAD request was successful."))
         .onFailure(e -> LOG.log(DEBUG, "Exception message: " + e.toString()))
@@ -215,8 +232,8 @@ public class StringHttpClient implements HttpClient {
     }
 
     return Optional.of(new BasicHeader(
-          "AUTHORIZATION",
-          "Basic " + Base64.encodeBase64((username + ":" + password).getBytes())));
+        "AUTHORIZATION",
+        "Basic " + Base64.encodeBase64((username + ":" + password).getBytes())));
   }
 
   private Try.WithResources1<CloseableHttpClient> getClient() {
@@ -270,7 +287,7 @@ public class StringHttpClient implements HttpClient {
     return Try.of(() -> new HttpPost(path))
         .andThenTry(h -> h.setEntity(new StringEntity(body)))
         .andThen(h -> headers.forEach(h::addHeader))
-        .map(h -> (HttpRequestBase)h);
+        .map(h -> (HttpRequestBase) h);
   }
 
   private CloseableHttpResponse checkSuccess(@NonNull final CloseableHttpResponse response)

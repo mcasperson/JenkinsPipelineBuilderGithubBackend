@@ -34,6 +34,7 @@ import lombok.NonNull;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.http.message.BasicHeader;
+import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -133,7 +134,7 @@ public class JavaMavenBuilderTest {
               .run("apt-get update")
               // Install php, ruby, python
               .run(
-                  "apt-get install maven wget curl sudo python3 python3-pip ruby-full ruby-dev php7.4 php-cli php-zip php-dom php-mbstring unzip -y")
+                  "apt-get install sed vim maven wget curl sudo python3 python3-pip ruby-full ruby-dev php7.4 php-cli php-zip php-dom php-mbstring unzip -y")
               // install bundler
               .run("gem install bundler")
               // let the jenkins user run sudo
@@ -182,6 +183,9 @@ public class JavaMavenBuilderTest {
               .run("tar -C /opt/gitversion -xzf gitversion-linux-x64-5.7.0.tar.gz")
               .run("chmod -R 755 /opt/gitversion")
               .env("PATH", "/opt/gitversion:${PATH}")
+              // replace variables in groovy file
+              .run("sed -i 's%#{URL}%http://octopus:8080%' /usr/share/jenkins/ref/init.groovy.d/octopus_server.groovy")
+              .run("sed -i 's%#{APIKEY}%API-" + RANDOM_OCTO_API + "%' /usr/share/jenkins/ref/init.groovy.d/octopus_server.groovy")
               .build()))
       .withCopyFileToContainer(MountableFile.forClasspathResource("jenkins/maven_tool.groovy"),
           "/usr/share/jenkins/ref/init.groovy.d/maven_tool.groovy")
@@ -191,13 +195,18 @@ public class JavaMavenBuilderTest {
           "/usr/share/jenkins/ref/init.groovy.d/java_tool.groovy")
       .withCopyFileToContainer(MountableFile.forClasspathResource("jenkins/octopus_tool.groovy"),
           "/usr/share/jenkins/ref/init.groovy.d/octopus_tool.groovy")
-      .withExposedPorts(8080)
+      .withCopyFileToContainer(MountableFile.forClasspathResource("jenkins/octopus_tool.groovy"),
+          "/usr/share/jenkins/ref/init.groovy.d/octopus_server.groovy")
+      .withNetwork(NETWORK)
+      .dependsOn(octopus)
+      .withExposedPorts(8081)
+      .withEnv("JENKINS_OPTS", "--httpPort=8081")
       .withEnv("JAVA_OPTS",
           "-Djenkins.install.runSetupWizard=false "
               + "-Dhudson.security.csrf.GlobalCrumbIssuerConfiguration.DISABLE_CSRF_PROTECTION=true")
       .withReuse(true);
 
-  @Test
+  @Before
   public void initializeOctopus() {
     OCTOPUS_CLIENT.setUrl("http://" + octopus.getHost() + ":" + octopus.getFirstMappedPort());
     OCTOPUS_CLIENT.setApiKey("API-" + RANDOM_OCTO_API);
