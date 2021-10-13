@@ -64,6 +64,7 @@ public class DotnetCoreBuilder implements PipelineBuilder {
         .name("pipeline")
         .children(new ImmutableList.Builder<Element>()
             .addAll(GIT_BUILDER.createTopComments())
+            .add(GIT_BUILDER.createParameters(accessor))
             .add(Comment.builder()
                 .content(
                     "* MSTest: https://plugins.jenkins.io/mstest/\n"
@@ -79,6 +80,7 @@ public class DotnetCoreBuilder implements PipelineBuilder {
                     .add(createBuildStep())
                     .add(createTestStep())
                     .add(createPublishStep())
+                    .add(GIT_BUILDER.createDeployStage(accessor))
                     .build())
                 .build())
             .build()

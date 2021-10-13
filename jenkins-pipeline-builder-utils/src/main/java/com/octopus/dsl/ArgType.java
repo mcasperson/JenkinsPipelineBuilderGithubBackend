@@ -8,5 +8,6 @@ public enum ArgType {
   BOOLEAN,
   NUMBER,
   TYPE,
-  ARRAY
+  ARRAY,
+  CODE
 }
