@@ -237,7 +237,7 @@ public class DotnetCoreBuilder implements PipelineBuilder {
                             + "\t\t\tpackageId: packageId, \n"
                             + "\t\t\tpackageVersion: env.VERSION_SEMVER, \n"
                             + "\t\t\tsourcePath: '', \n"
-                            + "\t\t\ttoolId: 'LinuxOcto', \n"
+                            + "\t\t\ttoolId: 'Default', \n"
                             + "\t\t\tverboseLogging: false)\n"
                             + "\t}\n"
                             + "\tdir(\"${env.WORKSPACE}/${it}/..\") {\n"
