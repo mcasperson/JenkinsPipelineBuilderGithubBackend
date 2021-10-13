@@ -42,6 +42,7 @@ public class NodejsBuilder implements PipelineBuilder {
             .add(Comment.builder()
                 .content("* Octopus Deploy: https://plugins.jenkins.io/octopusdeploy/")
                 .build())
+            .add(GIT_BUILDER.createParameters(accessor))
             .add(Function1Arg.builder().name("agent").value("any").build())
             .add(FunctionTrailingLambda.builder()
                 .name("stages")
@@ -52,6 +53,7 @@ public class NodejsBuilder implements PipelineBuilder {
                     .add(createTestStep())
                     .add(createBuildStep(accessor))
                     .add(createPackageStep(accessor))
+                    .add(GIT_BUILDER.createDeployStage(accessor))
                     .build())
                 .build())
             .build()
@@ -180,22 +182,25 @@ public class NodejsBuilder implements PipelineBuilder {
                 .children(new ImmutableList.Builder<Element>()
                     .add(StringContent.builder()
                         .content("def sourcePath = \".\"\n"
+                            + "def outputPath = \".\"\n"
                             + "\n"
                             + "if (fileExists(\"build\")) {\n"
                             + "\tsourcePath = \"build\"\n"
+                            + "\toutputPath = \"..\"\n"
                             + "}\n"
                             + "\n"
                             + "octopusPack(\n"
                             + "\tadditionalArgs: '',\n"
                             + "\tsourcePath: sourcePath,\n"
-                            + "\toutputPath : \".\",\n"
+                            + "\toutputPath : outputPath,\n"
                             + "\tincludePaths: \"**/*.html\\n**/*.htm\\n**/*.css\\n**/*.js\\n**/*.min\\n**/*.map\\n**/*.sql\\n**/*.png\\n**/*.jpg\\n**/*.jpeg\\n**/*.gif\\n**/*.json\\n**/*.env\\n**/*.txt\\n**/Procfile\",\n"
                             + "\toverwriteExisting: true, \n"
                             + "\tpackageFormat: 'zip', \n"
                             + "\tpackageId: '" + accessor.getRepoName().getOrElse("application") + "', \n"
                             + "\tpackageVersion: env.VERSION_SEMVER, \n"
                             + "\ttoolId: 'Default', \n"
-                            + "\tverboseLogging: false)")
+                            + "\tverboseLogging: false)\n"
+                            + "env.ARTIFACTS = " + accessor.getRepoName().getOrElse("application") + ".${env.VERSION_SEMVER}.zip")
                         .build())
                     .build())
                 .build())

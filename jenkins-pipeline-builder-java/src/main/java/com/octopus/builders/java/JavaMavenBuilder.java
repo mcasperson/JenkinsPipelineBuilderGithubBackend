@@ -50,6 +50,7 @@ public class JavaMavenBuilder implements PipelineBuilder {
                 .content(
                     "* JUnit: https://plugins.jenkins.io/junit/\n* Maven Integration: https://plugins.jenkins.io/maven-plugin/")
                 .build())
+            .add(GIT_BUILDER.createParameters(accessor))
             .add(FunctionTrailingLambda.builder()
                 .name("tools")
                 .children(createTools())
@@ -65,6 +66,7 @@ public class JavaMavenBuilder implements PipelineBuilder {
                     .add(createTestStep())
                     .add(createPackageStep())
                     .add(GIT_BUILDER.createDeployStep("target"))
+                    .add(GIT_BUILDER.createDeployStage(accessor))
                     .build())
                 .build())
             .build()

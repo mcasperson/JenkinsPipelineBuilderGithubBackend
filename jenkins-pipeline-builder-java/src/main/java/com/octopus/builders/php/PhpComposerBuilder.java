@@ -42,6 +42,7 @@ public class PhpComposerBuilder implements PipelineBuilder {
                 .content(
                     "* JUnit: https://plugins.jenkins.io/junit/")
                 .build())
+            .add(GIT_BUILDER.createParameters(accessor))
             .add(Function1Arg.builder().name("agent").value("any").build())
             .add(FunctionTrailingLambda.builder()
                 .name("stages")
@@ -51,6 +52,7 @@ public class PhpComposerBuilder implements PipelineBuilder {
                     .add(createDependenciesStep())
                     .add(createTestStep(accessor))
                     .add(createPackageStep(accessor))
+                    .add(GIT_BUILDER.createDeployStage(accessor))
                     .build())
                 .build())
             .build()
@@ -166,7 +168,8 @@ public class PhpComposerBuilder implements PipelineBuilder {
                             + "\tpackageId: '" + accessor.getRepoName().getOrElse("application") + "', \n"
                             + "\tpackageVersion: env.VERSION_SEMVER, \n"
                             + "\ttoolId: 'Default', \n"
-                            + "\tverboseLogging: false)")
+                            + "\tverboseLogging: false)\n"
+                            + "env.ARTIFACTS = " + accessor.getRepoName().getOrElse("application") + ".${env.VERSION_SEMVER}.zip")
                         .build())
                     .build())
                 .build())

@@ -54,6 +54,7 @@ public class JavaGradleBuilder implements PipelineBuilder {
                     "* JUnit: https://plugins.jenkins.io/junit/\n"
                         + "* Gradle: https://plugins.jenkins.io/gradle/")
                 .build())
+            .add(GIT_BUILDER.createParameters(accessor))
             .add(FunctionTrailingLambda.builder()
                 .name("tools")
                 .children(createTools())
@@ -68,6 +69,7 @@ public class JavaGradleBuilder implements PipelineBuilder {
                     .add(createBuildStep())
                     .add(createTestStep())
                     .add(GIT_BUILDER.createDeployStep(GRADLE_OUTPUT_DIR))
+                    .add(GIT_BUILDER.createDeployStage(accessor))
                     .build())
                 .build())
             .build()
