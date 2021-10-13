@@ -156,7 +156,7 @@ public class GitBuilder {
 
   public Element createParameters(@NonNull final RepoClient accessor) {
     return FunctionTrailingLambda.builder().name("parameters")
-        .children(createStepsElement(new ImmutableList.Builder<Element>()
+        .children(new ImmutableList.Builder<Element>()
             .add(FunctionManyArgs.builder()
                 .name("string")
                 .args(new ImmutableList.Builder<Argument>()
@@ -241,7 +241,7 @@ public class GitBuilder {
                         ArgType.BOOLEAN))
                     .build())
                 .build())
-            .build()))
+            .build())
         .build();
   }
 
