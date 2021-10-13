@@ -48,7 +48,9 @@ public class JavaMavenBuilder implements PipelineBuilder {
             .addAll(GIT_BUILDER.createTopComments())
             .add(Comment.builder()
                 .content(
-                    "* JUnit: https://plugins.jenkins.io/junit/\n* Maven Integration: https://plugins.jenkins.io/maven-plugin/")
+                    "* JUnit: https://plugins.jenkins.io/junit/\n"
+                        + "* Maven Integration: https://plugins.jenkins.io/maven-plugin/\n"
+                        + "* Octopus Deploy: https://plugins.jenkins.io/octopusdeploy/")
                 .build())
             .add(GIT_BUILDER.createParameters(accessor))
             .add(FunctionTrailingLambda.builder()

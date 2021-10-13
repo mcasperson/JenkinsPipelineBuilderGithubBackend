@@ -64,12 +64,12 @@ public class DotnetCoreBuilder implements PipelineBuilder {
         .name("pipeline")
         .children(new ImmutableList.Builder<Element>()
             .addAll(GIT_BUILDER.createTopComments())
-            .add(GIT_BUILDER.createParameters(accessor))
             .add(Comment.builder()
                 .content(
                     "* MSTest: https://plugins.jenkins.io/mstest/\n"
                     + "* Octopus Deploy: https://plugins.jenkins.io/octopusdeploy/")
                 .build())
+            .add(GIT_BUILDER.createParameters(accessor))
             .add(Function1Arg.builder().name("agent").value("any").build())
             .add(FunctionTrailingLambda.builder()
                 .name("stages")
