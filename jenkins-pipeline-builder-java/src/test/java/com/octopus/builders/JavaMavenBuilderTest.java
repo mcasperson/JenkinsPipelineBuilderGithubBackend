@@ -26,11 +26,11 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 import lombok.NonNull;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.text.StringEscapeUtils;
-import org.apache.http.Header;
 import org.apache.http.message.BasicHeader;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -43,6 +43,7 @@ import org.testcontainers.images.builder.ImageFromDockerfile;
 import org.testcontainers.images.builder.Transferable;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import org.testcontainers.utility.DockerImageName;
 import org.testcontainers.utility.MountableFile;
 
@@ -51,12 +52,12 @@ public class JavaMavenBuilderTest {
 
   private static final JavaMavenBuilder JAVA_MAVEN_BUILDER = new JavaMavenBuilder();
   private static final JavaGradleBuilder JAVA_GRADLE_BUILDER = new JavaGradleBuilder();
-  private static final PythonBuilder PYTHON_BUILDER  = new PythonBuilder();
-  private static final PhpComposerBuilder PHP_COMPOSER_BUILDER  = new PhpComposerBuilder();
-  private static final NodejsBuilder NODEJS_NPM_BUILDER  = new NodejsBuilder();
-  private static final RubyGemBuilder RUBY_GEM_BUILDER  = new RubyGemBuilder();
-  private static final GoBuilder GO_BUILDER  = new GoBuilder();
-  private static final DotnetCoreBuilder DOTNET_CORE_BUILDER  = new DotnetCoreBuilder();
+  private static final PythonBuilder PYTHON_BUILDER = new PythonBuilder();
+  private static final PhpComposerBuilder PHP_COMPOSER_BUILDER = new PhpComposerBuilder();
+  private static final NodejsBuilder NODEJS_NPM_BUILDER = new NodejsBuilder();
+  private static final RubyGemBuilder RUBY_GEM_BUILDER = new RubyGemBuilder();
+  private static final GoBuilder GO_BUILDER = new GoBuilder();
+  private static final DotnetCoreBuilder DOTNET_CORE_BUILDER = new DotnetCoreBuilder();
   private static final PipelineBuilder[] PIPELINE_BUILDERS = {
       JAVA_MAVEN_BUILDER,
       JAVA_GRADLE_BUILDER,
@@ -75,24 +76,30 @@ public class JavaMavenBuilderTest {
   private static final StringHttpClient STRING_HTTP_CLIENT = new StringHttpClient();
 
   @Container
-  public GenericContainer mssql = new GenericContainer(DockerImageName.parse("mcr.microsoft.com/mssql/server"))
+  public GenericContainer mssql = new GenericContainer(
+      DockerImageName.parse("mcr.microsoft.com/mssql/server"))
       .withNetwork(NETWORK)
       .withNetworkAliases("db")
       .withEnv("SA_PASSWORD", RANDOM_DB_PASSWORD)
-      .withEnv("ACCEPT_EULA", "Y");
+      .withEnv("ACCEPT_EULA", "Y")
+      .withReuse(true);
 
   @Container
-  public GenericContainer octopus = new GenericContainer(DockerImageName.parse("octopusdeploy/octopusdeploy"))
+  public GenericContainer octopus = new GenericContainer(
+      DockerImageName.parse("octopusdeploy/octopusdeploy"))
       .withNetwork(NETWORK)
       .withNetworkAliases("octo")
       .withExposedPorts(8080)
-      .withEnv("DB_CONNECTION_STRING", "Server=db,1433;Database=OctopusDeploy;User=sa;Password=" + RANDOM_DB_PASSWORD)
-      .withEnv("CONNSTRING", "Server=db,1433;Database=OctopusDeploy;User=sa;Password=" + RANDOM_DB_PASSWORD)
+      .withEnv("DB_CONNECTION_STRING",
+          "Server=db,1433;Database=OctopusDeploy;User=sa;Password=" + RANDOM_DB_PASSWORD)
+      .withEnv("CONNSTRING",
+          "Server=db,1433;Database=OctopusDeploy;User=sa;Password=" + RANDOM_DB_PASSWORD)
       .withEnv("ADMIN_USERNAME", "admin")
       .withEnv("ADMIN_PASSWORD", RANDOM_OCTO_PASSWORD)
       .withEnv("ADMIN_EMAIL", "admin@example.org")
       .withEnv("ACCEPT_EULA", "Y")
-      .withEnv("ADMIN_API_KEY", "API-" + RANDOM_OCTO_API);
+      .withEnv("ADMIN_API_KEY", "API-" + RANDOM_OCTO_API)
+      .withReuse(true);
 
   /**
    * A Jenkins container that has the appropriate plugins installed, an admin user setup, the
@@ -117,7 +124,8 @@ public class JavaMavenBuilderTest {
                   + "octopusdeploy:3.1.6")
               .run("apt-get update")
               // Install php, ruby, python
-              .run("apt-get install maven wget curl sudo python3 python3-pip ruby-full ruby-dev php7.4 php-cli php-zip php-dom php-mbstring unzip -y")
+              .run(
+                  "apt-get install maven wget curl sudo python3 python3-pip ruby-full ruby-dev php7.4 php-cli php-zip php-dom php-mbstring unzip -y")
               // install bundler
               .run("gem install bundler")
               // let the jenkins user run sudo
@@ -133,20 +141,24 @@ public class JavaMavenBuilderTest {
               .run("tar -xzf zulu17.28.13-ca-jdk17.0.0-linux_x64.tar.gz")
               .run("mv zulu17.28.13-ca-jdk17.0.0-linux_x64 /opt")
               // install dotnet
-              .run("wget https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb -O packages-microsoft-prod.deb")
+              .run(
+                  "wget https://packages.microsoft.com/config/debian/11/packages-microsoft-prod.deb -O packages-microsoft-prod.deb")
               .run("dpkg -i packages-microsoft-prod.deb")
-              .run("apt-get update; apt-get install -y apt-transport-https && apt-get update && apt-get install -y dotnet-sdk-5.0 dotnet-sdk-3.1")
+              .run(
+                  "apt-get update; apt-get install -y apt-transport-https && apt-get update && apt-get install -y dotnet-sdk-5.0 dotnet-sdk-3.1")
               // install octocli
-              .run("apt update && sudo apt install -y --no-install-recommends gnupg curl ca-certificates apt-transport-https && "
-                  + "curl -sSfL https://apt.octopus.com/public.key | apt-key add - && "
-                  + "sh -c \"echo deb https://apt.octopus.com/ stable main > /etc/apt/sources.list.d/octopus.com.list\" && "
-                  + "apt update && sudo apt install -y octopuscli")
+              .run(
+                  "apt update && sudo apt install -y --no-install-recommends gnupg curl ca-certificates apt-transport-https && "
+                      + "curl -sSfL https://apt.octopus.com/public.key | apt-key add - && "
+                      + "sh -c \"echo deb https://apt.octopus.com/ stable main > /etc/apt/sources.list.d/octopus.com.list\" && "
+                      + "apt update && sudo apt install -y octopuscli")
               // install nodejs
               .run("curl -fsSL https://deb.nodesource.com/setup_16.x | bash -")
               .run("apt-get install -y nodejs")
               // install yarn
               .run("curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -")
-              .run("echo \"deb https://dl.yarnpkg.com/debian/ stable main\" | sudo tee /etc/apt/sources.list.d/yarn.list")
+              .run(
+                  "echo \"deb https://dl.yarnpkg.com/debian/ stable main\" | sudo tee /etc/apt/sources.list.d/yarn.list")
               .run("sudo apt update; sudo apt install yarn")
               // install composer
               .run("wget -O composer-setup.php https://getcomposer.org/installer")
@@ -156,7 +168,8 @@ public class JavaMavenBuilderTest {
               .run("rm -rf /usr/local/go && tar -C /usr/local -xzf go1.17.1.linux-amd64.tar.gz")
               .env("PATH", "/usr/local/go/bin:/root/go/bin:${PATH}")
               // install gitversion
-              .run("wget https://github.com/GitTools/GitVersion/releases/download/5.7.0/gitversion-linux-x64-5.7.0.tar.gz")
+              .run(
+                  "wget https://github.com/GitTools/GitVersion/releases/download/5.7.0/gitversion-linux-x64-5.7.0.tar.gz")
               .run("mkdir /opt/gitversion")
               .run("tar -C /opt/gitversion -xzf gitversion-linux-x64-5.7.0.tar.gz")
               .run("chmod -R 755 /opt/gitversion")
@@ -173,21 +186,41 @@ public class JavaMavenBuilderTest {
       .withExposedPorts(8080)
       .withEnv("JAVA_OPTS",
           "-Djenkins.install.runSetupWizard=false "
-              + "-Dhudson.security.csrf.GlobalCrumbIssuerConfiguration.DISABLE_CSRF_PROTECTION=true");
+              + "-Dhudson.security.csrf.GlobalCrumbIssuerConfiguration.DISABLE_CSRF_PROTECTION=true")
+      .withReuse(true);
 
   @Test
   public void initializeOctopus() {
     STRING_HTTP_CLIENT.post(
-        "http://" + octopus.getHost() + ":" + octopus.getFirstMappedPort() + "/api/Spaces-1/environments",
+        "http://" + octopus.getHost() + ":" + octopus.getFirstMappedPort()
+            + "/api/Spaces-1/environments",
         "{\"Name\": \"Dev\"}",
         List.of(new BasicHeader("X-Octopus-ApiKey", "API-" + RANDOM_OCTO_API)));
 
-    STRING_HTTP_CLIENT.get("http://" + octopus.getHost() + ":" + octopus.getFirstMappedPort() + "/api/Spaces-1/projectgroups/all")
-            .mapTry()
+    final String projectGroupId = STRING_HTTP_CLIENT.get("http://" + octopus.getHost() + ":" + octopus.getFirstMappedPort()
+            + "/api/Spaces-1/projectgroups/all")
+        .mapTry(j -> (List<Map<String, Object>>) new ObjectMapper().readValue(j, List.class))
+        .mapTry(l -> l.stream()
+            .filter(p -> p.get("Name").toString().equals("Default project group"))
+            .map(p -> p.get("Id").toString())
+            .findFirst()
+            .get())
+        .get();
+
+    final String lifecycleId = STRING_HTTP_CLIENT.get("http://" + octopus.getHost() + ":" + octopus.getFirstMappedPort()
+            + "/api/Spaces-1/lifecycles/all")
+        .mapTry(j -> (List<Map<String, Object>>) new ObjectMapper().readValue(j, List.class))
+        .mapTry(l -> l.stream()
+            .filter(p -> p.get("Name").toString().equals("Default lifecycle"))
+            .map(p -> p.get("Id").toString())
+            .findFirst()
+            .get())
+        .get();
 
     STRING_HTTP_CLIENT.post(
-        "http://" + octopus.getHost() + ":" + octopus.getFirstMappedPort() + "/api/Spaces-1/projects",
-        "{\"Name\": \"Test\"}",
+        "http://" + octopus.getHost() + ":" + octopus.getFirstMappedPort()
+            + "/api/Spaces-1/projects",
+        "{\"Name\": \"Test\", \"ProjectGroupId\": \"" + projectGroupId + "\", \"LifeCycleId\": \"" + lifecycleId + "\"}",
         List.of(new BasicHeader("X-Octopus-ApiKey", "API-" + RANDOM_OCTO_API)));
   }
 
