@@ -59,22 +59,21 @@ public class GitBuilder {
    * @return A list of Elements that build the checkout steps.
    */
   public Element createCheckoutStep(@NonNull final RepoClient accessor) {
-    return Function1ArgTrailingLambda.builder()
-        .name("stage")
-        .arg("Checkout")
-        .children(createStepsElement(new ImmutableList.Builder<Element>()
-            .add(FunctionManyArgs.builder()
-                .name("checkout")
-                .args(new ImmutableList.Builder<Argument>()
-                    .add(new Argument("$class", "GitSCM", ArgType.STRING))
-                    .add(new Argument("branches",
-                        "[[name: '*/" + accessor.getDefaultBranches().get(0) + "']]",
-                        ArgType.ARRAY))
-                    .add(new Argument("userRemoteConfigs",
-                        "[[url: '" + accessor.getRepoPath() + "']]", ArgType.ARRAY))
-                    .build())
+    return FunctionTrailingLambda.builder()
+        .name("script")
+        .children(new ImmutableList.Builder<Element>()
+            .add(StringContent.builder()
+                .content("/*\n"
+                        + "  This is from the Jenkins \"Global Variable Reference\" documentation:\n"
+                        + "  SCM-specific variables such as GIT_COMMIT are not automatically defined as environment variables; rather you can use the return value of the checkout step.\n"
+                        + "*/\n"
+                        + "def checkoutVars = checkout([$class: 'GitSCM', branches: [[name: '*/" + accessor.getDefaultBranches().get(0) + "']], userRemoteConfigs: [[url: '" + accessor.getRepoPath() + "']]])\n"
+                        + "env.GIT_URL = checkoutVars.GIT_URL\n"
+                        + "env.GIT_COMMIT = checkoutVars.GIT_COMMIT\n"
+                        + "env.GIT_BRANCH = checkoutVars.GIT_BRANCH"
+                )
                 .build())
-            .build()))
+            .build())
         .build();
   }
 
