@@ -9,6 +9,7 @@ import com.octopus.builders.nodejs.NodejsBuilder;
 import com.octopus.builders.php.PhpComposerBuilder;
 import com.octopus.builders.python.PythonBuilder;
 import com.octopus.builders.ruby.RubyGemBuilder;
+import com.octopus.http.StringHttpClient;
 import com.octopus.jenkinsclient.JenkinsClient;
 import com.octopus.jenkinsclient.JenkinsDetails;
 import com.octopus.repoclients.DotnetTestRepoClient;
@@ -24,18 +25,25 @@ import io.vavr.control.Try;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Stream;
 import lombok.NonNull;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.text.StringEscapeUtils;
+import org.apache.http.Header;
+import org.apache.http.message.BasicHeader;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.Network;
 import org.testcontainers.images.builder.ImageFromDockerfile;
 import org.testcontainers.images.builder.Transferable;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 import org.testcontainers.utility.MountableFile;
 
 @Testcontainers
@@ -60,6 +68,31 @@ public class JavaMavenBuilderTest {
       DOTNET_CORE_BUILDER
   };
   private static final JenkinsClient JENKINS_CLIENT = new JenkinsClient();
+  private static final String RANDOM_DB_PASSWORD = RandomStringUtils.random(16, true, true);
+  private static final String RANDOM_OCTO_PASSWORD = RandomStringUtils.random(16, true, true);
+  private static final String RANDOM_OCTO_API = RandomStringUtils.random(32, true, true);
+  private static final Network NETWORK = Network.newNetwork();
+  private static final StringHttpClient STRING_HTTP_CLIENT = new StringHttpClient();
+
+  @Container
+  public GenericContainer mssql = new GenericContainer(DockerImageName.parse("mcr.microsoft.com/mssql/server"))
+      .withNetwork(NETWORK)
+      .withNetworkAliases("db")
+      .withEnv("SA_PASSWORD", RANDOM_DB_PASSWORD)
+      .withEnv("ACCEPT_EULA", "Y");
+
+  @Container
+  public GenericContainer octopus = new GenericContainer(DockerImageName.parse("octopusdeploy/octopusdeploy"))
+      .withNetwork(NETWORK)
+      .withNetworkAliases("octo")
+      .withExposedPorts(8080)
+      .withEnv("DB_CONNECTION_STRING", "Server=db,1433;Database=OctopusDeploy;User=sa;Password=" + RANDOM_DB_PASSWORD)
+      .withEnv("CONNSTRING", "Server=db,1433;Database=OctopusDeploy;User=sa;Password=" + RANDOM_DB_PASSWORD)
+      .withEnv("ADMIN_USERNAME", "admin")
+      .withEnv("ADMIN_PASSWORD", RANDOM_OCTO_PASSWORD)
+      .withEnv("ADMIN_EMAIL", "admin@example.org")
+      .withEnv("ACCEPT_EULA", "Y")
+      .withEnv("ADMIN_API_KEY", "API-" + RANDOM_OCTO_API);
 
   /**
    * A Jenkins container that has the appropriate plugins installed, an admin user setup, the
@@ -141,6 +174,22 @@ public class JavaMavenBuilderTest {
       .withEnv("JAVA_OPTS",
           "-Djenkins.install.runSetupWizard=false "
               + "-Dhudson.security.csrf.GlobalCrumbIssuerConfiguration.DISABLE_CSRF_PROTECTION=true");
+
+  @Test
+  public void initializeOctopus() {
+    STRING_HTTP_CLIENT.post(
+        "http://" + octopus.getHost() + ":" + octopus.getFirstMappedPort() + "/api/Spaces-1/environments",
+        "{\"Name\": \"Dev\"}",
+        List.of(new BasicHeader("X-Octopus-ApiKey", "API-" + RANDOM_OCTO_API)));
+
+    STRING_HTTP_CLIENT.get("http://" + octopus.getHost() + ":" + octopus.getFirstMappedPort() + "/api/Spaces-1/projectgroups/all")
+            .mapTry()
+
+    STRING_HTTP_CLIENT.post(
+        "http://" + octopus.getHost() + ":" + octopus.getFirstMappedPort() + "/api/Spaces-1/projects",
+        "{\"Name\": \"Test\"}",
+        List.of(new BasicHeader("X-Octopus-ApiKey", "API-" + RANDOM_OCTO_API)));
+  }
 
   @ParameterizedTest
   @MethodSource("provideTestRepos")

@@ -11,7 +11,9 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHeader;
 import org.jboss.logging.Logger;
 import lombok.NonNull;
@@ -62,6 +64,71 @@ public class StringHttpClient implements HttpClient {
             .of(response -> EntityUtils.toString(checkSuccess(response).getEntity()))
             .get())
         .onSuccess(c -> LOG.log(DEBUG, "HTTP GET response body: " + c))
+        .onFailure(e -> LOG.log(DEBUG, "Exception message: " + e.toString()));
+  }
+
+  /**
+   * Performs a HTTP POST request.
+   *
+   * @param url The URL to access.
+   * @return A Try monad that either contains the String of the requested resource, or an exception.
+   */
+  public Try<String> post(
+      @NonNull final String url,
+      @NonNull final String body) {
+    LOG.log(DEBUG, "StringHttpClient.post(String, String, String)");
+    LOG.log(DEBUG, "url: " + url);
+    LOG.log(DEBUG, "body: " + body);
+
+    return getClient()
+        .of(httpClient -> postResponse(httpClient, url, body, List.of())
+            .of(response -> EntityUtils.toString(checkSuccess(response).getEntity()))
+            .get())
+        .onSuccess(c -> LOG.log(DEBUG, "HTTP POST response body: " + c))
+        .onFailure(e -> LOG.log(DEBUG, "Exception message: " + e.toString()));
+  }
+
+  public Try<String> post(
+      @NonNull final String url,
+      @NonNull final String body,
+      @NonNull final List<Header> headers) {
+    LOG.log(DEBUG, "StringHttpClient.post(String, String, List<Header>)");
+    LOG.log(DEBUG, "url: " + url);
+    LOG.log(DEBUG, "body: " + body);
+    LOG.log(DEBUG, "headers: " + headers);
+
+    return getClient()
+        .of(httpClient -> postResponse(
+            httpClient,
+            url,
+            body,
+            headers)
+            .of(response -> EntityUtils.toString(checkSuccess(response).getEntity()))
+            .get())
+        .onSuccess(c -> LOG.log(DEBUG, "HTTP POST response body: " + c))
+        .onFailure(e -> LOG.log(DEBUG, "Exception message: " + e.toString()));
+  }
+
+  public Try<String> post(
+      @NonNull final String url,
+      @NonNull final String body,
+      final String username,
+      final String password) {
+    LOG.log(DEBUG, "StringHttpClient.get(String, String, String, String, String)");
+    LOG.log(DEBUG, "url: " + url);
+    LOG.log(DEBUG, "url: " + url);
+    LOG.log(DEBUG, "body: " + body);
+    LOG.log(DEBUG, "username: " + username);
+
+    return getClient()
+        .of(httpClient -> postResponse(
+            httpClient,
+            url,
+            body,
+            buildHeaders(username, password))
+            .of(response -> EntityUtils.toString(checkSuccess(response).getEntity()))
+            .get())
+        .onSuccess(c -> LOG.log(DEBUG, "HTTP POST response body: " + c))
         .onFailure(e -> LOG.log(DEBUG, "Exception message: " + e.toString()));
   }
 
@@ -129,6 +196,16 @@ public class StringHttpClient implements HttpClient {
     return Try.withResources(() -> httpClient.execute(getRequest(path, headers)));
   }
 
+  private Try.WithResources1<CloseableHttpResponse> postResponse(
+      @NonNull final CloseableHttpClient httpClient,
+      @NonNull final String path,
+      @NonNull final String body,
+      @NonNull final List<Header> headers) {
+    return postRequest(path, body, headers)
+        .map(r -> Try.withResources(() -> httpClient.execute(r)))
+        .get();
+  }
+
   private Try.WithResources1<CloseableHttpResponse> headResponse(
       @NonNull final CloseableHttpClient httpClient,
       @NonNull final String path,
@@ -150,6 +227,16 @@ public class StringHttpClient implements HttpClient {
     final HttpRequestBase request = new HttpGet(path);
     headers.forEach(request::addHeader);
     return request;
+  }
+
+  private Try<HttpRequestBase> postRequest(
+      @NonNull final String path,
+      @NonNull final String body,
+      @NonNull final List<Header> headers) {
+    return Try.of(() -> new HttpPost(path))
+        .andThenTry(h -> h.setEntity(new StringEntity(body)))
+        .andThen(h -> headers.forEach(h::addHeader))
+        .map(h -> (HttpRequestBase)h);
   }
 
   private CloseableHttpResponse checkSuccess(@NonNull final CloseableHttpResponse response)
