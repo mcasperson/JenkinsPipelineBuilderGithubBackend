@@ -200,7 +200,7 @@ public class NodejsBuilder implements PipelineBuilder {
                             + "\tpackageVersion: env.VERSION_SEMVER, \n"
                             + "\ttoolId: 'Default', \n"
                             + "\tverboseLogging: false)\n"
-                            + "env.ARTIFACTS = " + accessor.getRepoName().getOrElse("application") + ".${env.VERSION_SEMVER}.zip")
+                            + "env.ARTIFACTS = \"" + accessor.getRepoName().getOrElse("application") + ".${env.VERSION_SEMVER}.zip\"")
                         .build())
                     .build())
                 .build())
