@@ -48,4 +48,10 @@ public interface RepoClient {
    * @return The default branches.
    */
   List<String> getDefaultBranches();
+
+  /**
+   *
+   * @return The name of the repo.
+   */
+  Try<String> getRepoName();
 }

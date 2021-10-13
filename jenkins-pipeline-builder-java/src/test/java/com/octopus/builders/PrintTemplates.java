@@ -1,6 +1,7 @@
 package com.octopus.builders;
 
 import com.octopus.builders.dotnet.DotnetCoreBuilder;
+import com.octopus.builders.nodejs.NodejsBuilder;
 import com.octopus.repoclients.DotnetTestRepoClient;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,15 @@ public class PrintTemplates {
               .generate(new DotnetTestRepoClient("https://github.com/OctopusSamples/RandomQuotes"));
       Assertions.assertNotEquals( "", template );
       System.out.println(template);
+  }
+
+  @Test
+  public void printNodejsTemplate() {
+    final String template =
+        new NodejsBuilder()
+            .generate(new DotnetTestRepoClient("https://github.com/OctopusSamples/RandomQuotes-js"));
+    Assertions.assertNotEquals( "", template );
+    System.out.println(template);
   }
 
 }

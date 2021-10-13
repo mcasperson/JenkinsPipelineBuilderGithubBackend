@@ -135,6 +135,11 @@ public class GithubRepoClient implements RepoClient {
         .getOrElse(List.of("main", "master"));
   }
 
+  @Override
+  public Try<String> getRepoName() {
+    return getDetails().map(GithubRepoDetails::getRepository);
+  }
+
   /**
    * Extract the details of a GitHub repo from the url.
    *

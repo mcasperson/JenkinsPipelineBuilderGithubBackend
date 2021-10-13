@@ -12,6 +12,7 @@ import com.octopus.dsl.Function1Arg;
 import com.octopus.dsl.Function1ArgTrailingLambda;
 import com.octopus.dsl.FunctionManyArgs;
 import com.octopus.dsl.FunctionTrailingLambda;
+import com.octopus.dsl.StringContent;
 import com.octopus.repoclients.RepoClient;
 import java.util.Map;
 import lombok.NonNull;
@@ -38,6 +39,9 @@ public class NodejsBuilder implements PipelineBuilder {
         .name("pipeline")
         .children(new ImmutableList.Builder<Element>()
             .addAll(GIT_BUILDER.createTopComments())
+            .add(Comment.builder()
+                .content("* Octopus Deploy: https://plugins.jenkins.io/octopusdeploy/")
+                .build())
             .add(Function1Arg.builder().name("agent").value("any").build())
             .add(FunctionTrailingLambda.builder()
                 .name("stages")
@@ -47,7 +51,7 @@ public class NodejsBuilder implements PipelineBuilder {
                     .add(createDependenciesStep())
                     .add(createTestStep())
                     .add(createBuildStep(accessor))
-                    .add(createPackageStep())
+                    .add(createPackageStep(accessor))
                     .build())
                 .build())
             .build()
@@ -165,36 +169,35 @@ public class NodejsBuilder implements PipelineBuilder {
         .getOrElse(false);
   }
 
-  private Element createPackageStep() {
+  private Element createPackageStep(@NonNull final RepoClient accessor) {
     return Function1ArgTrailingLambda.builder()
         .name("stage")
         .arg("Package")
         .children(GIT_BUILDER.createStepsElement(new ImmutableList.Builder<Element>()
             .addAll(GIT_BUILDER.createGitVersionSteps())
-            .add(Function1Arg.builder()
-                .name("sh")
-                .value("# The Octopus CLI is used to create a package.\n"
-                    + "# Get the Octopus CLI from https://octopus.com/downloads/octopuscli#linux\n"
-                    + "if [ -d build ]; then\n"
-                    + "  # If the build directory exists, assume this contains the compiled code to package.\n"
-                    + "  cd build\n"
-                    + "fi\n"
-                    + "/usr/bin/octo pack --overwrite --id application --format zip \\\n"
-                    + "  --include '**/*.html' \\\n"
-                    + "  --include '**/*.htm' \\\n"
-                    + "  --include '**/*.css' \\\n"
-                    + "  --include '**/*.js' \\\n"
-                    + "  --include '**/*.min' \\\n"
-                    + "  --include '**/*.map' \\\n"
-                    + "  --include '**/*.sql' \\\n"
-                    + "  --include '**/*.png' \\\n"
-                    + "  --include '**/*.jpg' \\\n"
-                    + "  --include '**/*.gif' \\\n"
-                    + "  --include '**/*.json' \\\n"
-                    + "  --include '**/*.env' \\\n"
-                    + "  --include '**/*.txt' \\\n"
-                    + "  --include '**/Procfile' \\\n"
-                    + "  --version ${VERSION_SEMVER}\n")
+            .add(FunctionTrailingLambda.builder()
+                .name("script")
+                .children(new ImmutableList.Builder<Element>()
+                    .add(StringContent.builder()
+                        .content("def sourcePath = \".\"\n"
+                            + "\n"
+                            + "if (fileExists(\"build\")) {\n"
+                            + "\tsourcePath = \"build\"\n"
+                            + "}\n"
+                            + "\n"
+                            + "octopusPack(\n"
+                            + "\tadditionalArgs: '',\n"
+                            + "\tsourcePath: sourcePath,\n"
+                            + "\toutputPath : \".\",\n"
+                            + "\tincludePaths: \"**/*.html\\n**/*.htm\\n**/*.css\\n**/*.js\\n**/*.min\\n**/*.map\\n**/*.sql\\n**/*.png\\n**/*.jpg\\n**/*.jpeg\\n**/*.gif\\n**/*.json\\n**/*.env\\n**/*.txt\\n**/Procfile\",\n"
+                            + "\toverwriteExisting: true, \n"
+                            + "\tpackageFormat: 'zip', \n"
+                            + "\tpackageId: '" + accessor.getRepoName().getOrElse("application") + "', \n"
+                            + "\tpackageVersion: env.VERSION_SEMVER, \n"
+                            + "\ttoolId: 'Default', \n"
+                            + "\tverboseLogging: false)")
+                        .build())
+                    .build())
                 .build())
             .build()))
         .build();

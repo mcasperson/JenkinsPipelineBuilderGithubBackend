@@ -6,7 +6,7 @@ import java.util.List;
 public abstract class TestRepoClient implements RepoClient {
 
   private String repo;
-  private String branch;
+  private final String branch;
   protected boolean findWrapper;
 
   /**
@@ -57,6 +57,11 @@ public abstract class TestRepoClient implements RepoClient {
 
   @Override
   public Try<List<String>> getWildcardFiles(String path) {
-    return Try.of(() -> List.of());
+    return Try.of(List::of);
+  }
+
+  @Override
+  public Try<String> getRepoName() {
+    return Try.failure(new Exception("not implemented"));
   }
 }
