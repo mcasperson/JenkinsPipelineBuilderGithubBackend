@@ -12,6 +12,7 @@ import com.octopus.builders.ruby.RubyGemBuilder;
 import com.octopus.http.StringHttpClient;
 import com.octopus.jenkinsclient.JenkinsClient;
 import com.octopus.jenkinsclient.JenkinsDetails;
+import com.octopus.octopusclient.OctopusClient;
 import com.octopus.repoclients.DotnetTestRepoClient;
 import com.octopus.repoclients.GoTestRepoClient;
 import com.octopus.repoclients.GradleTestRepoClient;
@@ -24,6 +25,7 @@ import com.octopus.repoclients.RubyTestRepoClient;
 import io.vavr.control.Try;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +41,8 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
+import org.testcontainers.containers.wait.strategy.DockerHealthcheckWaitStrategy;
+import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.images.builder.ImageFromDockerfile;
 import org.testcontainers.images.builder.Transferable;
 import org.testcontainers.junit.jupiter.Container;
@@ -69,11 +73,12 @@ public class JavaMavenBuilderTest {
       DOTNET_CORE_BUILDER
   };
   private static final JenkinsClient JENKINS_CLIENT = new JenkinsClient();
+  private static final OctopusClient OCTOPUS_CLIENT = new OctopusClient();
   private static final String RANDOM_DB_PASSWORD = RandomStringUtils.random(16, true, true);
   private static final String RANDOM_OCTO_PASSWORD = RandomStringUtils.random(16, true, true);
-  private static final String RANDOM_OCTO_API = RandomStringUtils.random(32, true, true);
+  private static final String RANDOM_OCTO_API = RandomStringUtils.random(32, true, true).toUpperCase();
   private static final Network NETWORK = Network.newNetwork();
-  private static final StringHttpClient STRING_HTTP_CLIENT = new StringHttpClient();
+
 
   @Container
   public GenericContainer mssql = new GenericContainer(
@@ -82,6 +87,7 @@ public class JavaMavenBuilderTest {
       .withNetworkAliases("db")
       .withEnv("SA_PASSWORD", RANDOM_DB_PASSWORD)
       .withEnv("ACCEPT_EULA", "Y")
+      .withStartupTimeout(Duration.ofMinutes(5))
       .withReuse(true);
 
   @Container
@@ -99,7 +105,9 @@ public class JavaMavenBuilderTest {
       .withEnv("ADMIN_EMAIL", "admin@example.org")
       .withEnv("ACCEPT_EULA", "Y")
       .withEnv("ADMIN_API_KEY", "API-" + RANDOM_OCTO_API)
-      .withReuse(true);
+      .withStartupTimeout(Duration.ofMinutes(15))
+      .withReuse(true)
+      .dependsOn(mssql);
 
   /**
    * A Jenkins container that has the appropriate plugins installed, an admin user setup, the
@@ -191,37 +199,11 @@ public class JavaMavenBuilderTest {
 
   @Test
   public void initializeOctopus() {
-    STRING_HTTP_CLIENT.post(
-        "http://" + octopus.getHost() + ":" + octopus.getFirstMappedPort()
-            + "/api/Spaces-1/environments",
-        "{\"Name\": \"Dev\"}",
-        List.of(new BasicHeader("X-Octopus-ApiKey", "API-" + RANDOM_OCTO_API)));
+    OCTOPUS_CLIENT.setUrl("http://" + octopus.getHost() + ":" + octopus.getFirstMappedPort());
+    OCTOPUS_CLIENT.setApiKey("API-" + RANDOM_OCTO_API);
 
-    final String projectGroupId = STRING_HTTP_CLIENT.get("http://" + octopus.getHost() + ":" + octopus.getFirstMappedPort()
-            + "/api/Spaces-1/projectgroups/all")
-        .mapTry(j -> (List<Map<String, Object>>) new ObjectMapper().readValue(j, List.class))
-        .mapTry(l -> l.stream()
-            .filter(p -> p.get("Name").toString().equals("Default project group"))
-            .map(p -> p.get("Id").toString())
-            .findFirst()
-            .get())
-        .get();
-
-    final String lifecycleId = STRING_HTTP_CLIENT.get("http://" + octopus.getHost() + ":" + octopus.getFirstMappedPort()
-            + "/api/Spaces-1/lifecycles/all")
-        .mapTry(j -> (List<Map<String, Object>>) new ObjectMapper().readValue(j, List.class))
-        .mapTry(l -> l.stream()
-            .filter(p -> p.get("Name").toString().equals("Default lifecycle"))
-            .map(p -> p.get("Id").toString())
-            .findFirst()
-            .get())
-        .get();
-
-    STRING_HTTP_CLIENT.post(
-        "http://" + octopus.getHost() + ":" + octopus.getFirstMappedPort()
-            + "/api/Spaces-1/projects",
-        "{\"Name\": \"Test\", \"ProjectGroupId\": \"" + projectGroupId + "\", \"LifeCycleId\": \"" + lifecycleId + "\"}",
-        List.of(new BasicHeader("X-Octopus-ApiKey", "API-" + RANDOM_OCTO_API)));
+    OCTOPUS_CLIENT.createEnvironment("Dev");
+    OCTOPUS_CLIENT.createProject("Test", OCTOPUS_CLIENT.getDefaultProjectGroupId(), OCTOPUS_CLIENT.getDefaultLifecycleId());
   }
 
   @ParameterizedTest

@@ -67,6 +67,24 @@ public class StringHttpClient implements HttpClient {
         .onFailure(e -> LOG.log(DEBUG, "Exception message: " + e.toString()));
   }
 
+  @Override
+  public Try<String> get(
+      @NonNull final String url,
+      @NonNull final List<Header> headers) {
+    LOG.log(DEBUG, "StringHttpClient.get(String, List<Header>)");
+    LOG.log(DEBUG, "url: " + url);
+    LOG.log(DEBUG, "headers: " + headers);
+
+    return getClient()
+        .of(httpClient -> getResponse(
+            httpClient, url,
+            headers)
+            .of(response -> EntityUtils.toString(checkSuccess(response).getEntity()))
+            .get())
+        .onSuccess(c -> LOG.log(DEBUG, "HTTP GET response body: " + c))
+        .onFailure(e -> LOG.log(DEBUG, "Exception message: " + e.toString()));
+  }
+
   /**
    * Performs a HTTP POST request.
    *
@@ -162,6 +180,22 @@ public class StringHttpClient implements HttpClient {
         .of(httpClient -> headResponse(
               httpClient, url,
               buildHeaders(username, password))
+            .of(this::checkSuccess).get())
+        .onSuccess(c -> LOG.log(DEBUG, "HTTP HEAD request was successful."))
+        .onFailure(e -> LOG.log(DEBUG, "Exception message: " + e.toString()))
+        .isSuccess();
+  }
+
+  @Override
+  public boolean head(String url, List<Header> headers) {
+    LOG.log(DEBUG, "StringHttpClient.head(String, List<Header>)");
+    LOG.log(DEBUG, "url: " + url);
+    LOG.log(DEBUG, "headers: " + headers);
+
+    return getClient()
+        .of(httpClient -> headResponse(
+            httpClient, url,
+            headers)
             .of(this::checkSuccess).get())
         .onSuccess(c -> LOG.log(DEBUG, "HTTP HEAD request was successful."))
         .onFailure(e -> LOG.log(DEBUG, "Exception message: " + e.toString()))
