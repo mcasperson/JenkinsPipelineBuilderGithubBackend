@@ -154,6 +154,12 @@ public class GitBuilder {
         .build();
   }
 
+  /**
+   * Build the parameters block.
+   *
+   * @param accessor The git client.
+   * @return The parameters block DSL element.
+   */
   public Element createParameters(@NonNull final RepoClient accessor) {
     return FunctionTrailingLambda.builder().name("parameters")
         .children(new ImmutableList.Builder<Element>()
@@ -245,6 +251,12 @@ public class GitBuilder {
         .build();
   }
 
+  /**
+   * Build the deploy stage.
+   *
+   * @param accessor The git client.
+   * @return The deploy stage block DSL element.
+   */
   public Element createDeployStage(@NonNull final RepoClient accessor) {
     return Comment.builder()
         .content(
