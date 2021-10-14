@@ -183,9 +183,6 @@ public class JavaMavenBuilderTest {
               .run("tar -C /opt/gitversion -xzf gitversion-linux-x64-5.7.0.tar.gz")
               .run("chmod -R 755 /opt/gitversion")
               .env("PATH", "/opt/gitversion:${PATH}")
-              // replace variables in groovy file
-              .run("sed -i 's%#{URL}%http://octopus:8080%' /usr/share/jenkins/ref/init.groovy.d/octopus_server.groovy")
-              .run("sed -i 's%#{APIKEY}%API-" + RANDOM_OCTO_API + "%' /usr/share/jenkins/ref/init.groovy.d/octopus_server.groovy")
               .build()))
       .withCopyFileToContainer(MountableFile.forClasspathResource("jenkins/maven_tool.groovy"),
           "/usr/share/jenkins/ref/init.groovy.d/maven_tool.groovy")
@@ -200,6 +197,7 @@ public class JavaMavenBuilderTest {
       .withNetwork(NETWORK)
       .dependsOn(octopus)
       .withExposedPorts(8081)
+      .withEnv("OCTOPUS_API_KEY", "API-" + RANDOM_OCTO_API)
       .withEnv("JENKINS_OPTS", "--httpPort=8081")
       .withEnv("JAVA_OPTS",
           "-Djenkins.install.runSetupWizard=false "
