@@ -95,7 +95,7 @@ public class JavaMavenBuilderTest {
   public GenericContainer octopus = new GenericContainer(
       DockerImageName.parse("octopusdeploy/octopusdeploy"))
       .withNetwork(NETWORK)
-      .withNetworkAliases("octo")
+      .withNetworkAliases("octopus")
       .withExposedPorts(8080)
       .withEnv("DB_CONNECTION_STRING",
           "Server=db,1433;Database=OctopusDeploy;User=sa;Password=" + RANDOM_DB_PASSWORD)
@@ -134,7 +134,7 @@ public class JavaMavenBuilderTest {
               .run("apt-get update")
               // Install php, ruby, python
               .run(
-                  "apt-get install sed vim maven wget curl sudo python3 python3-pip ruby-full ruby-dev php7.4 php-cli php-zip php-dom php-mbstring unzip -y")
+                  "apt-get install dnsutils sed vim maven wget curl sudo python3 python3-pip ruby-full ruby-dev php7.4 php-cli php-zip php-dom php-mbstring unzip -y")
               // install bundler
               .run("gem install bundler")
               // let the jenkins user run sudo
@@ -192,7 +192,7 @@ public class JavaMavenBuilderTest {
           "/usr/share/jenkins/ref/init.groovy.d/java_tool.groovy")
       .withCopyFileToContainer(MountableFile.forClasspathResource("jenkins/octopus_tool.groovy"),
           "/usr/share/jenkins/ref/init.groovy.d/octopus_tool.groovy")
-      .withCopyFileToContainer(MountableFile.forClasspathResource("jenkins/octopus_tool.groovy"),
+      .withCopyFileToContainer(MountableFile.forClasspathResource("jenkins/octopus_server.groovy"),
           "/usr/share/jenkins/ref/init.groovy.d/octopus_server.groovy")
       .withNetwork(NETWORK)
       .dependsOn(octopus)
