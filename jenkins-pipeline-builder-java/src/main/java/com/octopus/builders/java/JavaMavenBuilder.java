@@ -188,7 +188,7 @@ public class JavaMavenBuilder implements PipelineBuilder {
             .add(FunctionManyArgs.builder()
                 .name("sh")
                 .args(new ImmutableList.Builder<Argument>()
-                    .add(new Argument("script", mavenExecutable() + " --batch-mode -DtestFailureIgnore=true test",
+                    .add(new Argument("script", mavenExecutable() + " --batch-mode -Dmaven.test.failure.ignore=true test",
                         ArgType.STRING))
                     .build())
                 .build())
