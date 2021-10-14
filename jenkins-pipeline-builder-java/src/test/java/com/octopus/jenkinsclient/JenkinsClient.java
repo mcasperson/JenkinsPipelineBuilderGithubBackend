@@ -77,11 +77,11 @@ public class JenkinsClient {
   }
 
   public boolean isSuccess(final Document doc) {
-    return doc.getDocumentElement()
+    final String result = doc.getDocumentElement()
         .getElementsByTagName("result")
         .item(0)
-        .getTextContent()
-        .equals("SUCCESS");
+        .getTextContent();
+    return result.equals("SUCCESS") || result.equals("UNSTABLE");
   }
 
   private Document parseXML(final String xml)

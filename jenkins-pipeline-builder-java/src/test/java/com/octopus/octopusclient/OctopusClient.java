@@ -57,7 +57,7 @@ public class OctopusClient {
   public String createProject(final String name, final String projectGroupId,
       final String lifecycleId) {
     return STRING_HTTP_CLIENT.post(url + "/api/Spaces-1/projects",
-            "{\"Name\": \"Test\", \"ProjectGroupId\": \"" + projectGroupId + "\", \"LifeCycleId\": \""
+            "{\"Name\": \"" + name + "\", \"ProjectGroupId\": \"" + projectGroupId + "\", \"LifeCycleId\": \""
                 + lifecycleId + "\"}",
             List.of(new BasicHeader("X-Octopus-ApiKey", getApiKey())))
         .get();
