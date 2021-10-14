@@ -1,10 +1,12 @@
 package com.octopus.builders;
 
 import com.octopus.builders.dotnet.DotnetCoreBuilder;
+import com.octopus.builders.java.JavaGradleBuilder;
 import com.octopus.builders.java.JavaMavenBuilder;
 import com.octopus.builders.nodejs.NodejsBuilder;
 import com.octopus.builders.php.PhpComposerBuilder;
 import com.octopus.repoclients.DotnetTestRepoClient;
+import com.octopus.repoclients.GradleTestRepoClient;
 import com.octopus.repoclients.MavenTestRepoClient;
 import com.octopus.repoclients.NodeTestRepoClient;
 import com.octopus.repoclients.PhpTestRepoClient;
@@ -22,6 +24,15 @@ public class PrintTemplates {
     final String template =
         new JavaMavenBuilder()
             .generate(new MavenTestRepoClient("https://github.com/OctopusSamples/RandomQuotes-Java", true));
+    Assertions.assertNotEquals("", template);
+    System.out.println(template);
+  }
+
+  @Test
+  public void printGradleTemplate() {
+    final String template =
+        new JavaGradleBuilder()
+            .generate(new GradleTestRepoClient("https://github.com/OctopusSamples/RandomQuotes-Java", true));
     Assertions.assertNotEquals("", template);
     System.out.println(template);
   }
