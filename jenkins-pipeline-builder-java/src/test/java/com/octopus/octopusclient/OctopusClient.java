@@ -87,7 +87,6 @@ public class OctopusClient {
         .put("Actions", new ImmutableMap.Builder<String, Object>()
             .put("ActionType", "Octopus.Script")
             .put("Name", "Run a script")
-            .put("ExcludedEnvironments", List.of())
             .put("Channels", List.of())
             .put("Environments", List.of())
             .put("ExcludedEnvironments", List.of())
