@@ -34,7 +34,7 @@ public class JavaGradleBuilder implements PipelineBuilder {
   public Boolean canBuild(@NonNull final RepoClient accessor) {
     LOG.log(DEBUG, "JavaGradleBuilder.canBuild(RepoClient)");
 
-    if (Arrays.stream(GRADLE_BUILD_FILES).anyMatch(f -> accessor.testFile(f))) {
+    if (Arrays.stream(GRADLE_BUILD_FILES).anyMatch(accessor::testFile)) {
       LOG.log(DEBUG, String.join(" or ", GRADLE_BUILD_FILES) + " was found");
       usesWrapper = usesWrapper(accessor);
       LOG.log(DEBUG, "Wrapper script was " + (usesWrapper ? "" : "not ") + "found");
