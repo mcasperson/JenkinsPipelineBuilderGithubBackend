@@ -258,235 +258,230 @@ public class GitBuilder {
    * @return The deploy stage block DSL element.
    */
   public Element createDeployStage(@NonNull final RepoClient accessor) {
-    return Comment.builder()
-        .content(
-            "To deploy the package to Octopus, uncomment the following stage.\n"
-                + Function1ArgTrailingLambda.builder().name("stage")
-                .arg("Deployment")
-                .children(createStepsElement(new ImmutableList.Builder<Element>()
-                    .add(FunctionManyArgs.builder()
-                        .name("octopusPushPackage")
-                        .args(new ImmutableList.Builder<Argument>()
-                            .add(new Argument(
-                                "additionalArgs",
-                                "",
-                                ArgType.STRING))
-                            .add(new Argument(
-                                "packagePaths",
-                                "env.ARTIFACTS.split(\":\").join(\"\\n\")",
-                                ArgType.CODE))
-                            .add(new Argument(
-                                "overwriteMode",
-                                "OverwriteExisting",
-                                ArgType.STRING))
-                            .add(new Argument(
-                                "serverId",
-                                "${ServerId}",
-                                ArgType.EXPANDED_STRING))
-                            .add(new Argument(
-                                "spaceId",
-                                "${SpaceId}",
-                                ArgType.EXPANDED_STRING))
-                            .add(new Argument(
-                                "toolId",
-                                "Default",
-                                ArgType.STRING))
-                            .build())
-                        .build())
-                    .add(FunctionManyArgs.builder()
-                        .name("octopusPushBuildInformation")
-                        .args(new ImmutableList.Builder<Argument>()
-                            .add(new Argument(
-                                "additionalArgs",
-                                "",
-                                ArgType.STRING))
-                            .add(new Argument(
-                                "commentParser",
-                                "GitHub",
-                                ArgType.STRING))
-                            .add(new Argument(
-                                "overwriteMode",
-                                "OverwriteExisting",
-                                ArgType.STRING))
-                            .add(new Argument(
-                                "packageId",
-                                accessor.getRepoName().getOrElse("application"),
-                                ArgType.STRING))
-                            .add(new Argument(
-                                "packageVersion",
-                                "${env.VERSION_SEMVER}",
-                                ArgType.EXPANDED_STRING))
-                            .add(new Argument(
-                                "serverId",
-                                "${ServerId}",
-                                ArgType.EXPANDED_STRING))
-                            .add(new Argument(
-                                "spaceId",
-                                "${SpaceId}",
-                                ArgType.EXPANDED_STRING))
-                            .add(new Argument(
-                                "toolId",
-                                "Default",
-                                ArgType.STRING))
-                            .add(new Argument(
-                                "verboseLogging",
-                                "false",
-                                ArgType.BOOLEAN))
-                            .add(new Argument(
-                                "gitUrl",
-                                "${GIT_URL}",
-                                ArgType.EXPANDED_STRING))
-                            .add(new Argument(
-                                "gitCommit",
-                                "${GIT_COMMIT}",
-                                ArgType.EXPANDED_STRING))
-                            .add(new Argument(
-                                "gitBranch",
-                                "${GIT_BRANCH}",
-                                ArgType.EXPANDED_STRING))
-                            .build())
-                        .build())
-                    .add(FunctionManyArgs.builder()
-                        .name("octopusCreateRelease")
-                        .args(new ImmutableList.Builder<Argument>()
-                            .add(new Argument(
-                                "additionalArgs",
-                                "",
-                                ArgType.STRING))
-                            .add(new Argument(
-                                "cancelOnTimeout",
-                                "false",
-                                ArgType.BOOLEAN))
-                            .add(new Argument(
-                                "channel",
-                                "",
-                                ArgType.STRING))
-                            .add(new Argument(
-                                "defaultPackageVersion",
-                                "",
-                                ArgType.STRING))
-                            .add(new Argument(
-                                "deployThisRelease",
-                                "false",
-                                ArgType.BOOLEAN))
-                            .add(new Argument(
-                                "deploymentTimeout",
-                                "",
-                                ArgType.STRING))
-                            .add(new Argument(
-                                "environment",
-                                "${EnvironmentName}",
-                                ArgType.EXPANDED_STRING))
-                            .add(new Argument(
-                                "jenkinsUrlLinkback",
-                                "false",
-                                ArgType.BOOLEAN))
-                            .add(new Argument(
-                                "project",
-                                "${ProjectName}",
-                                ArgType.EXPANDED_STRING))
-                            .add(new Argument(
-                                "releaseNotes",
-                                "false",
-                                ArgType.BOOLEAN))
-                            .add(new Argument(
-                                "releaseNotesFile",
-                                "",
-                                ArgType.STRING))
-                            .add(new Argument(
-                                "releaseVersion",
-                                "${env.VERSION_SEMVER}",
-                                ArgType.EXPANDED_STRING))
-                            .add(new Argument(
-                                "serverId",
-                                "${ServerId}",
-                                ArgType.EXPANDED_STRING))
-                            .add(new Argument(
-                                "spaceId",
-                                "${SpaceId}",
-                                ArgType.EXPANDED_STRING))
-                            .add(new Argument(
-                                "tenant",
-                                "",
-                                ArgType.STRING))
-                            .add(new Argument(
-                                "tenantTag",
-                                "",
-                                ArgType.STRING))
-                            .add(new Argument(
-                                "toolId",
-                                "Default",
-                                ArgType.STRING))
-                            .add(new Argument(
-                                "verboseLogging",
-                                "false",
-                                ArgType.BOOLEAN))
-                            .add(new Argument(
-                                "waitForDeployment",
-                                "false",
-                                ArgType.BOOLEAN))
-                            .build())
-                        .build())
-                    .add(FunctionManyArgs.builder()
-                        .name("octopusDeployRelease")
-                        .args(new ImmutableList.Builder<Argument>()
-                            .add(new Argument(
-                                "cancelOnTimeout",
-                                "false",
-                                ArgType.BOOLEAN))
-                            .add(new Argument(
-                                "deploymentTimeout",
-                                "",
-                                ArgType.STRING))
-                            .add(new Argument(
-                                "environment",
-                                "${EnvironmentName}",
-                                ArgType.EXPANDED_STRING))
-                            .add(new Argument(
-                                "project",
-                                "${ProjectName}",
-                                ArgType.EXPANDED_STRING))
-                            .add(new Argument(
-                                "releaseVersion",
-                                "${env.VERSION_SEMVER}",
-                                ArgType.EXPANDED_STRING))
-                            .add(new Argument(
-                                "serverId",
-                                "${ServerId}",
-                                ArgType.EXPANDED_STRING))
-                            .add(new Argument(
-                                "spaceId",
-                                "${SpaceId}",
-                                ArgType.EXPANDED_STRING))
-                            .add(new Argument(
-                                "tenant",
-                                "",
-                                ArgType.STRING))
-                            .add(new Argument(
-                                "tenantTag",
-                                "",
-                                ArgType.STRING))
-                            .add(new Argument(
-                                "toolId",
-                                "Default",
-                                ArgType.STRING))
-                            .add(new Argument(
-                                "variables",
-                                "",
-                                ArgType.STRING))
-                            .add(new Argument(
-                                "verboseLogging",
-                                "false",
-                                ArgType.BOOLEAN))
-                            .add(new Argument(
-                                "waitForDeployment",
-                                "true",
-                                ArgType.BOOLEAN))
-                            .build())
-                        .build())
-                    .build()))
-                .build()
-                .toString())
+    return Function1ArgTrailingLambda.builder().name("stage")
+        .arg("Deployment")
+        .children(createStepsElement(new ImmutableList.Builder<Element>()
+            .add(FunctionManyArgs.builder()
+                .name("octopusPushPackage")
+                .args(new ImmutableList.Builder<Argument>()
+                    .add(new Argument(
+                        "additionalArgs",
+                        "",
+                        ArgType.STRING))
+                    .add(new Argument(
+                        "packagePaths",
+                        "env.ARTIFACTS.split(\":\").join(\"\\n\")",
+                        ArgType.CODE))
+                    .add(new Argument(
+                        "overwriteMode",
+                        "OverwriteExisting",
+                        ArgType.STRING))
+                    .add(new Argument(
+                        "serverId",
+                        "${ServerId}",
+                        ArgType.EXPANDED_STRING))
+                    .add(new Argument(
+                        "spaceId",
+                        "${SpaceId}",
+                        ArgType.EXPANDED_STRING))
+                    .add(new Argument(
+                        "toolId",
+                        "Default",
+                        ArgType.STRING))
+                    .build())
+                .build())
+            .add(FunctionManyArgs.builder()
+                .name("octopusPushBuildInformation")
+                .args(new ImmutableList.Builder<Argument>()
+                    .add(new Argument(
+                        "additionalArgs",
+                        "",
+                        ArgType.STRING))
+                    .add(new Argument(
+                        "commentParser",
+                        "GitHub",
+                        ArgType.STRING))
+                    .add(new Argument(
+                        "overwriteMode",
+                        "OverwriteExisting",
+                        ArgType.STRING))
+                    .add(new Argument(
+                        "packageId",
+                        accessor.getRepoName().getOrElse("application"),
+                        ArgType.STRING))
+                    .add(new Argument(
+                        "packageVersion",
+                        "${env.VERSION_SEMVER}",
+                        ArgType.EXPANDED_STRING))
+                    .add(new Argument(
+                        "serverId",
+                        "${ServerId}",
+                        ArgType.EXPANDED_STRING))
+                    .add(new Argument(
+                        "spaceId",
+                        "${SpaceId}",
+                        ArgType.EXPANDED_STRING))
+                    .add(new Argument(
+                        "toolId",
+                        "Default",
+                        ArgType.STRING))
+                    .add(new Argument(
+                        "verboseLogging",
+                        "false",
+                        ArgType.BOOLEAN))
+                    .add(new Argument(
+                        "gitUrl",
+                        "${GIT_URL}",
+                        ArgType.EXPANDED_STRING))
+                    .add(new Argument(
+                        "gitCommit",
+                        "${GIT_COMMIT}",
+                        ArgType.EXPANDED_STRING))
+                    .add(new Argument(
+                        "gitBranch",
+                        "${GIT_BRANCH}",
+                        ArgType.EXPANDED_STRING))
+                    .build())
+                .build())
+            .add(FunctionManyArgs.builder()
+                .name("octopusCreateRelease")
+                .args(new ImmutableList.Builder<Argument>()
+                    .add(new Argument(
+                        "additionalArgs",
+                        "",
+                        ArgType.STRING))
+                    .add(new Argument(
+                        "cancelOnTimeout",
+                        "false",
+                        ArgType.BOOLEAN))
+                    .add(new Argument(
+                        "channel",
+                        "",
+                        ArgType.STRING))
+                    .add(new Argument(
+                        "defaultPackageVersion",
+                        "",
+                        ArgType.STRING))
+                    .add(new Argument(
+                        "deployThisRelease",
+                        "false",
+                        ArgType.BOOLEAN))
+                    .add(new Argument(
+                        "deploymentTimeout",
+                        "",
+                        ArgType.STRING))
+                    .add(new Argument(
+                        "environment",
+                        "${EnvironmentName}",
+                        ArgType.EXPANDED_STRING))
+                    .add(new Argument(
+                        "jenkinsUrlLinkback",
+                        "false",
+                        ArgType.BOOLEAN))
+                    .add(new Argument(
+                        "project",
+                        "${ProjectName}",
+                        ArgType.EXPANDED_STRING))
+                    .add(new Argument(
+                        "releaseNotes",
+                        "false",
+                        ArgType.BOOLEAN))
+                    .add(new Argument(
+                        "releaseNotesFile",
+                        "",
+                        ArgType.STRING))
+                    .add(new Argument(
+                        "releaseVersion",
+                        "${env.VERSION_SEMVER}",
+                        ArgType.EXPANDED_STRING))
+                    .add(new Argument(
+                        "serverId",
+                        "${ServerId}",
+                        ArgType.EXPANDED_STRING))
+                    .add(new Argument(
+                        "spaceId",
+                        "${SpaceId}",
+                        ArgType.EXPANDED_STRING))
+                    .add(new Argument(
+                        "tenant",
+                        "",
+                        ArgType.STRING))
+                    .add(new Argument(
+                        "tenantTag",
+                        "",
+                        ArgType.STRING))
+                    .add(new Argument(
+                        "toolId",
+                        "Default",
+                        ArgType.STRING))
+                    .add(new Argument(
+                        "verboseLogging",
+                        "false",
+                        ArgType.BOOLEAN))
+                    .add(new Argument(
+                        "waitForDeployment",
+                        "false",
+                        ArgType.BOOLEAN))
+                    .build())
+                .build())
+            .add(FunctionManyArgs.builder()
+                .name("octopusDeployRelease")
+                .args(new ImmutableList.Builder<Argument>()
+                    .add(new Argument(
+                        "cancelOnTimeout",
+                        "false",
+                        ArgType.BOOLEAN))
+                    .add(new Argument(
+                        "deploymentTimeout",
+                        "",
+                        ArgType.STRING))
+                    .add(new Argument(
+                        "environment",
+                        "${EnvironmentName}",
+                        ArgType.EXPANDED_STRING))
+                    .add(new Argument(
+                        "project",
+                        "${ProjectName}",
+                        ArgType.EXPANDED_STRING))
+                    .add(new Argument(
+                        "releaseVersion",
+                        "${env.VERSION_SEMVER}",
+                        ArgType.EXPANDED_STRING))
+                    .add(new Argument(
+                        "serverId",
+                        "${ServerId}",
+                        ArgType.EXPANDED_STRING))
+                    .add(new Argument(
+                        "spaceId",
+                        "${SpaceId}",
+                        ArgType.EXPANDED_STRING))
+                    .add(new Argument(
+                        "tenant",
+                        "",
+                        ArgType.STRING))
+                    .add(new Argument(
+                        "tenantTag",
+                        "",
+                        ArgType.STRING))
+                    .add(new Argument(
+                        "toolId",
+                        "Default",
+                        ArgType.STRING))
+                    .add(new Argument(
+                        "variables",
+                        "",
+                        ArgType.STRING))
+                    .add(new Argument(
+                        "verboseLogging",
+                        "false",
+                        ArgType.BOOLEAN))
+                    .add(new Argument(
+                        "waitForDeployment",
+                        "true",
+                        ArgType.BOOLEAN))
+                    .build())
+                .build())
+            .build()))
         .build();
   }
 }
