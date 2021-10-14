@@ -5,16 +5,16 @@ import java.util.List;
 
 public abstract class TestRepoClient implements RepoClient {
 
-  private String repo;
   private final String branch;
   protected boolean findWrapper;
+  private String repo;
 
   /**
-   * A mock repo accessor that pretends to find (or not find) project
-   * files and wrapper scripts.
-   * @param repo The git repo
-   * @param findWrapper true if this accessor is to report finding a wrapper script,
-   *                    and false otherwise
+   * A mock repo accessor that pretends to find (or not find) project files and wrapper scripts.
+   *
+   * @param repo        The git repo
+   * @param findWrapper true if this accessor is to report finding a wrapper script, and false
+   *                    otherwise
    */
   public TestRepoClient(final String repo, final String branch, boolean findWrapper) {
     this.repo = repo;
@@ -23,11 +23,11 @@ public abstract class TestRepoClient implements RepoClient {
   }
 
   /**
-   * A mock repo accessor that pretends to find (or not find) project
-   * files and wrapper scripts.
-   * @param repo The git repo
-   * @param findWrapper true if this accessor is to report finding a wrapper script,
-   *                    and false otherwise
+   * A mock repo accessor that pretends to find (or not find) project files and wrapper scripts.
+   *
+   * @param repo        The git repo
+   * @param findWrapper true if this accessor is to report finding a wrapper script, and false
+   *                    otherwise
    */
   public TestRepoClient(final String repo, boolean findWrapper) {
     this.repo = repo;

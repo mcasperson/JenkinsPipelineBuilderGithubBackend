@@ -16,6 +16,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 public class JenkinsClient {
+
   public Try<String> waitServerStarted(final JenkinsDetails jenkinsDetails) {
     for (int i = 0; i < 12; ++i) {
       final Try<String> serverStarted = getClient()
@@ -93,7 +94,8 @@ public class JenkinsClient {
 
   public Try<String> startJob(final JenkinsDetails jenkinsDetails, final String name) {
     return getClient()
-        .of(httpClient -> postResponse(httpClient, jenkinsDetails.toString() + "/job/" + name + "/build")
+        .of(httpClient -> postResponse(httpClient,
+            jenkinsDetails.toString() + "/job/" + name + "/build")
             .of(response -> EntityUtils.toString(response.getEntity()))
             .get());
   }

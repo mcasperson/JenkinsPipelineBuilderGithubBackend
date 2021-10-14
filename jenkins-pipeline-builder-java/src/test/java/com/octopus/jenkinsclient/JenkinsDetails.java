@@ -1,11 +1,11 @@
 package com.octopus.jenkinsclient;
 
 public class JenkinsDetails {
+
   private String host;
   private Integer port;
 
-  public JenkinsDetails(final String host, final Integer port)
-  {
+  public JenkinsDetails(final String host, final Integer port) {
     this.setHost(host);
     this.setPort(port);
   }

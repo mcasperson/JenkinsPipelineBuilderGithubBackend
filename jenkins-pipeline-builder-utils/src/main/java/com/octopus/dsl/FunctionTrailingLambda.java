@@ -22,7 +22,8 @@ public class FunctionTrailingLambda extends ElementWithChildren {
     safeChildren.forEach(c -> c.parent = this);
 
     return getIndent() + name + " {\n"
-        + safeChildren.stream().map(Object::toString).filter(c -> !c.isBlank()).collect(Collectors.joining("\n"))
+        + safeChildren.stream().map(Object::toString).filter(c -> !c.isBlank())
+        .collect(Collectors.joining("\n"))
         + "\n" + getIndent() + "}";
   }
 }

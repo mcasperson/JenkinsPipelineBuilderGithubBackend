@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.Test;
 
 public class FunctionManyArgsTest {
+
   @Test
   public void testFunction1Arg() {
     final Element element = FunctionManyArgs.builder()

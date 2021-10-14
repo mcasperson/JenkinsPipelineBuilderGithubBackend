@@ -2,16 +2,11 @@ package com.octopus.builders.java;
 
 import com.google.common.collect.ImmutableList;
 import com.octopus.builders.GitBuilder;
-import com.octopus.dsl.ArgType;
-import com.octopus.dsl.Argument;
 import com.octopus.dsl.Comment;
 import com.octopus.dsl.Element;
 import com.octopus.dsl.Function1ArgTrailingLambda;
-import com.octopus.dsl.FunctionManyArgs;
 import com.octopus.dsl.FunctionTrailingLambda;
 import com.octopus.dsl.StringContent;
-import com.octopus.repoclients.RepoClient;
-import java.util.List;
 import java.util.logging.Logger;
 import lombok.NonNull;
 

@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.Test;
 
 public class Function1ArgTrailingLambdaTest {
+
   @Test
   public void testFunction1Arg() {
     final Element element = Function1ArgTrailingLambda.builder()

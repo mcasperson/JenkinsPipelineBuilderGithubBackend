@@ -14,13 +14,14 @@ import org.junit.jupiter.api.Test;
  * instance.
  */
 public class PrintTemplates {
+
   @Test
   public void printDotNetTemplate() {
-      final String template =
-          new DotnetCoreBuilder()
-              .generate(new DotnetTestRepoClient("https://github.com/OctopusSamples/RandomQuotes"));
-      Assertions.assertNotEquals( "", template );
-      System.out.println(template);
+    final String template =
+        new DotnetCoreBuilder()
+            .generate(new DotnetTestRepoClient("https://github.com/OctopusSamples/RandomQuotes"));
+    Assertions.assertNotEquals("", template);
+    System.out.println(template);
   }
 
   @Test
@@ -28,7 +29,7 @@ public class PrintTemplates {
     final String template =
         new NodejsBuilder()
             .generate(new NodeTestRepoClient("https://github.com/OctopusSamples/RandomQuotes-js"));
-    Assertions.assertNotEquals( "", template );
+    Assertions.assertNotEquals("", template);
     System.out.println(template);
   }
 
@@ -37,7 +38,7 @@ public class PrintTemplates {
     final String template =
         new PhpComposerBuilder()
             .generate(new PhpTestRepoClient("https://github.com/OctopusSamples/RandomQuotes-PHP"));
-    Assertions.assertNotEquals( "", template );
+    Assertions.assertNotEquals("", template);
     System.out.println(template);
   }
 

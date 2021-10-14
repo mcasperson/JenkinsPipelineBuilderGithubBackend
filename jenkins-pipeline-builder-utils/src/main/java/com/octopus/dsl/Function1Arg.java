@@ -23,7 +23,8 @@ public class Function1Arg extends ElementWithChildren {
     }
 
     if (value.contains("\n")) {
-      return getIndent() + name + " '''\n" + getIndent() + "  " + String.join("\n" + getIndent() + "  ", value.split("\n")) + "\n" + getIndent() + "'''";
+      return getIndent() + name + " '''\n" + getIndent() + "  " + String.join(
+          "\n" + getIndent() + "  ", value.split("\n")) + "\n" + getIndent() + "'''";
     }
     return getIndent() + name + " '" + value + "'";
   }

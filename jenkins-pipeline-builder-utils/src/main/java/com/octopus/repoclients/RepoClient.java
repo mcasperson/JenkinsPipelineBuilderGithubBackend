@@ -42,8 +42,8 @@ public interface RepoClient {
   String getRepoPath();
 
   /**
-   * Returns the default branches of the repo (or guessing what the branches would be if
-   * hitting an API rate limit).
+   * Returns the default branches of the repo (or guessing what the branches would be if hitting an
+   * API rate limit).
    *
    * @return The default branches.
    */

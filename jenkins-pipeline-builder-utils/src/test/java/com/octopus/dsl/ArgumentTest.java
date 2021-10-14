@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 public class ArgumentTest {
+
   @Test
   public void testStringArgument() {
     final Argument argument = new Argument("name", "value", ArgType.STRING);

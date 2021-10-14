@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 public class CommentTest {
+
   @Test
   public void testComment() {
     final Comment element = Comment.builder().content("a comment").build();

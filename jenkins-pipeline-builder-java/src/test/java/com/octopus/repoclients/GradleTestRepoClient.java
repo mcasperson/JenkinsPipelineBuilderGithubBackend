@@ -1,8 +1,5 @@
 package com.octopus.repoclients;
 
-import io.vavr.control.Try;
-import java.util.List;
-
 public class GradleTestRepoClient extends TestRepoClient {
 
   /**

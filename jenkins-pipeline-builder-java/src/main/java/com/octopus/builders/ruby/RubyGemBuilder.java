@@ -206,11 +206,13 @@ public class RubyGemBuilder implements PipelineBuilder {
                             + "\tincludePaths: \"**/*.rb\\n**/*.html\\n**/*.htm\\n**/*.css\\n**/*.js\\n**/*.min\\n**/*.map\\n**/*.sql\\n**/*.png\\n**/*.jpg\\n**/*.jpeg\\n**/*.gif\\n**/*.json\\n**/*.env\\n**/*.txt\\n**/Procfile\",\n"
                             + "\toverwriteExisting: true, \n"
                             + "\tpackageFormat: 'zip', \n"
-                            + "\tpackageId: '" + accessor.getRepoName().getOrElse("application") + "', \n"
+                            + "\tpackageId: '" + accessor.getRepoName().getOrElse("application")
+                            + "', \n"
                             + "\tpackageVersion: env.VERSION_SEMVER, \n"
                             + "\ttoolId: 'Default', \n"
                             + "\tverboseLogging: false)\n"
-                            + "env.ARTIFACTS = \"" + accessor.getRepoName().getOrElse("application") + ".${env.VERSION_SEMVER}.zip\"")
+                            + "env.ARTIFACTS = \"" + accessor.getRepoName().getOrElse("application")
+                            + ".${env.VERSION_SEMVER}.zip\"")
                         .build())
                     .build())
                 .build())

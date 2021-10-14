@@ -13,6 +13,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 
 public class GithubRepoClientTest {
+
   private static final HttpClient HTTP_CLIENT = new StringHttpClient();
 
   @Test

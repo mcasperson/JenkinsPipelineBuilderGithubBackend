@@ -1,8 +1,7 @@
-import jenkins.*;
-import jenkins.model.*;
-import hudson.*;
-import hudson.model.*;
+import hudson.*
+import hudson.model.*
 import hudson.tools.*
+import jenkins.model.*
 
 def inst = Jenkins.getInstance()
 def desc = inst.getDescriptor("hudson.tasks.Maven")

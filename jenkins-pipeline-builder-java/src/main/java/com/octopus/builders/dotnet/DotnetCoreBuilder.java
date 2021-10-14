@@ -67,7 +67,7 @@ public class DotnetCoreBuilder implements PipelineBuilder {
             .add(Comment.builder()
                 .content(
                     "* MSTest: https://plugins.jenkins.io/mstest/\n"
-                    + "* Octopus Deploy: https://plugins.jenkins.io/octopusdeploy/")
+                        + "* Octopus Deploy: https://plugins.jenkins.io/octopusdeploy/")
                 .build())
             .add(GIT_BUILDER.createParameters(accessor))
             .add(Function1Arg.builder().name("agent").value("any").build())

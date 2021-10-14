@@ -151,7 +151,8 @@ public class JavaGradleBuilder implements PipelineBuilder {
             .add(FunctionManyArgs.builder()
                 .name("sh")
                 .args(new ImmutableList.Builder<Argument>()
-                    .add(new Argument("script", gradleExecutable() + " check --console=plain || true",
+                    .add(new Argument("script",
+                        gradleExecutable() + " check --console=plain || true",
                         ArgType.STRING))
                     .build())
                 .build())

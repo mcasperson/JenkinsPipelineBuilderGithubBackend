@@ -70,13 +70,13 @@ public class GoBuilder implements PipelineBuilder {
         .arg("Dependencies")
         .children(GIT_BUILDER.createStepsElement(new ImmutableList.Builder<Element>()
             .add(FunctionManyArgs.builder()
-                  .name("sh")
-                  .args(new ImmutableList.Builder<Argument>()
-                      .add(new Argument("script",
-                          "go get ./...",
-                          ArgType.STRING))
-                      .build())
-                  .build())
+                .name("sh")
+                .args(new ImmutableList.Builder<Argument>()
+                    .add(new Argument("script",
+                        "go get ./...",
+                        ArgType.STRING))
+                    .build())
+                .build())
             .add(Comment.builder()
                 .content(
                     "Save the dependencies that went into this build into an artifact. This allows you to review any builds for vulnerabilities later on.")

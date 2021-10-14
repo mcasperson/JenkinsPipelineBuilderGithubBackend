@@ -68,13 +68,13 @@
       <groupId>io.quarkus</groupId>
     </dependency>
     <dependency>
-      <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-health</artifactId>
+      <groupId>io.quarkus</groupId>
     </dependency>
     <!-- Required to get an Ant path matcher implementation -->
     <dependency>
-      <groupId>org.apache.shiro</groupId>
       <artifactId>shiro-core</artifactId>
+      <groupId>org.apache.shiro</groupId>
       <version>1.7.1</version>
     </dependency>
 

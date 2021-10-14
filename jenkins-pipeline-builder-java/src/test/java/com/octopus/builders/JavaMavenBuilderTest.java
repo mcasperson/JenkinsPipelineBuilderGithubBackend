@@ -9,7 +9,6 @@ import com.octopus.builders.nodejs.NodejsBuilder;
 import com.octopus.builders.php.PhpComposerBuilder;
 import com.octopus.builders.python.PythonBuilder;
 import com.octopus.builders.ruby.RubyGemBuilder;
-import com.octopus.http.StringHttpClient;
 import com.octopus.jenkinsclient.JenkinsClient;
 import com.octopus.jenkinsclient.JenkinsDetails;
 import com.octopus.octopusclient.OctopusClient;
@@ -27,28 +26,21 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 import lombok.NonNull;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.text.StringEscapeUtils;
-import org.apache.http.message.BasicHeader;
 import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
-import org.testcontainers.containers.wait.strategy.DockerHealthcheckWaitStrategy;
-import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.images.builder.ImageFromDockerfile;
 import org.testcontainers.images.builder.Transferable;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import org.testcontainers.utility.DockerImageName;
 import org.testcontainers.utility.MountableFile;
 
@@ -77,7 +69,8 @@ public class JavaMavenBuilderTest {
   private static final OctopusClient OCTOPUS_CLIENT = new OctopusClient();
   private static final String RANDOM_DB_PASSWORD = RandomStringUtils.random(16, true, true);
   private static final String RANDOM_OCTO_PASSWORD = RandomStringUtils.random(16, true, true);
-  private static final String RANDOM_OCTO_API = RandomStringUtils.random(32, true, true).toUpperCase();
+  private static final String RANDOM_OCTO_API = RandomStringUtils.random(32, true, true)
+      .toUpperCase();
   private static final Network NETWORK = Network.newNetwork();
 
 
@@ -202,65 +195,6 @@ public class JavaMavenBuilderTest {
           "-Djenkins.install.runSetupWizard=false "
               + "-Dhudson.security.csrf.GlobalCrumbIssuerConfiguration.DISABLE_CSRF_PROTECTION=true");
 
-  @Before
-  public void initializeOctopus() {
-    OCTOPUS_CLIENT.setUrl("http://" + octopus.getHost() + ":" + octopus.getFirstMappedPort());
-    OCTOPUS_CLIENT.setApiKey("API-" + RANDOM_OCTO_API);
-
-    OCTOPUS_CLIENT.createEnvironment("Dev");
-    OCTOPUS_CLIENT.createProject("application", OCTOPUS_CLIENT.getDefaultProjectGroupId(), OCTOPUS_CLIENT.getDefaultLifecycleId());
-    OCTOPUS_CLIENT.addStepToProject("application");
-  }
-
-  @ParameterizedTest
-  @MethodSource("provideTestRepos")
-  public void verifyTemplate(@NonNull final String name, @NonNull final RepoClient accessor)
-      throws IOException {
-
-    System.out.println(jenkins.getLogs());
-
-    System.out.println("Testing " + accessor.getClass().getName());
-
-    final String template = Arrays.stream(PIPELINE_BUILDERS)
-        .filter(p -> p.canBuild(accessor))
-        .map(p -> p.generate(accessor))
-        .findFirst().get();
-
-    System.out.println(template);
-
-    // Add the job to the docker image
-    addJobToJenkins(getScriptJob(template), name);
-
-    final JenkinsDetails jenkinsDetails = new JenkinsDetails(
-        jenkins.getHost(),
-        jenkins.getFirstMappedPort());
-
-    // print the Jenkins URL
-    System.out.println("Jenkins URL: " + jenkinsDetails);
-
-    // Now restart jenkins, initiate a build, and check the build result
-    final Try<Boolean> success =
-        // wait for the server to start
-        JENKINS_CLIENT.waitServerStarted(jenkinsDetails)
-            // restart the server to pick up the new jobs
-            .flatMap(r -> JENKINS_CLIENT.restartJenkins(jenkinsDetails))
-            // wait for the server to start again
-            .flatMap(r -> JENKINS_CLIENT.waitServerStarted(jenkinsDetails))
-            // start building the job
-            .flatMap(r -> JENKINS_CLIENT.startJob(jenkinsDetails, name))
-            // wait for the job to finish
-            .flatMap(r -> JENKINS_CLIENT.waitJobBuilding(jenkinsDetails, name))
-            // see if the job was a success
-            .map(JENKINS_CLIENT::isSuccess);
-
-    // dump the job logs
-    JENKINS_CLIENT.getJobLogs(jenkins.getHost(), jenkins.getFirstMappedPort(), name)
-        .onSuccess(System.out::println);
-
-    Assertions.assertTrue(success.isSuccess());
-    Assertions.assertTrue(success.get());
-  }
-
   private static Stream<Arguments> provideTestRepos() {
     return Stream.of(
         Arguments.of(
@@ -316,6 +250,66 @@ public class JavaMavenBuilderTest {
                 "https://github.com/mcasperson/SampleGradleProject-SpringBoot",
                 true))
     );
+  }
+
+  @Before
+  public void initializeOctopus() {
+    OCTOPUS_CLIENT.setUrl("http://" + octopus.getHost() + ":" + octopus.getFirstMappedPort());
+    OCTOPUS_CLIENT.setApiKey("API-" + RANDOM_OCTO_API);
+
+    OCTOPUS_CLIENT.createEnvironment("Dev");
+    OCTOPUS_CLIENT.createProject("application", OCTOPUS_CLIENT.getDefaultProjectGroupId(),
+        OCTOPUS_CLIENT.getDefaultLifecycleId());
+    OCTOPUS_CLIENT.addStepToProject("application");
+  }
+
+  @ParameterizedTest
+  @MethodSource("provideTestRepos")
+  public void verifyTemplate(@NonNull final String name, @NonNull final RepoClient accessor)
+      throws IOException {
+
+    System.out.println(jenkins.getLogs());
+
+    System.out.println("Testing " + accessor.getClass().getName());
+
+    final String template = Arrays.stream(PIPELINE_BUILDERS)
+        .filter(p -> p.canBuild(accessor))
+        .map(p -> p.generate(accessor))
+        .findFirst().get();
+
+    System.out.println(template);
+
+    // Add the job to the docker image
+    addJobToJenkins(getScriptJob(template), name);
+
+    final JenkinsDetails jenkinsDetails = new JenkinsDetails(
+        jenkins.getHost(),
+        jenkins.getFirstMappedPort());
+
+    // print the Jenkins URL
+    System.out.println("Jenkins URL: " + jenkinsDetails);
+
+    // Now restart jenkins, initiate a build, and check the build result
+    final Try<Boolean> success =
+        // wait for the server to start
+        JENKINS_CLIENT.waitServerStarted(jenkinsDetails)
+            // restart the server to pick up the new jobs
+            .flatMap(r -> JENKINS_CLIENT.restartJenkins(jenkinsDetails))
+            // wait for the server to start again
+            .flatMap(r -> JENKINS_CLIENT.waitServerStarted(jenkinsDetails))
+            // start building the job
+            .flatMap(r -> JENKINS_CLIENT.startJob(jenkinsDetails, name))
+            // wait for the job to finish
+            .flatMap(r -> JENKINS_CLIENT.waitJobBuilding(jenkinsDetails, name))
+            // see if the job was a success
+            .map(JENKINS_CLIENT::isSuccess);
+
+    // dump the job logs
+    JENKINS_CLIENT.getJobLogs(jenkins.getHost(), jenkins.getFirstMappedPort(), name)
+        .onSuccess(System.out::println);
+
+    Assertions.assertTrue(success.isSuccess());
+    Assertions.assertTrue(success.get());
   }
 
   private void addJobToJenkins(@NonNull final String jobXml, @NonNull final String jobName) {
