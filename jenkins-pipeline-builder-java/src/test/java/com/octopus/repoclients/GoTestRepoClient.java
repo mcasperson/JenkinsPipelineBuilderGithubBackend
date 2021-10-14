@@ -12,6 +12,7 @@ public class GoTestRepoClient extends TestRepoClient {
    */
   public GoTestRepoClient(final String repo, final String branch) {
     super(repo, branch, false);
+    ++count;
   }
 
   @Override

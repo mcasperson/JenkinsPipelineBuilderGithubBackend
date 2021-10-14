@@ -12,6 +12,7 @@ public class PythonTestRepoClient extends TestRepoClient {
    */
   public PythonTestRepoClient(final String repo, final String branch) {
     super(repo, branch, false);
+    ++count;
   }
 
   @Override

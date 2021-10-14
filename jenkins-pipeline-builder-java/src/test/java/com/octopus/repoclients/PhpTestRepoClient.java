@@ -12,6 +12,7 @@ public class PhpTestRepoClient extends TestRepoClient {
    */
   public PhpTestRepoClient(final String repo) {
     super(repo, false);
+    ++count;
   }
 
   @Override
@@ -21,6 +22,7 @@ public class PhpTestRepoClient extends TestRepoClient {
     }
 
     return false;
+
   }
 
   @Override

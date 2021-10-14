@@ -12,6 +12,7 @@ public class RubyTestRepoClient extends TestRepoClient {
    */
   public RubyTestRepoClient(final String repo, final String branch) {
     super(repo, branch, false);
+    ++count;
   }
 
   @Override
