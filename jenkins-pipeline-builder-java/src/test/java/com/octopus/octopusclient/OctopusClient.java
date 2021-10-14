@@ -47,21 +47,19 @@ public class OctopusClient {
         .get();
   }
 
-  public String createEnvironment(final String name) {
+  public Try<String> createEnvironment(final String name) {
     return STRING_HTTP_CLIENT.post(url + "/api/Spaces-1/environments",
             "{\"Name\": \"" + name + "\"}",
-            List.of(new BasicHeader("X-Octopus-ApiKey", getApiKey())))
-        .get();
+            List.of(new BasicHeader("X-Octopus-ApiKey", getApiKey())));
   }
 
-  public String createProject(final String name, final String projectGroupId,
+  public Try<String> createProject(final String name, final String projectGroupId,
       final String lifecycleId) {
     return STRING_HTTP_CLIENT.post(url + "/api/Spaces-1/projects",
             "{\"Name\": \"" + name + "\", \"ProjectGroupId\": \"" + projectGroupId
                 + "\", \"LifeCycleId\": \""
                 + lifecycleId + "\"}",
-            List.of(new BasicHeader("X-Octopus-ApiKey", getApiKey())))
-        .get();
+            List.of(new BasicHeader("X-Octopus-ApiKey", getApiKey())));
   }
 
   public String addStepToProject(final String projectName) {
