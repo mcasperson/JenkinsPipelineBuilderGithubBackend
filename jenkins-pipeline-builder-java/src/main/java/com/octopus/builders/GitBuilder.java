@@ -311,8 +311,8 @@ public class GitBuilder {
                         ArgType.STRING))
                     .add(new Argument(
                         "packageVersion",
-                        "${env.VERSION_SEMVER}",
-                        ArgType.EXPANDED_STRING))
+                        "env.VERSION_SEMVER",
+                        ArgType.CODE))
                     .add(new Argument(
                         "serverId",
                         "params.ServerId",
@@ -331,16 +331,16 @@ public class GitBuilder {
                         ArgType.BOOLEAN))
                     .add(new Argument(
                         "gitUrl",
-                        "${GIT_URL}",
-                        ArgType.EXPANDED_STRING))
+                        "env.GIT_URL",
+                        ArgType.CODE))
                     .add(new Argument(
                         "gitCommit",
-                        "${GIT_COMMIT}",
-                        ArgType.EXPANDED_STRING))
+                        "env.GIT_COMMIT",
+                        ArgType.CODE))
                     .add(new Argument(
                         "gitBranch",
-                        "${GIT_BRANCH}",
-                        ArgType.EXPANDED_STRING))
+                        "env.GIT_BRANCH",
+                        ArgType.CODE))
                     .build())
                 .build())
             .add(FunctionManyArgs.builder()
@@ -392,8 +392,8 @@ public class GitBuilder {
                         ArgType.STRING))
                     .add(new Argument(
                         "releaseVersion",
-                        "${env.VERSION_SEMVER}",
-                        ArgType.EXPANDED_STRING))
+                        "env.VERSION_SEMVER",
+                        ArgType.CODE))
                     .add(new Argument(
                         "serverId",
                         "params.ServerId",
@@ -445,8 +445,8 @@ public class GitBuilder {
                         ArgType.CODE))
                     .add(new Argument(
                         "releaseVersion",
-                        "${env.VERSION_SEMVER}",
-                        ArgType.EXPANDED_STRING))
+                        "env.VERSION_SEMVER",
+                        ArgType.CODE))
                     .add(new Argument(
                         "serverId",
                         "params.ServerId",
