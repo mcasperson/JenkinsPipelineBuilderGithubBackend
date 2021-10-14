@@ -1,6 +1,8 @@
 package com.octopus.octopusclient;
 
+import com.google.common.collect.ImmutableMap;
 import com.octopus.http.StringHttpClient;
+import io.vavr.control.Try;
 import java.util.List;
 import java.util.Map;
 import org.apache.http.message.BasicHeader;
@@ -57,6 +59,74 @@ public class OctopusClient {
     return STRING_HTTP_CLIENT.post(url + "/api/Spaces-1/projects",
             "{\"Name\": \"Test\", \"ProjectGroupId\": \"" + projectGroupId + "\", \"LifeCycleId\": \""
                 + lifecycleId + "\"}",
+            List.of(new BasicHeader("X-Octopus-ApiKey", getApiKey())))
+        .get();
+  }
+
+  public String addStepToProject(final String projectName) {
+    final Map<String, Object> projectId = STRING_HTTP_CLIENT.get(getUrl() + "/api/Spaces-1/projects/all",
+            List.of(new BasicHeader("X-Octopus-ApiKey", getApiKey())))
+        .mapTry(j -> (List<Map<String, Object>>) new ObjectMapper().readValue(j, List.class))
+        .mapTry(l -> l.stream()
+            .filter(p -> p.get("Name").toString().equals(projectName))
+            .findFirst()
+            .get())
+        .get();
+
+    final Map<String, Object> deploymentProcess = STRING_HTTP_CLIENT.get(getUrl() + "/api/Spaces-1/deploymentprocesses/" + projectId.get("DeploymentProcessId"),
+            List.of(new BasicHeader("X-Octopus-ApiKey", getApiKey())))
+        .mapTry(j -> (Map<String, Object>) new ObjectMapper().readValue(j, Map.class))
+        .get();
+
+    final Map<String, Object> newStep = new ImmutableMap.Builder<String, Object>()
+        .put("Name", "Run a script")
+        .put("Condition", "Success")
+        .put("StartTrigger", "StartAfterPrevious")
+        .put("PackageRequirement", "LetOctopusDecide")
+        .put("Properties", new ImmutableMap.Builder<String, Object>().build())
+        .put("Actions", new ImmutableMap.Builder<String, Object>()
+            .put("ActionType", "Octopus.Script")
+            .put("Name", "Run a script")
+            .put("Environments", List.of())
+            .put("ExcludedEnvironments", List.of())
+            .put("Channels", List.of())
+            .put("TenantTags", List.of())
+            .put("Environments", List.of())
+            .put("ExcludedEnvironments", List.of())
+            .put("Channels", List.of())
+            .put("TenantTags", List.of())
+            .put("Packages", List.of())
+            .put("IsDisabled", false)
+            .put("WorkerPoolId", "")
+            .put("WorkerPoolVariable", "")
+            .put("Condition", "Success")
+            .put("Container ", new ImmutableMap.Builder<String, Object>()
+                .put("FeedId", "")
+                .put("Image", "")
+                .build()
+            )
+            .put("CanBeUsedForProjectVersioning", false)
+            .put("IsRequired", false)
+            .put("Properties", new ImmutableMap.Builder<String, Object>()
+                .put("Octopus.Action.RunOnServer", "true")
+                .put("Octopus.Action.EnabledFeatures", "")
+                .put("Octopus.Action.Script.ScriptSource", "Inline")
+                .put("Octopus.Action.Script.Syntax", "Bash")
+                .put("Octopus.Action.Script.ScriptFilename", "")
+                .put("Octopus.Action.Script.ScriptBody", "echo 'hi'")
+                .build()
+            )
+            .build()
+        )
+        .build();
+
+    final List<Map<String, Object>> steps = (List<Map<String, Object>>)deploymentProcess.get("Steps");
+    steps.add(newStep);
+
+    final Try<String> body = Try.of(() -> new ObjectMapper().writeValueAsString(deploymentProcess));
+
+    return STRING_HTTP_CLIENT.post(url + "/api/Spaces-1/deploymentprocesses/" + projectId.get("DeploymentProcessId"),
+            body.get(),
             List.of(new BasicHeader("X-Octopus-ApiKey", getApiKey())))
         .get();
   }

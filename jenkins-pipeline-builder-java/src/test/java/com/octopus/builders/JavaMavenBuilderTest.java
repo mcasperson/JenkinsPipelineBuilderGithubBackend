@@ -205,13 +205,14 @@ public class JavaMavenBuilderTest {
               + "-Dhudson.security.csrf.GlobalCrumbIssuerConfiguration.DISABLE_CSRF_PROTECTION=true")
       .withReuse(true);
 
-  @Before
+  @Test
   public void initializeOctopus() {
     OCTOPUS_CLIENT.setUrl("http://" + octopus.getHost() + ":" + octopus.getFirstMappedPort());
     OCTOPUS_CLIENT.setApiKey("API-" + RANDOM_OCTO_API);
 
     OCTOPUS_CLIENT.createEnvironment("Dev");
-    OCTOPUS_CLIENT.createProject("Test", OCTOPUS_CLIENT.getDefaultProjectGroupId(), OCTOPUS_CLIENT.getDefaultLifecycleId());
+    OCTOPUS_CLIENT.createProject("application", OCTOPUS_CLIENT.getDefaultProjectGroupId(), OCTOPUS_CLIENT.getDefaultLifecycleId());
+    OCTOPUS_CLIENT.addStepToProject("application");
   }
 
   @ParameterizedTest
