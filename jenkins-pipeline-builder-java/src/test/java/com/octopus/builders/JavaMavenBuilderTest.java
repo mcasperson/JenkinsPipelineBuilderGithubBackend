@@ -308,8 +308,6 @@ public class JavaMavenBuilderTest {
     OCTOPUS_CLIENT.setUrl("http://" + octopus.getHost() + ":" + octopus.getFirstMappedPort());
     OCTOPUS_CLIENT.setApiKey("API-" + RANDOM_OCTO_API);
     OCTOPUS_CLIENT.createEnvironment("Dev");
-    OCTOPUS_CLIENT.setUrl("http://" + octopus.getHost() + ":" + octopus.getFirstMappedPort());
-    OCTOPUS_CLIENT.setApiKey("API-" + RANDOM_OCTO_API);
     OCTOPUS_CLIENT.createProject(accessor.getRepoName().get(), OCTOPUS_CLIENT.getDefaultProjectGroupId(),
         OCTOPUS_CLIENT.getDefaultLifecycleId());
     OCTOPUS_CLIENT.addStepToProject(accessor.getRepoName().get());
