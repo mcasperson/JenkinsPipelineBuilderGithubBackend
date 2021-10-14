@@ -202,7 +202,7 @@ public class JavaMavenBuilderTest {
           "-Djenkins.install.runSetupWizard=false "
               + "-Dhudson.security.csrf.GlobalCrumbIssuerConfiguration.DISABLE_CSRF_PROTECTION=true");
 
-  @Test
+  @Before
   public void initializeOctopus() {
     OCTOPUS_CLIENT.setUrl("http://" + octopus.getHost() + ":" + octopus.getFirstMappedPort());
     OCTOPUS_CLIENT.setApiKey("API-" + RANDOM_OCTO_API);
