@@ -125,5 +125,6 @@ jobs:
           --apiKey ${{ secrets.OCTOPUS_APIKEY }}
           --space "Content Team"
 
+      # https://github.com.cnpmjs.org/AppThreat/dep-scan
       - name: Generate vulnerability report
         run: find . -type f -name 'bom.xml' -exec docker run --rm -v "$PWD:/app" appthreat/dep-scan scan --bom /app/{} --type bom \; exit 0
