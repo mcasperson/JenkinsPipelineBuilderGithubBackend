@@ -333,16 +333,16 @@ public class GitBuilder {
                         ArgType.BOOLEAN))
                     .add(new Argument(
                         "gitUrl",
-                        "env.GIT_URL",
-                        ArgType.CODE))
+                        "${GIT_URL}",
+                        ArgType.EXPANDED_STRING))
                     .add(new Argument(
                         "gitCommit",
-                        "env.GIT_COMMIT",
-                        ArgType.CODE))
+                        "${GIT_COMMIT}",
+                        ArgType.EXPANDED_STRING))
                     .add(new Argument(
                         "gitBranch",
-                        "env.GIT_BRANCH",
-                        ArgType.CODE))
+                        "${GIT_BRANCH}",
+                        ArgType.EXPANDED_STRING))
                     .build())
                 .build())
             .add(FunctionManyArgs.builder()

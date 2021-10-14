@@ -148,7 +148,7 @@ public class JavaGradleBuilder implements PipelineBuilder {
                 .name("script")
                 .children(new ImmutableList.Builder<Element>()
                     .add(StringContent.builder()
-                        .content("env.SEMVER_VERSION = \"1.0.0.${BUILD_NUMBER}\"")
+                        .content("env.VERSION_SEMVER = \"1.0.0.${BUILD_NUMBER}\"")
                         .build())
                     .build())
                 .build())
