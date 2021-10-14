@@ -315,7 +315,7 @@ public class GitBuilder {
                             .add(new Argument(
                                 "packageVersion",
                                 "${env.VERSION_SEMVER}",
-                                ArgType.STRING))
+                                ArgType.EXPANDED_STRING))
                             .add(new Argument(
                                 "serverId",
                                 "${ServerId}",
@@ -376,7 +376,7 @@ public class GitBuilder {
                             .add(new Argument(
                                 "environment",
                                 "${EnvironmentName}",
-                                ArgType.STRING))
+                                ArgType.EXPANDED_STRING))
                             .add(new Argument(
                                 "jenkinsUrlLinkback",
                                 "false",
@@ -396,7 +396,7 @@ public class GitBuilder {
                             .add(new Argument(
                                 "releaseVersion",
                                 "${env.VERSION_SEMVER}",
-                                ArgType.STRING))
+                                ArgType.EXPANDED_STRING))
                             .add(new Argument(
                                 "serverId",
                                 "${ServerId}",
