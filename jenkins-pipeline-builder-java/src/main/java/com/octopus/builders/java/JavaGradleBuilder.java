@@ -69,7 +69,7 @@ public class JavaGradleBuilder implements PipelineBuilder {
                     .add(createDependenciesStep())
                     .add(createBuildStep())
                     .add(createTestStep())
-                    .add(GIT_BUILDER.createDeployStep(GRADLE_OUTPUT_DIR))
+                    .add(GIT_BUILDER.createDeployStep(GRADLE_OUTPUT_DIR, accessor))
                     .add(GIT_BUILDER.createDeployStage(accessor))
                     .build())
                 .build())

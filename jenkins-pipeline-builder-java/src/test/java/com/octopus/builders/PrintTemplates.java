@@ -1,9 +1,11 @@
 package com.octopus.builders;
 
 import com.octopus.builders.dotnet.DotnetCoreBuilder;
+import com.octopus.builders.java.JavaMavenBuilder;
 import com.octopus.builders.nodejs.NodejsBuilder;
 import com.octopus.builders.php.PhpComposerBuilder;
 import com.octopus.repoclients.DotnetTestRepoClient;
+import com.octopus.repoclients.MavenTestRepoClient;
 import com.octopus.repoclients.NodeTestRepoClient;
 import com.octopus.repoclients.PhpTestRepoClient;
 import org.junit.jupiter.api.Assertions;
@@ -14,6 +16,15 @@ import org.junit.jupiter.api.Test;
  * instance.
  */
 public class PrintTemplates {
+
+  @Test
+  public void printMavenTemplate() {
+    final String template =
+        new JavaMavenBuilder()
+            .generate(new MavenTestRepoClient("https://github.com/OctopusSamples/RandomQuotes-Java", true));
+    Assertions.assertNotEquals("", template);
+    System.out.println(template);
+  }
 
   @Test
   public void printDotNetTemplate() {

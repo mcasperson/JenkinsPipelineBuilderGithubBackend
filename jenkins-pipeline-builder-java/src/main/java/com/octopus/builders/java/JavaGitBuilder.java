@@ -2,11 +2,15 @@ package com.octopus.builders.java;
 
 import com.google.common.collect.ImmutableList;
 import com.octopus.builders.GitBuilder;
+import com.octopus.dsl.ArgType;
+import com.octopus.dsl.Argument;
 import com.octopus.dsl.Comment;
 import com.octopus.dsl.Element;
 import com.octopus.dsl.Function1ArgTrailingLambda;
+import com.octopus.dsl.FunctionManyArgs;
 import com.octopus.dsl.FunctionTrailingLambda;
 import com.octopus.dsl.StringContent;
+import com.octopus.repoclients.RepoClient;
 import java.util.logging.Logger;
 import lombok.NonNull;
 
@@ -23,10 +27,10 @@ public class JavaGitBuilder extends GitBuilder {
    * @param buildDir The directory holding the compiled artifacts.
    * @return A list with a single element representing the stage.
    */
-  public Element createDeployStep(@NonNull final String buildDir) {
+  public Element createDeployStep(@NonNull final String buildDir, @NonNull final RepoClient accessor) {
     return Function1ArgTrailingLambda.builder()
         .name("stage")
-        .arg("Deploy")
+        .arg("Repackage")
         .children(createStepsElement(new ImmutableList.Builder<Element>()
             .add(Comment.builder()
                 .content(
@@ -57,12 +61,20 @@ public class JavaGitBuilder extends GitBuilder {
                                 + "\t}\n"
                                 + "}\n"
                                 + "if (largestFile != null) {\n"
-                                + "\tenv.ARTIFACTS = largestFile.path\n"
+                                + "\tenv.ORIGINAL_ARTIFACT = largestFile.path\n"
+                                + "\tenv.ARTIFACTS = \"" + accessor.getRepoName().getOrElse("application") + ".\" + env.SEMVER.VERSION + \".\" + largestFile.path.substring(largestFile.path.lastIndexOf(\".\"), largestFile.path.length())\n"
                                 + "\techo 'Found artifact at ' + largestFile.path\n"
                                 + "\techo 'This path is available from the ARTIFACTS environment variable.'\n"
                                 + "}\n"
                         )
                         .build())
+                    .build())
+                .build())
+            .add(FunctionManyArgs.builder()
+                .name("sh")
+                .args(new ImmutableList.Builder<Argument>()
+                    .add(new Argument("script", "cp ${ORIGINAL_ARTIFACT} ${ARTIFACTS}",
+                        ArgType.STRING))
                     .build())
                 .build())
             .build()))

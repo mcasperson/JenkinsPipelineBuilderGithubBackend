@@ -12,6 +12,7 @@ import com.octopus.dsl.Function1Arg;
 import com.octopus.dsl.Function1ArgTrailingLambda;
 import com.octopus.dsl.FunctionManyArgs;
 import com.octopus.dsl.FunctionTrailingLambda;
+import com.octopus.dsl.StringContent;
 import com.octopus.repoclients.RepoClient;
 import java.util.List;
 import lombok.NonNull;
@@ -67,7 +68,7 @@ public class JavaMavenBuilder implements PipelineBuilder {
                     .add(createBuildStep())
                     .add(createTestStep())
                     .add(createPackageStep())
-                    .add(GIT_BUILDER.createDeployStep("target"))
+                    .add(GIT_BUILDER.createDeployStep("target", accessor))
                     .add(GIT_BUILDER.createDeployStage(accessor))
                     .build())
                 .build())
@@ -174,6 +175,15 @@ public class JavaMavenBuilder implements PipelineBuilder {
                     .add(new Argument("script", mavenExecutable() + " --batch-mode clean compile",
                         ArgType.STRING))
                     .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
+                    .build())
+                .build())
+            .add(FunctionTrailingLambda.builder()
+                .name("script")
+                .children(new ImmutableList.Builder<Element>()
+                    .add(StringContent.builder()
+                        .content("env.SEMVER_VERSION = sh (\"" + mavenExecutable()
+                            + " -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec\")")
+                        .build())
                     .build())
                 .build())
             .build()))
