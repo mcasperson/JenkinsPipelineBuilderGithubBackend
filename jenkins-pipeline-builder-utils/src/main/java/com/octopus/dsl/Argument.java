@@ -28,10 +28,14 @@ public class Argument {
     }
     if (type == ArgType.STRING) {
       builder.append("'");
+    } else if (type == ArgType.EXPANDED_STRING) {
+      builder.append("\"");
     }
     builder.append(value);
     if (type == ArgType.STRING) {
       builder.append("'");
+    } else if (type == ArgType.EXPANDED_STRING) {
+      builder.append("\"");
     }
     return builder.toString();
   }

@@ -5,6 +5,7 @@ package com.octopus.dsl;
  */
 public enum ArgType {
   STRING,
+  EXPANDED_STRING,
   BOOLEAN,
   NUMBER,
   TYPE,

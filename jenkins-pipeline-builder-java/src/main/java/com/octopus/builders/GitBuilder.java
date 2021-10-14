@@ -282,11 +282,11 @@ public class GitBuilder {
                             .add(new Argument(
                                 "serverId",
                                 "${ServerId}",
-                                ArgType.STRING))
+                                ArgType.EXPANDED_STRING))
                             .add(new Argument(
                                 "spaceId",
                                 "${SpaceId}",
-                                ArgType.STRING))
+                                ArgType.EXPANDED_STRING))
                             .add(new Argument(
                                 "toolId",
                                 "Default",
@@ -310,7 +310,7 @@ public class GitBuilder {
                                 ArgType.STRING))
                             .add(new Argument(
                                 "packageId",
-                                "'" + accessor.getRepoName().getOrElse("application") + "'",
+                                accessor.getRepoName().getOrElse("application"),
                                 ArgType.STRING))
                             .add(new Argument(
                                 "packageVersion",
@@ -319,11 +319,11 @@ public class GitBuilder {
                             .add(new Argument(
                                 "serverId",
                                 "${ServerId}",
-                                ArgType.STRING))
+                                ArgType.EXPANDED_STRING))
                             .add(new Argument(
                                 "spaceId",
                                 "${SpaceId}",
-                                ArgType.STRING))
+                                ArgType.EXPANDED_STRING))
                             .add(new Argument(
                                 "toolId",
                                 "Default",
@@ -335,15 +335,15 @@ public class GitBuilder {
                             .add(new Argument(
                                 "gitUrl",
                                 "${GIT_URL}",
-                                ArgType.STRING))
+                                ArgType.EXPANDED_STRING))
                             .add(new Argument(
                                 "gitCommit",
                                 "${GIT_COMMIT}",
-                                ArgType.STRING))
+                                ArgType.EXPANDED_STRING))
                             .add(new Argument(
                                 "gitBranch",
                                 "${GIT_BRANCH}",
-                                ArgType.STRING))
+                                ArgType.EXPANDED_STRING))
                             .build())
                         .build())
                     .add(FunctionManyArgs.builder()
@@ -384,7 +384,7 @@ public class GitBuilder {
                             .add(new Argument(
                                 "project",
                                 "${ProjectName}",
-                                ArgType.STRING))
+                                ArgType.EXPANDED_STRING))
                             .add(new Argument(
                                 "releaseNotes",
                                 "false",
@@ -400,11 +400,11 @@ public class GitBuilder {
                             .add(new Argument(
                                 "serverId",
                                 "${ServerId}",
-                                ArgType.STRING))
+                                ArgType.EXPANDED_STRING))
                             .add(new Argument(
                                 "spaceId",
                                 "${SpaceId}",
-                                ArgType.STRING))
+                                ArgType.EXPANDED_STRING))
                             .add(new Argument(
                                 "tenant",
                                 "",
@@ -441,23 +441,23 @@ public class GitBuilder {
                             .add(new Argument(
                                 "environment",
                                 "${EnvironmentName}",
-                                ArgType.STRING))
+                                ArgType.EXPANDED_STRING))
                             .add(new Argument(
                                 "project",
                                 "${ProjectName}",
-                                ArgType.STRING))
+                                ArgType.EXPANDED_STRING))
                             .add(new Argument(
                                 "releaseVersion",
                                 "${env.VERSION_SEMVER}",
-                                ArgType.STRING))
+                                ArgType.EXPANDED_STRING))
                             .add(new Argument(
                                 "serverId",
                                 "${ServerId}",
-                                ArgType.STRING))
+                                ArgType.EXPANDED_STRING))
                             .add(new Argument(
                                 "spaceId",
                                 "${SpaceId}",
-                                ArgType.STRING))
+                                ArgType.EXPANDED_STRING))
                             .add(new Argument(
                                 "tenant",
                                 "",
