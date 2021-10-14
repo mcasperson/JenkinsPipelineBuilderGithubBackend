@@ -278,12 +278,12 @@ public class GitBuilder {
                         ArgType.STRING))
                     .add(new Argument(
                         "serverId",
-                        "${ServerId}",
-                        ArgType.EXPANDED_STRING))
+                        "params.ServerId",
+                        ArgType.CODE))
                     .add(new Argument(
                         "spaceId",
-                        "${SpaceId}",
-                        ArgType.EXPANDED_STRING))
+                        "params.SpaceId",
+                        ArgType.CODE))
                     .add(new Argument(
                         "toolId",
                         "Default",
@@ -315,12 +315,12 @@ public class GitBuilder {
                         ArgType.EXPANDED_STRING))
                     .add(new Argument(
                         "serverId",
-                        "${ServerId}",
-                        ArgType.EXPANDED_STRING))
+                        "params.ServerId",
+                        ArgType.CODE))
                     .add(new Argument(
                         "spaceId",
-                        "${SpaceId}",
-                        ArgType.EXPANDED_STRING))
+                        "params.SpaceId",
+                        ArgType.CODE))
                     .add(new Argument(
                         "toolId",
                         "Default",
@@ -372,16 +372,16 @@ public class GitBuilder {
                         ArgType.STRING))
                     .add(new Argument(
                         "environment",
-                        "${EnvironmentName}",
-                        ArgType.EXPANDED_STRING))
+                        "params.EnvironmentName",
+                        ArgType.CODE))
                     .add(new Argument(
                         "jenkinsUrlLinkback",
                         "false",
                         ArgType.BOOLEAN))
                     .add(new Argument(
                         "project",
-                        "${ProjectName}",
-                        ArgType.EXPANDED_STRING))
+                        "params.ProjectName",
+                        ArgType.CODE))
                     .add(new Argument(
                         "releaseNotes",
                         "false",
@@ -396,12 +396,12 @@ public class GitBuilder {
                         ArgType.EXPANDED_STRING))
                     .add(new Argument(
                         "serverId",
-                        "${ServerId}",
-                        ArgType.EXPANDED_STRING))
+                        "params.ServerId",
+                        ArgType.CODE))
                     .add(new Argument(
                         "spaceId",
-                        "${SpaceId}",
-                        ArgType.EXPANDED_STRING))
+                        "params.SpaceId",
+                        ArgType.CODE))
                     .add(new Argument(
                         "tenant",
                         "",
@@ -437,24 +437,24 @@ public class GitBuilder {
                         ArgType.STRING))
                     .add(new Argument(
                         "environment",
-                        "${EnvironmentName}",
-                        ArgType.EXPANDED_STRING))
+                        "params.EnvironmentName",
+                        ArgType.CODE))
                     .add(new Argument(
                         "project",
-                        "${ProjectName}",
-                        ArgType.EXPANDED_STRING))
+                        "params.ProjectName",
+                        ArgType.CODE))
                     .add(new Argument(
                         "releaseVersion",
                         "${env.VERSION_SEMVER}",
                         ArgType.EXPANDED_STRING))
                     .add(new Argument(
                         "serverId",
-                        "${ServerId}",
-                        ArgType.EXPANDED_STRING))
+                        "params.ServerId",
+                        ArgType.CODE))
                     .add(new Argument(
                         "spaceId",
-                        "${SpaceId}",
-                        ArgType.EXPANDED_STRING))
+                        "params.SpaceId",
+                        ArgType.CODE))
                     .add(new Argument(
                         "tenant",
                         "",
