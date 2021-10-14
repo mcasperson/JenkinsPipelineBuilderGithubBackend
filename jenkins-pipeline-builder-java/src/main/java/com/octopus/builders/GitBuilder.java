@@ -18,6 +18,8 @@ import lombok.NonNull;
  */
 public class GitBuilder {
 
+  protected static final String DEFAULT_APPLICATION = "application";
+
   /**
    * Creates the comments that appear at the top of the pipeline.
    *
@@ -189,7 +191,7 @@ public class GitBuilder {
                 .args(new ImmutableList.Builder<Argument>()
                     .add(new Argument(
                         "defaultValue",
-                        accessor.getRepoName().getOrElse("application"),
+                        accessor.getRepoName().getOrElse(DEFAULT_APPLICATION),
                         ArgType.STRING))
                     .add(new Argument(
                         "description",
@@ -307,7 +309,7 @@ public class GitBuilder {
                         ArgType.STRING))
                     .add(new Argument(
                         "packageId",
-                        accessor.getRepoName().getOrElse("application"),
+                        accessor.getRepoName().getOrElse(DEFAULT_APPLICATION),
                         ArgType.STRING))
                     .add(new Argument(
                         "packageVersion",
