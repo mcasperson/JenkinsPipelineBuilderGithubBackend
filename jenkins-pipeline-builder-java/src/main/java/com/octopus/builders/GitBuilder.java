@@ -32,7 +32,8 @@ public class GitBuilder {
                 "This pipeline requires the following plugins:\n"
                     + "* Pipeline Utility Steps Plugin: https://wiki.jenkins.io/display/JENKINS/Pipeline+Utility+Steps+Plugin\n"
                     + "* Git: https://plugins.jenkins.io/git/\n"
-                    + "* Workflow Aggregator: https://plugins.jenkins.io/workflow-aggregator/")
+                    + "* Workflow Aggregator: https://plugins.jenkins.io/workflow-aggregator/\n"
+                    + "* Octopus Deploy: https://plugins.jenkins.io/octopusdeploy/")
             .build())
         .build();
   }

@@ -53,8 +53,7 @@ public class JavaGradleBuilder implements PipelineBuilder {
             .add(Comment.builder()
                 .content(
                     "* JUnit: https://plugins.jenkins.io/junit/\n"
-                        + "* Gradle: https://plugins.jenkins.io/gradle/\n"
-                        + "* Octopus Deploy: https://plugins.jenkins.io/octopusdeploy/")
+                        + "* Gradle: https://plugins.jenkins.io/gradle/")
                 .build())
             .add(GIT_BUILDER.createParameters(accessor))
             .add(FunctionTrailingLambda.builder()
