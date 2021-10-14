@@ -57,6 +57,11 @@
           <groupId>org.jacoco</groupId>
           <version>0.7.9</version>
         </plugin>
+        <plugin>
+          <groupId>org.cyclonedx</groupId>
+          <artifactId>cyclonedx-maven-plugin</artifactId>
+          <version>2.5.3</version>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>

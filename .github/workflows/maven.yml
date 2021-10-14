@@ -98,6 +98,24 @@ jobs:
           --apiKey ${{ secrets.OCTOPUS_APIKEY }}
           --space "Content Team"
 
+      - name: Generate SBOM
+        run: mvn cyclonedx:makeAggregateBom -DskipTests
+
+      - name: Build SBOM package
+        run: >
+          octo pack
+          --id jenkins-pipeline-builder-github-backend-lambda-sbom
+          --version 0.1.0.${{ github.run_number }}
+          --format zip
+          --include **/bom.xml
+
+      - name: Push SBOM Package
+        run: >
+          octo push --package jenkins-pipeline-builder-github-backend-lambda-sbom.0.1.0.${{ github.run_number }}.zip
+          --server ${{ secrets.OCTOPUS_SERVER }}
+          --apiKey ${{ secrets.OCTOPUS_APIKEY }}
+          --space "Content Team"
+
       - name: Trigger deployment
         run: >
           octo create-release
@@ -106,3 +124,6 @@ jobs:
           --server ${{ secrets.OCTOPUS_SERVER }}
           --apiKey ${{ secrets.OCTOPUS_APIKEY }}
           --space "Content Team"
+
+      - name: Generate vulnerability report
+        run: find . -type f -name 'bom.xml' -exec docker run --rm -v "$PWD:/app" appthreat/dep-scan scan --bom /app/{} --type bom \; exit 0
