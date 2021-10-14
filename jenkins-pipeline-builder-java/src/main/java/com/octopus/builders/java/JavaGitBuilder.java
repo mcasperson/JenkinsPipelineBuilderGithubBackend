@@ -62,6 +62,7 @@ public class JavaGitBuilder extends GitBuilder {
                                 + "}\n"
                                 + "if (largestFile != null) {\n"
                                 + "\tenv.ORIGINAL_ARTIFACT = largestFile.path\n"
+                                + "\t// Create a filename based on the repository name, the new version, and the original file extension. \n"
                                 + "\tenv.ARTIFACTS = \"" + accessor.getRepoName().getOrElse(DEFAULT_APPLICATION) + ".\" + env.VERSION_SEMVER + largestFile.path.substring(largestFile.path.lastIndexOf(\".\"), largestFile.path.length())\n"
                                 + "\techo 'Found artifact at ' + largestFile.path\n"
                                 + "\techo 'This path is available from the ARTIFACTS environment variable.'\n"
