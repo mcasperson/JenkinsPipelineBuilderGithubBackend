@@ -89,7 +89,6 @@ public class OctopusClient {
             .put("Name", "Run a script")
             .put("ExcludedEnvironments", List.of())
             .put("Channels", List.of())
-            .put("TenantTags", List.of())
             .put("Environments", List.of())
             .put("ExcludedEnvironments", List.of())
             .put("Channels", List.of())
