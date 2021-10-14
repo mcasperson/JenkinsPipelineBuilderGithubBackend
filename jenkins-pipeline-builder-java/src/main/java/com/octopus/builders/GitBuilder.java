@@ -310,8 +310,8 @@ public class GitBuilder {
                         ArgType.STRING))
                     .add(new Argument(
                         "packageId",
-                        accessor.getRepoName().getOrElse(DEFAULT_APPLICATION),
-                        ArgType.STRING))
+                        "env.ARTIFACTS.split(\":\")[0].substring(0, env.ARTIFACTS.split(\":\")[0].firstIndexOf(\".\")",
+                        ArgType.CODE))
                     .add(new Argument(
                         "packageVersion",
                         "env.VERSION_SEMVER",
