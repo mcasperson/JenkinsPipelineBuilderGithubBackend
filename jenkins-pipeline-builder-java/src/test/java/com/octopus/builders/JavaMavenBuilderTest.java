@@ -88,8 +88,7 @@ public class JavaMavenBuilderTest {
       .withNetworkAliases("db")
       .withEnv("SA_PASSWORD", RANDOM_DB_PASSWORD)
       .withEnv("ACCEPT_EULA", "Y")
-      .withStartupTimeout(Duration.ofMinutes(5))
-      .withReuse(true);
+      .withStartupTimeout(Duration.ofMinutes(5));
 
   @Container
   public GenericContainer octopus = new GenericContainer(
@@ -107,7 +106,6 @@ public class JavaMavenBuilderTest {
       .withEnv("ACCEPT_EULA", "Y")
       .withEnv("ADMIN_API_KEY", "API-" + RANDOM_OCTO_API)
       .withStartupTimeout(Duration.ofMinutes(15))
-      .withReuse(true)
       .dependsOn(mssql);
 
   /**
@@ -202,8 +200,7 @@ public class JavaMavenBuilderTest {
       .withEnv("JENKINS_OPTS", "--httpPort=8081")
       .withEnv("JAVA_OPTS",
           "-Djenkins.install.runSetupWizard=false "
-              + "-Dhudson.security.csrf.GlobalCrumbIssuerConfiguration.DISABLE_CSRF_PROTECTION=true")
-      .withReuse(true);
+              + "-Dhudson.security.csrf.GlobalCrumbIssuerConfiguration.DISABLE_CSRF_PROTECTION=true");
 
   @Test
   public void initializeOctopus() {
