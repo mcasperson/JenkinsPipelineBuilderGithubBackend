@@ -277,7 +277,7 @@ public class GitBuilder {
                                 ArgType.CODE))
                             .add(new Argument(
                                 "overwriteMode",
-                                "FailIfExists",
+                                "OverwriteExisting",
                                 ArgType.STRING))
                             .add(new Argument(
                                 "serverId",
@@ -306,7 +306,7 @@ public class GitBuilder {
                                 ArgType.STRING))
                             .add(new Argument(
                                 "overwriteMode",
-                                "FailIfExists",
+                                "OverwriteExisting",
                                 ArgType.STRING))
                             .add(new Argument(
                                 "packageId",
