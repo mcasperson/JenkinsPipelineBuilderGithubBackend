@@ -4,7 +4,7 @@ import io.vavr.control.Try;
 import java.util.List;
 
 public class DotnetTestRepoClient extends TestRepoClient {
-
+  static int count = 0;
   /**
    * A mock repo accessor that pretends to find (or not find) project files and wrapper scripts.
    *
@@ -12,6 +12,7 @@ public class DotnetTestRepoClient extends TestRepoClient {
    */
   public DotnetTestRepoClient(final String repo) {
     super(repo, false);
+    ++count;
   }
 
   @Override
@@ -39,5 +40,10 @@ public class DotnetTestRepoClient extends TestRepoClient {
       return Try.of(() -> List.of("myproj.sln"));
     }
     return Try.of(List::of);
+  }
+
+  @Override
+  public Try<String> getRepoName() {
+    return Try.of(() -> "dotnetcore" + count + "application");
   }
 }
