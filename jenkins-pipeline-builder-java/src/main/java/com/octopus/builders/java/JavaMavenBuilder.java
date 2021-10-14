@@ -181,8 +181,9 @@ public class JavaMavenBuilder implements PipelineBuilder {
                 .name("script")
                 .children(new ImmutableList.Builder<Element>()
                     .add(StringContent.builder()
-                        .content("env.SEMVER_VERSION = sh ('" + mavenExecutable()
-                            + " --batch-mode -Dexec.executable=echo -Dexec.args=\\'${project.version}\\' --non-recursive exec:exec')")
+                        .content("env.SEMVER_VERSION = sh (script: '" + mavenExecutable()
+                            + " -q -Dexec.executable=echo -Dexec.args=\\'${project.version}\\' --non-recursive exec:exec', returnStdout: true)\n"
+                          + "env.SEMVER_VERSION = env.SEMVER_VERSION.trim()")
                         .build())
                     .build())
                 .build())
