@@ -252,23 +252,13 @@ public class JavaMavenBuilderTest {
     );
   }
 
-  @Before
-  public void initializeOctopus() {
-    OCTOPUS_CLIENT.setUrl("http://" + octopus.getHost() + ":" + octopus.getFirstMappedPort());
-    OCTOPUS_CLIENT.setApiKey("API-" + RANDOM_OCTO_API);
-    OCTOPUS_CLIENT.createEnvironment("Dev");
-  }
 
   @ParameterizedTest
   @MethodSource("provideTestRepos")
   public void verifyTemplate(@NonNull final String name, @NonNull final RepoClient accessor)
       throws IOException {
 
-    OCTOPUS_CLIENT.setUrl("http://" + octopus.getHost() + ":" + octopus.getFirstMappedPort());
-    OCTOPUS_CLIENT.setApiKey("API-" + RANDOM_OCTO_API);
-    OCTOPUS_CLIENT.createProject(accessor.getRepoName().get(), OCTOPUS_CLIENT.getDefaultProjectGroupId(),
-        OCTOPUS_CLIENT.getDefaultLifecycleId());
-    OCTOPUS_CLIENT.addStepToProject(accessor.getRepoName().get());
+    initOctopus(accessor);
 
     System.out.println(jenkins.getLogs());
 
@@ -312,6 +302,17 @@ public class JavaMavenBuilderTest {
 
     Assertions.assertTrue(success.isSuccess());
     Assertions.assertTrue(success.get());
+  }
+
+  private void initOctopus(@NonNull final RepoClient accessor) {
+    OCTOPUS_CLIENT.setUrl("http://" + octopus.getHost() + ":" + octopus.getFirstMappedPort());
+    OCTOPUS_CLIENT.setApiKey("API-" + RANDOM_OCTO_API);
+    OCTOPUS_CLIENT.createEnvironment("Dev");
+    OCTOPUS_CLIENT.setUrl("http://" + octopus.getHost() + ":" + octopus.getFirstMappedPort());
+    OCTOPUS_CLIENT.setApiKey("API-" + RANDOM_OCTO_API);
+    OCTOPUS_CLIENT.createProject(accessor.getRepoName().get(), OCTOPUS_CLIENT.getDefaultProjectGroupId(),
+        OCTOPUS_CLIENT.getDefaultLifecycleId());
+    OCTOPUS_CLIENT.addStepToProject(accessor.getRepoName().get());
   }
 
   private void addJobToJenkins(@NonNull final String jobXml, @NonNull final String jobName) {
