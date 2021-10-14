@@ -132,7 +132,7 @@ public class PhpComposerBuilder implements PipelineBuilder {
                 .args(new ImmutableList.Builder<Argument>()
                     .add(new Argument(
                         "script",
-                        "vendor/bin/phpunit --log-junit results.xml " + directory,
+                        "vendor/bin/phpunit --log-junit results.xml " + directory + " || true",
                         ArgType.STRING))
                     .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
                     .build())

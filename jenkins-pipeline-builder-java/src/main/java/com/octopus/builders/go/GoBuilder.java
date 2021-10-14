@@ -146,7 +146,7 @@ public class GoBuilder implements PipelineBuilder {
                 .args(new ImmutableList.Builder<Argument>()
                     .add(new Argument(
                         "script",
-                        "gotestsum --junitfile results.xml",
+                        "gotestsum --junitfile results.xml || true",
                         ArgType.STRING))
                     .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
                     .build())
