@@ -258,15 +258,16 @@ public class JavaMavenBuilderTest {
     OCTOPUS_CLIENT.setApiKey("API-" + RANDOM_OCTO_API);
 
     OCTOPUS_CLIENT.createEnvironment("Dev");
-    OCTOPUS_CLIENT.createProject("application", OCTOPUS_CLIENT.getDefaultProjectGroupId(),
-        OCTOPUS_CLIENT.getDefaultLifecycleId());
-    OCTOPUS_CLIENT.addStepToProject("application");
   }
 
   @ParameterizedTest
   @MethodSource("provideTestRepos")
   public void verifyTemplate(@NonNull final String name, @NonNull final RepoClient accessor)
       throws IOException {
+
+    OCTOPUS_CLIENT.createProject(accessor.getRepoName().get(), OCTOPUS_CLIENT.getDefaultProjectGroupId(),
+        OCTOPUS_CLIENT.getDefaultLifecycleId());
+    OCTOPUS_CLIENT.addStepToProject(accessor.getRepoName().get());
 
     System.out.println(jenkins.getLogs());
 
