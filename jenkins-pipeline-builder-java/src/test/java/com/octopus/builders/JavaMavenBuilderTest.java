@@ -197,6 +197,7 @@ public class JavaMavenBuilderTest {
       .withNetwork(NETWORK)
       .dependsOn(octopus)
       .withExposedPorts(8081)
+      .withNetworkAliases("jenkins")
       .withEnv("OCTOPUS_API_KEY", "API-" + RANDOM_OCTO_API)
       .withEnv("JENKINS_OPTS", "--httpPort=8081")
       .withEnv("JAVA_OPTS",
