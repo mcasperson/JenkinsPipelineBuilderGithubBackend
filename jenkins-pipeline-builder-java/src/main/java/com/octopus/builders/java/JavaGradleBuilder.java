@@ -12,6 +12,7 @@ import com.octopus.dsl.Function1Arg;
 import com.octopus.dsl.Function1ArgTrailingLambda;
 import com.octopus.dsl.FunctionManyArgs;
 import com.octopus.dsl.FunctionTrailingLambda;
+import com.octopus.dsl.StringContent;
 import com.octopus.repoclients.RepoClient;
 import java.util.Arrays;
 import java.util.List;
@@ -137,6 +138,18 @@ public class JavaGradleBuilder implements PipelineBuilder {
                     .add(new Argument("script",
                         gradleExecutable() + " clean assemble --console=plain", ArgType.STRING))
                     .add(new Argument("returnStdout", "true", ArgType.BOOLEAN))
+                    .build())
+                .build())
+            .add(Comment.builder()
+                .content(
+                    "This needs to be improved to extract the version of the Gradle project.")
+                .build())
+            .add(FunctionTrailingLambda.builder()
+                .name("script")
+                .children(new ImmutableList.Builder<Element>()
+                    .add(StringContent.builder()
+                        .content("env.SEMVER_VERSION = \"1.0.0.${BUILD_NUMBER}\"")
+                        .build())
                     .build())
                 .build())
             .build()))
