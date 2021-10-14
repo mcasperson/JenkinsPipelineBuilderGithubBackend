@@ -30,6 +30,6 @@ public class GradleTestRepoClient extends TestRepoClient {
 
   @Override
   public Try<String> getRepoName() {
-    return Try.of(() -> "maven" + count + "application");
+    return Try.of(() -> "gradle" + count + "application");
   }
 }
