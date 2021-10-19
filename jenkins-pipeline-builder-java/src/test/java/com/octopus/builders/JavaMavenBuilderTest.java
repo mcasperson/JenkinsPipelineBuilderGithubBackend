@@ -159,10 +159,10 @@ public class JavaMavenBuilderTest {
               .run("curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -")
               .run(
                   "echo \"deb https://dl.yarnpkg.com/debian/ stable main\" | sudo tee /etc/apt/sources.list.d/yarn.list")
-              .run("sudo apt update; sudo apt install yarn")
+              .run("apt update; apt install yarn")
               // install composer
               .run("wget -O composer-setup.php https://getcomposer.org/installer")
-              .run("sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer")
+              .run("php composer-setup.php --install-dir=/usr/local/bin --filename=composer")
               // install golang
               .run("wget https://golang.org/dl/go1.17.1.linux-amd64.tar.gz")
               .run("rm -rf /usr/local/go && tar -C /usr/local -xzf go1.17.1.linux-amd64.tar.gz")
