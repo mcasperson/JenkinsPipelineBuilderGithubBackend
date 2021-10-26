@@ -70,6 +70,7 @@ public class JavaGradleBuilder implements PipelineBuilder {
                     .add(createTestStep())
                     .add(GIT_BUILDER.createDeployStep(GRADLE_OUTPUT_DIR, accessor))
                     .add(GIT_BUILDER.createDeployStage(accessor))
+                    .add(GIT_BUILDER.createTestProcessStep("build/test-results/**/*.xml"))
                     .build())
                 .build())
             .build()
@@ -154,13 +155,6 @@ public class JavaGradleBuilder implements PipelineBuilder {
                     .add(new Argument("script",
                         gradleExecutable() + " check --console=plain || true",
                         ArgType.STRING))
-                    .build())
-                .build())
-            .add(FunctionManyArgs.builder()
-                .name("junit")
-                .args(new ImmutableList.Builder<Argument>()
-                    .add(new Argument("testResults", "build/test-results/**/*.xml", ArgType.STRING))
-                    .add(new Argument("allowEmptyResults ", "true", ArgType.BOOLEAN))
                     .build())
                 .build())
             .build()))

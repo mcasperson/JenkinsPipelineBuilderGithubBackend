@@ -94,6 +94,31 @@ public class GitBuilder {
   }
 
   /**
+   * Creates the steps to process test results.
+   *
+   * @param accessor The repo accessor defining the repo to checkout.
+   * @return A list of Elements that build the checkout steps.
+   */
+  public Element createTestProcessStep(@NonNull final String files) {
+    return FunctionTrailingLambda.builder().name("post")
+        .children(new ImmutableList.Builder<Element>()
+            .add(FunctionTrailingLambda.builder()
+                .name("always")
+                .children(new ImmutableList.Builder<Element>()
+                    .add(FunctionManyArgs.builder()
+                        .name("junit")
+                        .args(new ImmutableList.Builder<Argument>()
+                            .add(new Argument("testResults", files, ArgType.STRING))
+                            .add(new Argument("allowEmptyResults ", "true", ArgType.BOOLEAN))
+                            .build())
+                        .build())
+                    .build())
+                .build())
+            .build())
+        .build();
+  }
+
+  /**
    * Creates a steps element holding the supplied children.
    *
    * @param children The child elements to place in the step.
