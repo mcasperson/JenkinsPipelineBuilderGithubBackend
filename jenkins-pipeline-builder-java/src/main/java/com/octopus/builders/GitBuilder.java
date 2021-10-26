@@ -124,7 +124,7 @@ public class GitBuilder {
    * @param children The child elements to place in the step.
    * @return A list with the single steps element.
    */
-  public List<Element> createStepsElement(List<Element> children) {
+  public List<Element> createStepsElement(@NonNull final List<Element> children) {
     return new ImmutableList.Builder<Element>().add(
             FunctionTrailingLambda.builder()
                 .name("steps")
