@@ -335,7 +335,7 @@ public class GitBuilder {
                         ArgType.STRING))
                     .add(new Argument(
                         "packageId",
-                        "env.ARTIFACTS.split(\":\")[0].substring(env.ARTIFACTS.split(\":\")[0].lastIndexOf(\"/\") + 1, env.ARTIFACTS.split(\":\")[0].length()).replaceAll(\"\\\\.\" + env.VERSION_SEMVER + \"\\\\..+$\", \"\")",
+                        "env.ARTIFACTS.split(\":\")[0].substring(env.ARTIFACTS.split(\":\")[0].lastIndexOf(\"/\") + 1, env.ARTIFACTS.split(\":\")[0].length()).replaceAll(\"\\\\.\" + env.VERSION_SEMVER + \"\\\\..+\", \"\")",
                         ArgType.CODE))
                     .add(new Argument(
                         "packageVersion",
