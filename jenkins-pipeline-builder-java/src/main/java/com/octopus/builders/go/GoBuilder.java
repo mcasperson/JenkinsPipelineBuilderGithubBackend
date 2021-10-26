@@ -11,6 +11,7 @@ import com.octopus.dsl.Function1Arg;
 import com.octopus.dsl.Function1ArgTrailingLambda;
 import com.octopus.dsl.FunctionManyArgs;
 import com.octopus.dsl.FunctionTrailingLambda;
+import com.octopus.dsl.StringContent;
 import com.octopus.repoclients.RepoClient;
 import io.vavr.control.Try;
 import java.util.List;
@@ -58,6 +59,18 @@ public class GoBuilder implements PipelineBuilder {
         )
         .build()
         .toString();
+  }
+
+  public Element createEnvironmentStage() {
+    return Function1ArgTrailingLambda.builder()
+        .name("stage")
+        .arg("Environment")
+        .children(GIT_BUILDER.createStepsElement(new ImmutableList.Builder<Element>()
+            .add(StringContent.builder()
+                .content("echo \"PATH = ${PATH}\"\necho \"GOPATH = ${GOPATH}\"")
+                .build())
+            .build()))
+        .build();
   }
 
   private Element createDependenciesStep(@NonNull final RepoClient accessor) {
