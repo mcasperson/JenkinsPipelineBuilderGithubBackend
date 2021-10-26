@@ -96,7 +96,7 @@ public class GitBuilder {
   /**
    * Creates the steps to process test results.
    *
-   * @param accessor The repo accessor defining the repo to checkout.
+   * @param files The junit files.
    * @return A list of Elements that build the checkout steps.
    */
   public Element createTestProcessStep(@NonNull final String files) {
