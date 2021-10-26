@@ -23,9 +23,10 @@ public class FunctionManyArgs extends ElementWithChildren {
     final List<Element> safeChildren = getSafeChildren();
     safeChildren.forEach(c -> c.parent = this);
 
-    final String delimiter = args.size() > MAX_ARGS_SINGLE_LINE ? ",\n" : ", ";
+    final String delimiter = args.size() > MAX_ARGS_SINGLE_LINE ? ",\n" + getIndent() + "  " : ", ";
 
-    return getIndent() + name + "(" + args.stream().map(Argument::toString)
+    return getIndent() + name + "("
+        + args.stream().map(Argument::toString)
         .filter(c -> !c.isBlank())
         .collect(Collectors.joining(delimiter)) + ")";
   }

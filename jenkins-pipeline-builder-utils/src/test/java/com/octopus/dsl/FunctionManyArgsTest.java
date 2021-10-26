@@ -30,6 +30,6 @@ public class FunctionManyArgsTest {
             .add(new Argument("name5", "value", ArgType.STRING))
             .build())
         .build();
-    assertEquals("function(name: 'value',\nname2: 'value',\nname3: 'value',\nname4: 'value',\nname5: 'value')", element.toString());
+    assertEquals("function(name: 'value',\n  name2: 'value',\n  name3: 'value',\n  name4: 'value',\n  name5: 'value')", element.toString());
   }
 }
