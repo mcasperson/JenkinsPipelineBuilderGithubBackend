@@ -67,7 +67,7 @@ public class GoBuilder implements PipelineBuilder {
         .arg("Environment")
         .children(GIT_BUILDER.createStepsElement(new ImmutableList.Builder<Element>()
             .add(StringContent.builder()
-                .content("echo \"PATH = ${PATH}\"\necho \"GOPATH = ${GOPATH}\"")
+                .content("echo \"PATH = ${env.PATH}\"\necho \"GOPATH = ${env.GOPATH}\"")
                 .build())
             .build()))
         .build();

@@ -49,7 +49,7 @@ public class GitBuilder {
         .arg("Environment")
         .children(createStepsElement(new ImmutableList.Builder<Element>()
             .add(StringContent.builder()
-                .content("echo \"PATH = ${PATH}\"")
+                .content("echo \"PATH = ${env.PATH}\"")
                 .build())
             .build()))
         .build();
