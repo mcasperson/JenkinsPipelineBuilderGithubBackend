@@ -48,7 +48,7 @@ public class GoBuilder implements PipelineBuilder {
             .add(FunctionTrailingLambda.builder()
                 .name("stages")
                 .children(new ImmutableList.Builder<Element>()
-                    .add(GIT_BUILDER.createEnvironmentStage())
+                    .add(createEnvironmentStage())
                     .add(GIT_BUILDER.createCheckoutStep(accessor))
                     .add(createDependenciesStep(accessor))
                     .add(createTestStep())
@@ -61,7 +61,7 @@ public class GoBuilder implements PipelineBuilder {
         .toString();
   }
 
-  public Element createEnvironmentStage() {
+  private Element createEnvironmentStage() {
     return Function1ArgTrailingLambda.builder()
         .name("stage")
         .arg("Environment")
