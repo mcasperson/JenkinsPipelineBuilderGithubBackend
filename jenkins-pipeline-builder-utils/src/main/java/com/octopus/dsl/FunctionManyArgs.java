@@ -11,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @SuperBuilder
 public class FunctionManyArgs extends ElementWithChildren {
-
+  private static final int MAX_ARGS_SINGLE_LINE = 4;
   private List<Argument> args;
 
   /**
@@ -23,7 +23,7 @@ public class FunctionManyArgs extends ElementWithChildren {
     final List<Element> safeChildren = getSafeChildren();
     safeChildren.forEach(c -> c.parent = this);
 
-    final String delimiter = args.size() > 4 ? ", " : ",\n";
+    final String delimiter = args.size() > MAX_ARGS_SINGLE_LINE ? ", " : ",\n";
 
     return getIndent() + name + "(" + args.stream().map(Argument::toString)
         .filter(c -> !c.isBlank())
