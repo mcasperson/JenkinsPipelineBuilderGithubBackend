@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 public class FunctionManyArgsTest {
 
   @Test
-  public void testFunction1Arg() {
+  public void testFunctionManyArgs() {
     final Element element = FunctionManyArgs.builder()
         .name("function")
         .args(new ImmutableList.Builder<Argument>()
@@ -16,5 +16,20 @@ public class FunctionManyArgsTest {
             .build())
         .build();
     assertEquals("function(name: 'value')", element.toString());
+  }
+
+  @Test
+  public void testFunctionManyArgsMultiLine() {
+    final Element element = FunctionManyArgs.builder()
+        .name("function")
+        .args(new ImmutableList.Builder<Argument>()
+            .add(new Argument("name", "value", ArgType.STRING))
+            .add(new Argument("name2", "value", ArgType.STRING))
+            .add(new Argument("name3", "value", ArgType.STRING))
+            .add(new Argument("name4", "value", ArgType.STRING))
+            .add(new Argument("name5", "value", ArgType.STRING))
+            .build())
+        .build();
+    assertEquals("function(name: 'value',\nname2: 'value',\nname3: 'value',\nname4: 'value',\nname5: 'value')", element.toString());
   }
 }
