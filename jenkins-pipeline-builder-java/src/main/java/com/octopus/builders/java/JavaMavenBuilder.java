@@ -69,7 +69,6 @@ public class JavaMavenBuilder implements PipelineBuilder {
                     .add(createPackageStep())
                     .add(GIT_BUILDER.createDeployStep("target", accessor))
                     .add(GIT_BUILDER.createDeployStage(accessor))
-                    .add(GIT_BUILDER.createTestProcessStep("target/surefire-reports/*.xml"))
                     .build())
                 .build())
             .build()
@@ -202,6 +201,14 @@ public class JavaMavenBuilder implements PipelineBuilder {
                     .add(new Argument("script",
                         mavenExecutable() + " --batch-mode -Dmaven.test.failure.ignore=true test",
                         ArgType.STRING))
+                    .build())
+                .build())
+            .add(FunctionManyArgs.builder()
+                .name("junit")
+                .args(new ImmutableList.Builder<Argument>()
+                    .add(new Argument("testResults", "target/surefire-reports/*.xml",
+                        ArgType.STRING))
+                    .add(new Argument("allowEmptyResults ", "true", ArgType.BOOLEAN))
                     .build())
                 .build())
             .build()))
