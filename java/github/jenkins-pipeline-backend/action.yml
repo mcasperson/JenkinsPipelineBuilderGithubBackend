@@ -54,22 +54,26 @@ runs:
     - name: Checkstyle
       run: mvn --batch-mode checkstyle:check
       shell: bash
+      working-directory: java
 
     - name: Install modules
-      run: mvn --batch-mode install
-      shell: bash
+      run: cd java; mvn --batch-mode install
+      working-directory: java
 
     - name: Update version
-      run: cd jenkins-pipeline-builder-github-backend; mvn --batch-mode build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion}.${{ github.run_number }}
+      run: mvn --batch-mode build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion}.${{ github.run_number }}
       shell: bash
+      working-directory: java/jenkins-pipeline-builder-github-backend
 
     - name: List dependencies
       run: mvn --batch-mode dependency:tree --no-transfer-progress
       shell: bash
+      working-directory: java
 
     - name: Build with Maven
       run: mvn --batch-mode package --file pom.xml -Pnative -DskipTests
       shell: bash
+      working-directory: java
 
     - name: Create Release
       id: create_release
@@ -89,7 +93,7 @@ runs:
         GITHUB_TOKEN: ${{ inputs.github_token }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: jenkins-pipeline-builder-github-backend/target/jenkins-pipeline-builder-github-backend-runner
+        asset_path: java/jenkins-pipeline-builder-github-backend/target/jenkins-pipeline-builder-github-backend-runner
         asset_name: jenkins-pipeline-builder-github-backend-runner
         asset_content_type: application/octet-stream
 
@@ -98,6 +102,7 @@ runs:
         mv jenkins-pipeline-builder-github-backend/target/function.zip
         jenkins-pipeline-builder-github-backend-lambda.0.1.0.${{ inputs.run_number }}.zip
       shell: bash
+      working-directory: java
 
     - name: Push Package
       run: >
@@ -106,10 +111,12 @@ runs:
         --apiKey ${{ inputs.octopus_apikey }}
         --space "Content Team"
       shell: bash
+      working-directory: java
 
     - name: Generate SBOM
       run: mvn cyclonedx:makeAggregateBom -DskipTests
       shell: bash
+      working-directory: java
 
     - name: Build SBOM package
       run: >
@@ -119,6 +126,7 @@ runs:
         --format zip
         --include **/bom.xml
       shell: bash
+      working-directory: java
 
     - name: Push SBOM Package
       run: >
@@ -127,6 +135,7 @@ runs:
         --apiKey ${{ inputs.octopus_apikey }}
         --space "Content Team"
       shell: bash
+      working-directory: java
 
     - name: Trigger deployment
       run: >
@@ -142,3 +151,4 @@ runs:
     - name: Generate vulnerability report
       run: find . -type f -name 'bom.xml' -exec docker run --rm -v "$PWD:/app" appthreat/dep-scan scan --bom /app/{} --type bom \; || true
       shell: bash
+      working-directory: java
