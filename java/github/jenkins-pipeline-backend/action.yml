@@ -1,5 +1,4 @@
 name: 'Jenkins Pipeline Backend'
-description: 'Greet someone'
 inputs:
   dockerhub_username:  
     required: true
