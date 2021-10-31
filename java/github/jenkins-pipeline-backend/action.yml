@@ -14,7 +14,6 @@ inputs:
     required: true
 runs:
   using: "composite"
- 
   steps:
     - uses: actions/checkout@v1
 
@@ -45,6 +44,7 @@ runs:
 
     - name: Install native-image component
       run: gu install native-image
+      shell: bash
 
     - name: Install Octopus Deploy CLI
       uses: OctopusDeploy/install-octocli@v1
@@ -53,18 +53,23 @@ runs:
 
     - name: Checkstyle
       run: mvn --batch-mode checkstyle:check
+      shell: bash
 
     - name: Install modules
       run: mvn --batch-mode install
+      shell: bash
 
     - name: Update version
       run: cd jenkins-pipeline-builder-github-backend; mvn --batch-mode build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion}.${{ github.run_number }}
+      shell: bash
 
     - name: List dependencies
       run: mvn --batch-mode dependency:tree --no-transfer-progress
+      shell: bash
 
     - name: Build with Maven
       run: mvn --batch-mode package --file pom.xml -Pnative -DskipTests
+      shell: bash
 
     - name: Create Release
       id: create_release
@@ -92,6 +97,7 @@ runs:
       run: >
         mv jenkins-pipeline-builder-github-backend/target/function.zip
         jenkins-pipeline-builder-github-backend-lambda.0.1.0.${{ inputs.run_number }}.zip
+      shell: bash
 
     - name: Push Package
       run: >
@@ -99,9 +105,11 @@ runs:
         --server ${{ inputs.octopus_server }}
         --apiKey ${{ inputs.octopus_apikey }}
         --space "Content Team"
+      shell: bash
 
     - name: Generate SBOM
       run: mvn cyclonedx:makeAggregateBom -DskipTests
+      shell: bash
 
     - name: Build SBOM package
       run: >
@@ -110,6 +118,7 @@ runs:
         --version 0.1.0.${{ inputs.run_number }}
         --format zip
         --include **/bom.xml
+      shell: bash
 
     - name: Push SBOM Package
       run: >
@@ -117,6 +126,7 @@ runs:
         --server ${{ inputs.octopus_server }}
         --apiKey ${{ inputs.octopus_apikey }}
         --space "Content Team"
+      shell: bash
 
     - name: Trigger deployment
       run: >
@@ -126,7 +136,9 @@ runs:
         --server ${{ inputs.octopus_server }}
         --apiKey ${{ inputs.octopus_apikey }}
         --space "Content Team"
+      shell: bash
 
     # https://github.com.cnpmjs.org/AppThreat/dep-scan
     - name: Generate vulnerability report
       run: find . -type f -name 'bom.xml' -exec docker run --rm -v "$PWD:/app" appthreat/dep-scan scan --bom /app/{} --type bom \; || true
+      shell: bash
