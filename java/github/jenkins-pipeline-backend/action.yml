@@ -57,7 +57,7 @@ runs:
       working-directory: java
 
     - name: Install modules
-      run: cd java; mvn --batch-mode install
+      run: mvn --batch-mode install
       shell: bash
       working-directory: java
 
