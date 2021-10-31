@@ -58,6 +58,7 @@ runs:
 
     - name: Install modules
       run: cd java; mvn --batch-mode install
+      shell: bash
       working-directory: java
 
     - name: Update version
